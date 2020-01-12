@@ -35,5 +35,9 @@ class FileListComponent implements OnInit {
     }
   }
 
+  void onDeselect() => fileService.selected.clear();
+
+  void onDelete() => fileService.deleteSelected();
+
   bool isSelected(FetchedFile file) => fileService.selected.contains(file);
 }

@@ -1,0 +1,27 @@
+<div class="header raised mb-3">
+    <div class="container-fluid flex">
+        <ul class="menu">
+            <li class="item">Documents <span class="text-muted">/</span></li>
+        </ul>
+
+        <ul class="menu menu-danger">
+            <li class="item text-muted" *ngIf="fileService.selected.isNotEmpty">{{ fileService.selected.length }}
+                File{{ fileService.selected.length == 1 ? '' : 's' }} Selected
+            </li>
+            <li class="item" (click)="onDeselect()">Deselect</li>
+            <li class="item active" (click)="onDelete()">Delete</li>
+        </ul>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-2 col-md-3 col-sm-6 mb-3" *ngFor="let file of files">
+            <div class="card" [class.selected]="isSelected(file)" (click)="clickFile(file)">
+                <h2 class="heading">{{ file.name }}</h2>
+
+                <p>{{ file.description }}</p>
+            </div>
+        </div>
+    </div>
+</div>

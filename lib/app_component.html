@@ -22,31 +22,24 @@
             </div>
 
             <ul class="menu">
-                <li class="item current">
-                    <div class="container-fluid">Documents</div>
-                </li>
-                <li class="item">
-                    <div class="container-fluid">Settings</div>
-                </li>
+                <a [routerLink]="RoutePaths.files.toUrl()"
+                   [routerLinkActive]="'current'">
+                    <li class="item">
+                        <div class="container-fluid">Documents</div>
+                    </li>
+                </a>
+
+                <a [routerLink]="RoutePaths.settings.toUrl()"
+                   [routerLinkActive]="'current'">
+                    <li class="item">
+                        <div class="container-fluid">Settings</div>
+                    </li>
+                </a>
             </ul>
         </div>
     </div>
 
     <div class="col-10">
-        <div class="header raised mb-3">
-            <div class="container-fluid flex">
-                <ul class="menu">
-                    <li class="item">Documents <span class="text-muted">/</span></li>
-                </ul>
-
-                <ul class="menu menu-danger">
-                    <li class="item text-muted" *ngIf="fileService.selected.isNotEmpty">{{ fileService.selected.length }} File{{ fileService.selected.length == 1 ? '' : 's' }} Selected</li>
-                    <li class="item" (click)="onDeselect()">Deselect</li>
-                    <li class="item active" (click)="onDelete()">Delete</li>
-                </ul>
-            </div>
-        </div>
-
-        <file-list></file-list>
+        <router-outlet [routes]="Routes.all"></router-outlet>
     </div>
 </div>
