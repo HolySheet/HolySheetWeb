@@ -1,0 +1,11 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-2 col-md-3 col-sm-6 mb-3" *ngFor="let file of files">
+            <div class="card" [class.selected]="isSelected(file)" (click)="clickFile(file)">
+                <h2 class="heading">{{ file.name }}</h2>
+
+                <p>{{ file.description }}</p>
+            </div>
+        </div>
+    </div>
+</div>
