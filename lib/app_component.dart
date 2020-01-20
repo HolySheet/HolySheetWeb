@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:html';
 import 'dart:js';
 
@@ -9,7 +10,7 @@ import 'package:HolySheetWeb/src/routes.dart';
 import 'package:HolySheetWeb/src/settings_service.dart';
 import 'package:angular/angular.dart';
 import 'package:angular_router/angular_router.dart';
-import 'package:googleapis_auth/auth_browser.dart';
+import 'package:angular_router/testing.dart';
 import 'package:js/js.dart';
 
 @Component(
@@ -26,15 +27,6 @@ import 'package:js/js.dart';
   exports: [Routes, RoutePaths],
 )
 class AppComponent implements OnInit {
-  final id = ClientId(
-      '916425013479-6jdls4crv26mhurj43eakbs72f5e1m8t.apps.googleusercontent.com',
-      null);
-  final scopes = [
-    'openid',
-    'profile',
-    'email',
-    'https://www.googleapis.com/auth/drive'
-  ];
 
   final FileService fileService;
 
@@ -57,18 +49,52 @@ class AppComponent implements OnInit {
       (authResult) => HttpRequest.getString(
           'http://localhost:8090/callback?code=${authResult['code']}'));
 
-  /// Checks if a token is valid. To be removed soon
-  void checkShit() {
+  Future<void> checkShit() async {
     if (!signedIn) {
       print('Not signed in!');
       return;
     }
 
     final token =
-        'auth2.currentUser.get'<JsObject>()('getAuthResponse')['id_token'];
-    'console.log'(token);
+        'auth2.currentUser.get'<JsObject>()('getAuthResponse')['access_token'];
 
-    HttpRequest.postFormData(
-        'http://localhost:8090/check', {'Authorization': token});
+    final response = await makeRequest('http://localhost:8090/list',
+        query: {'Authorization': token, 'path': ''},);
+
+    if (!response.success) {
+      print('Request not successful. Has status code of ${response.status}');
+      print(response.json);
+      return;
+    }
+
+    final encoder = JsonEncoder.withIndent('  ');
+
+    print('Request result: ${response.status}');
+    var json = response.json;
+    print(encoder.convert(json));
   }
+
+  /// Makes a GET request with given headers. Returns JSON.
+  static Future<RequestResponse> makeRequest(String url,
+          {Map<String, String> query,
+            Map<String, String> requestHeaders,
+          void onProgress(ProgressEvent e)}) {
+    var queryString = query.isNotEmpty ? '?' : '';
+    queryString += query.entries.map((entry) => '${entry.key}=${entry.value}').join('&');
+
+    return HttpRequest.request('$url$queryString',
+              method: 'GET',
+              requestHeaders: requestHeaders,
+              onProgress: onProgress)
+          .then((HttpRequest xhr) => RequestResponse(xhr.status, jsonDecode(xhr.responseText)));
+  }
+}
+
+class RequestResponse {
+  int status;
+  dynamic json;
+
+  bool get success => status == 200;
+
+  RequestResponse(this.status, this.json);
 }
