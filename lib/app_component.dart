@@ -1,13 +1,16 @@
 import 'dart:async';
 import 'dart:html';
+import 'dart:js';
 
 import 'package:HolySheetWeb/src/file_list/file_list_component.dart';
 import 'package:HolySheetWeb/src/file_service.dart';
+import 'package:HolySheetWeb/src/js.dart';
 import 'package:HolySheetWeb/src/routes.dart';
 import 'package:HolySheetWeb/src/settings_service.dart';
 import 'package:angular/angular.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:googleapis_auth/auth_browser.dart';
+import 'package:js/js.dart';
 
 @Component(
   selector: 'my-app',
@@ -35,46 +38,37 @@ class AppComponent implements OnInit {
 
   final FileService fileService;
 
-  AppComponent(this.fileService);
+  bool get signedIn => 'auth2.isSignedIn.get'();
 
-  @override
-  Future<void> ngOnInit() async {
-    await getIdToken().then((idToken) async {
-      print('idToken = $idToken');
+  AppComponent(this.fileService) {
+    context['signInChange'] = (bool signedIn) {
+      print('Signed in: $signedIn');
+    };
 
-      await HttpRequest.postFormData('http://localhost:8090/check', {
-        'Authorization': idToken,
-      });
-    });
+    context['userChanged'] = (user) => 'console.log'(user);
   }
 
+  @override
+  Future<void> ngOnInit() async {}
+
   /// Logs in a user
-  Future<void> loginUser() async =>
-      await createImplicitBrowserFlow(id, scopes).then((BrowserOAuth2Flow flow) {
-        flow.runHybridFlow(immediate: false, force: true).then((hybrid) {
-          final code = hybrid.authorizationCode;
+  void loginUser() => 'auth2.grantOfflineAccess'<JsObject>()(
+      'then',
+      (authResult) => HttpRequest.getString(
+          'http://localhost:8090/callback?code=${authResult['code']}'));
 
-          HttpRequest.getString('http://localhost:8090/callback?code=$code');
-        });
-      });
+  /// Checks if a token is valid. To be removed soon
+  void checkShit() {
+    if (!signedIn) {
+      print('Not signed in!');
+      return;
+    }
 
-  /// Gets the token. If not null, it should then be sent to :api:/check to
-  /// verify it has been stored in the system. If not, the user is not
-  /// considered authenticated.
-  Future<String> getIdToken() async =>
-      await createImplicitBrowserFlow(id, scopes)
-          .then((BrowserOAuth2Flow flow) {
-        try {
-          return flow.obtainAccessCredentialsViaUserConsent(
-              immediate: true,
-              force: true,
-              responseTypes: [
-                ResponseType.idToken,
-                ResponseType.token
-              ]).then((hybrid) => hybrid.idToken);
-        } catch (e) {
-          print('An error happened, user not signed in');
-          return null;
-        }
-      });
+    final token =
+        'auth2.currentUser.get'<JsObject>()('getAuthResponse')['id_token'];
+    'console.log'(token);
+
+    HttpRequest.postFormData(
+        'http://localhost:8090/check', {'Authorization': token});
+  }
 }
