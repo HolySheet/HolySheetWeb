@@ -147,19 +147,11 @@
 
 <div class="container-fluid contextmenu-toggle" data-toggle="#files-contextmenu">
     <div class="row row-small pt-3" id="files">
-        <div class="col-3">
-            <div class="card contextmenu-toggle" data-toggle="#file-contextmenu">
-                <h2>{{ router.current?.routePath?.additionalData }}</h2>
-            </div>
-        </div>
-        <div class="col-3">
-            <div class="card contextmenu-toggle" data-toggle="#file-contextmenu">
-                <h2>bleh</h2>
-            </div>
-        </div>
-        <div class="col-3">
-            <div class="card contextmenu-toggle" data-toggle="#file-contextmenu">
-                <h2>bleh</h2>
+        <div class="col-3" *ngFor="let file of files">
+            <div class="card contextmenu-toggle" data-toggle="#file-contextmenu" [class.selected]="isSelected(file)" (click)="clickFile(file)">
+                <h2>{{ file.name }}</h2>
+
+                <p>{{ file.id }}</p>
             </div>
         </div>
     </div>

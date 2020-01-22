@@ -30,8 +30,8 @@
             </li>
 
             <li class="menu-item">
-                <img class="profile-picture profile-picture-small mr-2" src="https://static.artex.dev/artex.svg">
-                <a class="item-link">RubbaBoy</a>
+                <img class="profile-picture profile-picture-small mr-2" [attr.src]="authService.basicProfile.imageUrl">
+                <a class="item-link">{{ authService.basicProfile.fullName }}</a>
             </li>
         </ul>
     </div>
@@ -64,8 +64,8 @@
         </li>
 
         <li class="menu-item">
-            <img class="profile-picture profile-picture-small mr-2" src="https://static.artex.dev/artex.svg">
-            <a class="item-link">RubbaBoy</a>
+            <img class="profile-picture profile-picture-small mr-2" [attr.src]="authService.basicProfile.imageUrl">
+            <a class="item-link">{{ authService.basicProfile.fullName }}</a>
         </li>
     </ul>
 </nav>

@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:html';
 
-import 'package:HolySheetWeb/src/fetched_file.dart';
 import 'package:HolySheetWeb/src/file_service.dart';
 import 'package:angular/angular.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
 import 'package:angular_router/angular_router.dart';
+
+import '../request_objects.dart';
 
 @Component(
   selector: 'file-list',
@@ -30,6 +31,7 @@ class FileListComponent implements OnInit {
 
   @override
   Future<Null> ngOnInit() async {
+    print('Fetching!');
     files = await fileService.fetchFiles();
   }
 
