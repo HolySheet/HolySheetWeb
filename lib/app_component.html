@@ -1,45 +1,115 @@
-<div class="artex artex-primary">
-    <div class="container-fluid flex">
-        <a class="brand brand-primary brand-hover" href=".">artex</a>
+<nav class="navigation-bar">
+    <div class="container-fluid">
+        <a class="brand brand-primary brand-hover mx-2">artex</a>
 
-        <ul class="menu">
-            <li class="item" (click)="loginUser()">Log out</li>
-            <li class="item important" (click)="checkShit()">Billing</li>
-            <li class="item">
-                <img class="profile-picture profile-picture-small align-middle mr-2" alt="Profile" src="https://static.artex.dev/artex.svg"/>RubbaBoy
+        <ul class="navigation-bar-menu d-flex d-md-none">
+            <li class="menu-item sidebar-mobile-toggle" data-toggle="#artex-mobile">
+                <a class="item-link">
+                    <material-icon icon="account_circle"></material-icon>
+                </a>
+            </li>
+
+            <li class="menu-item sidebar-mobile-toggle" data-toggle="#billing-mobile">
+                <a class="item-link">
+                    <material-icon icon="menu"></material-icon>
+                </a>
+            </li>
+        </ul>
+
+        <ul class="navigation-bar-menu d-none d-md-flex">
+            <li class="menu-item">
+                <a class="item-link">Log out</a>
+            </li>
+
+            <li class="menu-item">
+                <a class="item-link">Support</a>
+            </li>
+
+            <li class="menu-item">
+                <a class="item-link">Billing</a>
+            </li>
+
+            <li class="menu-item">
+                <img class="profile-picture profile-picture-small mr-2" src="https://static.artex.dev/artex.svg">
+                <a class="item-link">RubbaBoy</a>
             </li>
         </ul>
     </div>
-</div>
+</nav>
 
-<div class="row content no-gutters">
-    <div class="col-2 side-bar-wrapper">
-        <div class="side-bar">
-            <div class="side-bar-header">
-                <div class="container-fluid">
-                    <a class="heading link">HolySheet</a>
-                </div>
-            </div>
+<nav class="sidebar d-none" id="artex-mobile">
+    <nav class="navigation-bar mb-2">
+        <div class="container-fluid">
+            <a class="brand brand-primary brand-hover mx-2">artex</a>
 
-            <ul class="menu">
-                <a [routerLink]="RoutePaths.files.toUrl()"
-                   [routerLinkActive]="'current'">
-                    <li class="item">
-                        <div class="container-fluid">Documents</div>
-                    </li>
-                </a>
-
-                <a [routerLink]="RoutePaths.settings.toUrl()"
-                   [routerLinkActive]="'current'">
-                    <li class="item">
-                        <div class="container-fluid">Settings</div>
-                    </li>
-                </a>
+            <ul class="navigation-bar-menu">
+                <li class="menu-item sidebar-mobile-toggle" data-toggle="#artex-mobile">
+                    <a class="item-link"><i class="material-icons">clear</i></a>
+                </li>
             </ul>
         </div>
+    </nav>
+
+    <ul class="sidebar-menu">
+        <li class="menu-item">
+            <a class="item-link">Log out</a>
+        </li>
+
+        <li class="menu-item">
+            <a class="item-link">Support</a>
+        </li>
+
+        <li class="menu-item">
+            <a class="item-link">Billing</a>
+        </li>
+
+        <li class="menu-item">
+            <img class="profile-picture profile-picture-small mr-2" src="https://static.artex.dev/artex.svg">
+            <a class="item-link">RubbaBoy</a>
+        </li>
+    </ul>
+</nav>
+
+<div class="row no-gutters">
+    <div class="col-md-2">
+        <nav class="sidebar d-none d-md-flex" id="billing-mobile">
+            <nav class="navigation-bar mb-2">
+                <div class="container-fluid">
+                    <ul class="navigation-bar-menu">
+                        <li class="menu-item">
+                            <a class="item-link">HolySheet</a>
+                        </li>
+                    </ul>
+
+                    <ul class="navigation-bar-menu d-md-none">
+                        <li class="menu-item sidebar-mobile-toggle" data-toggle="#billing-mobile">
+                            <a class="item-link">
+                                <material-icon icon="clear"></material-icon>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <ul class="sidebar-menu">
+                <li *ngFor="let nav of sidebarNav" class="menu-item" [ngClass]="getClasses(nav)" (click)="navigate(nav)">
+                    <material-icon icon="{{ nav.icon }}" class="mr-3" [class.text-primary]="nav == active"></material-icon>
+                    <a class="item-link">{{ nav.name }}</a>
+                </li>
+
+                <li class="menu-divide"></li>
+
+                <li class="menu-item">
+                    <material-icon icon="vpn_key" class="mr-3"></material-icon>
+                    <a class="item-link"
+                       [routerLink]="RoutePaths.settings.toUrl()"
+                       [routerLinkActive]="'current'">Settings</a>
+                </li>
+            </ul>
+        </nav>
     </div>
 
-    <div class="col-10">
+    <div class="col-md-10">
         <router-outlet [routes]="Routes.all"></router-outlet>
     </div>
 </div>
