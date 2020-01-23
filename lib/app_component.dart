@@ -4,6 +4,7 @@ import 'dart:html';
 import 'dart:js';
 
 import 'package:HolySheetWeb/src/auth_service.dart';
+import 'package:HolySheetWeb/src/context_service.dart';
 import 'package:HolySheetWeb/src/file_list/file_list_component.dart';
 import 'package:HolySheetWeb/src/file_service.dart';
 import 'package:HolySheetWeb/src/js.dart';
@@ -27,12 +28,18 @@ import 'package:js/js.dart';
     NgIf,
     NgClass,
   ],
-  providers: [ClassProvider(FileService), ClassProvider(SettingsService), ClassProvider(AuthService)],
+  providers: [
+    ClassProvider(FileService),
+    ClassProvider(SettingsService),
+    ClassProvider(AuthService),
+    ClassProvider(ContextService),
+  ],
   exports: [Routes, RoutePaths],
 )
-class AppComponent implements OnInit {
+class AppComponent implements OnInit, OnDestroy {
   final FileService fileService;
   final AuthService authService;
+  final ContextService contextService;
   final Router _router;
 
   NavListData active;
@@ -44,8 +51,9 @@ class AppComponent implements OnInit {
     NavListData('Trash', 'delete', RoutePaths.trash)
   ];
 
-  AppComponent(this.fileService, this.authService, this._router) {
-    active = sidebarNav.firstWhere((data) => data.isDefault, orElse: () => null);
+  AppComponent(this.fileService, this.authService, this.contextService, this._router) {
+    active =
+        sidebarNav.firstWhere((data) => data.isDefault, orElse: () => null);
     context['signInChange'] = (bool signedIn) {
       print('Signed in: $signedIn');
     };
@@ -65,10 +73,19 @@ class AppComponent implements OnInit {
     _router.navigate(navListData.route.toUrl());
   }
 
-  @override
-  Future<void> ngOnInit() async {}
-}
+  void mobileToggle(String selector) =>
+      document.querySelector(selector).classes.toggleAll(['d-none', 'sidebar-mobile']);
 
+  @override
+  void ngOnInit() {
+    contextService.init();
+  }
+
+  @override
+  void ngOnDestroy() {
+   contextService.destroy();
+  }
+}
 
 class NavListData {
   String name;

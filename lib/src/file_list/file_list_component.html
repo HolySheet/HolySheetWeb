@@ -1,10 +1,15 @@
 <nav class="navigation-bar raised">
     <div class="container-fluid">
         <ul class="navigation-bar-menu">
-            <li class="menu-item dropdown-toggle" data-toggle="#files-dropdown">
-                <a class="item-link">Folder</a>
-                <material-icon icon="arrow_drop_down"></material-icon>
-            </li>
+            <template ngFor let-elem [ngForOf]="pathElements">
+                <li *ngIf="!elem.icon" class="menu-item">
+                    <a class="item-link">{{ elem.text }}</a>
+                </li>
+
+                <li *ngIf="elem.icon" class="menu-item disabled p-0">
+                    <material-icon icon="keyboard_arrow_right"></material-icon>
+                </li>
+            </template>
         </ul>
 
         <ul class="navigation-bar-menu">
@@ -39,31 +44,17 @@
                 <material-icon icon="add"></material-icon>
             </li>
 
-            <li class="menu-item d-md-none dropdown-toggle" data-toggle="#actions-dropdown">
+            <li class="menu-item d-md-none contextmenu-toggle" id="actions-button">
                 <i class="material-icons">more_vert</i>
             </li>
         </ul>
     </div>
 </nav>
 
-<div class="dropdown raised" id="files-dropdown">
-    <ul class="dropdown-menu">
-        <li class="menu-item active active-primary">
-            <a class="item-link">Files</a>
-        </li>
-
-        <li class="menu-item">
-            <a class="item-link">Folder</a>
-        </li>
-
-        <li class="menu-item">
-            <a class="item-link">Folder</a>
-        </li>
-
-        <li class="menu-item disabled">
-            <a class="item-link">Folder</a>
-        </li>
-    </ul>
+<div class="dropdown raised">
+    <a class="item-link">Documents</a>
+    <material-icon icon="keyboard_arrow_right"></material-icon>
+    <a class="item-link">Other</a>
 </div>
 
 <div class="dropdown raised" id="actions-dropdown">
@@ -145,10 +136,10 @@
     </ul>
 </div>
 
-<div class="container-fluid contextmenu-toggle" data-toggle="#files-contextmenu">
+<div class="container-fluid contextmenu-toggle" data-contextName="files">
     <div class="row row-small pt-3" id="files">
         <div class="col-3" *ngFor="let file of files">
-            <div class="card contextmenu-toggle" data-toggle="#file-contextmenu" [class.selected]="isSelected(file)" (click)="clickFile(file)">
+            <div class="card contextmenu-toggle" data-contextName="file" [class.selected]="isSelected(file)" (click)="clickFile(file)">
                 <h2>{{ file.name }}</h2>
 
                 <p>{{ file.id }}</p>

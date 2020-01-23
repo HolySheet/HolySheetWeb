@@ -3,13 +3,13 @@
         <a class="brand brand-primary brand-hover mx-2">artex</a>
 
         <ul class="navigation-bar-menu d-flex d-md-none">
-            <li class="menu-item sidebar-mobile-toggle" data-toggle="#artex-mobile">
+            <li class="menu-item" (click)="mobileToggle('#artex-mobile')">
                 <a class="item-link">
                     <material-icon icon="account_circle"></material-icon>
                 </a>
             </li>
 
-            <li class="menu-item sidebar-mobile-toggle" data-toggle="#billing-mobile">
+            <li class="menu-item" (click)="mobileToggle('#billing-mobile')">
                 <a class="item-link">
                     <material-icon icon="menu"></material-icon>
                 </a>
@@ -43,7 +43,7 @@
             <a class="brand brand-primary brand-hover mx-2">artex</a>
 
             <ul class="navigation-bar-menu">
-                <li class="menu-item sidebar-mobile-toggle" data-toggle="#artex-mobile">
+                <li class="menu-item" (click)="mobileToggle('#artex-mobile')">
                     <a class="item-link"><i class="material-icons">clear</i></a>
                 </li>
             </ul>
@@ -82,7 +82,7 @@
                     </ul>
 
                     <ul class="navigation-bar-menu d-md-none">
-                        <li class="menu-item sidebar-mobile-toggle" data-toggle="#billing-mobile">
+                        <li class="menu-item" (click)="mobileToggle('#billing-mobile')">
                             <a class="item-link">
                                 <material-icon icon="clear"></material-icon>
                             </a>

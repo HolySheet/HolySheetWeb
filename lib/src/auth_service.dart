@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'dart:html';
 import 'dart:js';
-import 'dart:convert';
 
-import 'package:HolySheetWeb/src/request_objects.dart';
+import 'package:HolySheetWeb/src/js.dart';
 import 'package:HolySheetWeb/src/request_utils.dart';
 import 'package:HolySheetWeb/src/utility.dart';
 import 'package:angular/angular.dart';
-import 'package:HolySheetWeb/src/js.dart';
 
 @Injectable()
 class AuthService {
@@ -17,7 +15,7 @@ class AuthService {
       'auth2.currentUser.get'<JsObject>()('getAuthResponse')['access_token'];
 
   int get userId =>
-      toInt('auth2.currentUser.get'<JsObject>()('getBasicProfile')['Eea']);
+      toInt(('auth2.currentUser.get'<JsObject>()('getBasicProfile') ?? {'Eea': '-1'}) ['Eea']);
 
   BasicProfile _basicProfile;
 

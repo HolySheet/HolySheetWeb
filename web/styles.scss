@@ -18,6 +18,12 @@
     overflow-y: auto;
 }
 
+.context-display {
+    display: -webkit-box !important;
+    display: -ms-flexbox !important;
+    display: flex !important;
+}
+
 // End of Rubba's stuff
 
 
