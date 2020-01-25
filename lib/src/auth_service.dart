@@ -9,6 +9,8 @@ import 'package:angular/angular.dart';
 
 @Injectable()
 class AuthService {
+  static final emptyJS = JsObject.jsify({});
+
   bool get signedIn => 'auth2.isSignedIn.get'();
 
   String get accessToken =>
@@ -20,9 +22,13 @@ class AuthService {
   BasicProfile _basicProfile;
 
   BasicProfile get basicProfile {
+    if (!signedIn) {
+      return null;
+    }
+
     if (!(_basicProfile?.id == userId ?? false)) {
       _basicProfile = BasicProfile.fromJS(
-          'auth2.currentUser.get'<JsObject>()('getBasicProfile'));
+          'auth2.currentUser.get'<JsObject>()('getBasicProfile') ?? emptyJS);
     }
     return _basicProfile;
   }
@@ -35,12 +41,12 @@ class AuthService {
 
   Future<RequestResponse> makeAuthedRequest(String url,
           {String baseUrl = BASE_URL,
-          Map<String, String> query,
-          Map<String, String> requestHeaders}) async =>
+          Map<String, String> query = const {},
+          Map<String, String> requestHeaders = const {}}) async =>
       makeRequest(url,
           baseUrl: baseUrl,
-          query: query..addAll({'Authorization': accessToken}),
-          requestHeaders: requestHeaders);
+          query: query,
+          requestHeaders: {...requestHeaders, ...{'Authorization': accessToken}});
 }
 
 class BasicProfile {
@@ -55,7 +61,7 @@ class BasicProfile {
       this.imageUrl, this.email);
 
   BasicProfile.fromJS(JsObject json)
-      : id = toInt(json['Eea']),
+      : id = toInt(json['Eea'] ?? '0'),
         fullName = json['ig'],
         firstName = json['ofa'],
         lastName = json['wea'],

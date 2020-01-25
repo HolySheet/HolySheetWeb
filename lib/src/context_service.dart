@@ -11,14 +11,20 @@ import 'package:angular/angular.dart';
 class ContextService {
   final contextMenus = <Context>[];
 
-  StreamSubscription _docClickSub;
+  StreamSubscription _contextMenuSub;
+  StreamSubscription _clickSub;
 
   List<Context> get contextShowing =>
       contextMenus.where((context) => context.showing).toList();
 
+  // The ID of the file that has the context menu for it, if any
+  String _fileContextId;
+  String get fileContextId => _fileContextId;
+
   void init() {
-    _docClickSub = document.onContextMenu.listen((event) {
+    _contextMenuSub = document.onContextMenu.listen((event) {
       HtmlElement currElement = event.target;
+      _fileContextId = null;
       do {
         if (_activateContext(event, currElement)) {
           return;
@@ -28,7 +34,7 @@ class ContextService {
       } while (currElement != null);
     });
 
-    document.onClick.listen((event) {
+    _clickSub = document.onClick.listen((event) {
       final clicked = event.target as HtmlElement;
 
       var clickedOn = contextShowing.firstWhere(
@@ -125,6 +131,8 @@ class ContextService {
       return true;
     }
 
+    _fileContextId = target.getAttribute('data-id');
+
     var x = event.page.x;
     var y = event.page.y;
 
@@ -149,8 +157,15 @@ class ContextService {
     return true;
   }
 
+  void hideContext() {
+    for (var context in contextShowing) {
+      context.showing = false;
+    }
+  }
+
   void destroy() {
-    _docClickSub?.cancel();
+    _contextMenuSub?.cancel();
+    _clickSub?.cancel();
   }
 
   void registerContext(String name, String selector, [String buttonSelector]) {

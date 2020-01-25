@@ -1,7 +1,49 @@
+$primary-blue: #3884ff;
+
 .card {
     border: 1px solid transparent;
 }
 
 .selected {
-    border-color: #3884ff;
+    border-color: $primary-blue;
+}
+
+#upload-progress {
+    content: "";
+    height: 5px;
+    width: 0;
+    opacity: 0;
+    background-color: #3884ff;
+    display: block;
+    transition: width linear 250ms 100ms, opacity linear 500ms 750ms;
+
+    &.show {
+        opacity: 1;
+        transition: width linear 500ms 0ms, opacity linear 100ms;
+    }
+}
+
+.dropping::before {
+    border: $primary-blue dashed 5px;
+    border-radius: 3px;
+    content: '';
+    width: calc(100% - 20px);
+    height: calc(100% - 65px - 20px);
+    position: absolute;
+    margin: 10px;
+}
+
+#upload-text {
+    position: fixed;
+    text-align: center;
+    margin-right: 50%;
+    transform: translateX(-50%);
+    bottom: 25px;
+    right: 0;
+
+    font-size: 1.5em !important;
+
+    material-icon {
+        color: $primary-blue !important;
+    }
 }

@@ -30,8 +30,8 @@
             </li>
 
             <li class="menu-item">
-                <img class="profile-picture profile-picture-small mr-2" [attr.src]="authService.basicProfile.imageUrl">
-                <a class="item-link">{{ authService.basicProfile.fullName }}</a>
+                <img class="profile-picture profile-picture-small mr-2" [attr.src]="authService.basicProfile?.imageUrl">
+                <a class="item-link">{{ authService.basicProfile?.fullName }}</a>
             </li>
         </ul>
     </div>
@@ -64,8 +64,8 @@
         </li>
 
         <li class="menu-item">
-            <img class="profile-picture profile-picture-small mr-2" [attr.src]="authService.basicProfile.imageUrl">
-            <a class="item-link">{{ authService.basicProfile.fullName }}</a>
+            <img class="profile-picture profile-picture-small mr-2" [attr.src]="authService.basicProfile?.imageUrl">
+            <a class="item-link">{{ authService.basicProfile?.fullName }}</a>
         </li>
     </ul>
 </nav>
@@ -100,7 +100,7 @@
                 <li class="menu-divide"></li>
 
                 <li class="menu-item">
-                    <material-icon icon="vpn_key" class="mr-3"></material-icon>
+                    <material-icon icon="settings" class="mr-3"></material-icon>
                     <a class="item-link"
                        [routerLink]="RoutePaths.settings.toUrl()"
                        [routerLinkActive]="'current'">Settings</a>

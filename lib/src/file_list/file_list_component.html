@@ -18,29 +18,29 @@
                     Item{{ fileService.selected.length == 1 ? '' : 's' }} Selected</a>
             </li>
 
-            <li class="menu-item d-none d-md-flex">
+            <li class="menu-item d-none d-md-flex" (click)="navItemClick(NavAction.Clear)">
                 <material-icon icon="clear"></material-icon>
             </li>
 
-            <li class="menu-item d-none d-md-flex">
+            <li class="menu-item d-none d-md-flex" (click)="navItemClick(NavAction.Star)">
                 <material-icon icon="star"></material-icon>
             </li>
 
-            <li class="menu-item d-none d-md-flex">
+            <li class="menu-item d-none d-md-flex" (click)="navItemClick(NavAction.Download)">
                 <material-icon icon="save_alt"></material-icon>
             </li>
 
-            <li class="menu-item text-danger d-none d-md-flex">
+            <li class="menu-item text-danger d-none d-md-flex" (click)="navItemClick(NavAction.Delete)">
                 <material-icon icon="delete"></material-icon>
             </li>
 
             <li class="menu-divide d-none d-md-flex"></li>
 
-            <li class="menu-item d-none d-md-flex">
+            <li class="menu-item d-none d-md-flex" (click)="navItemClick(NavAction.NewFolder)">
                 <material-icon icon="create_new_folder"></material-icon>
             </li>
 
-            <li class="menu-item text-primary d-none d-md-flex">
+            <li class="menu-item text-primary d-none d-md-flex" (click)="navItemClick(NavAction.Upload)">
                 <material-icon icon="add"></material-icon>
             </li>
 
@@ -59,34 +59,34 @@
 
 <div class="dropdown raised" id="actions-dropdown">
     <ul class="dropdown-menu">
-        <li class="menu-item">
+        <li class="menu-item" (click)="navItemClick(NavAction.Clear)">
             <i class="material-icons mr-3">clear</i>
             <a class="item-link">Clear</a>
         </li>
 
-        <li class="menu-item">
+        <li class="menu-item" (click)="navItemClick(NavAction.Star)">
             <i class="material-icons mr-3">star</i>
             <a class="item-link">Star</a>
         </li>
 
-        <li class="menu-item">
+        <li class="menu-item" (click)="navItemClick(NavAction.Download)">
             <i class="material-icons mr-3">save_alt</i>
             <a class="item-link">Download</a>
         </li>
 
-        <li class="menu-item text-danger">
+        <li class="menu-item text-danger" (click)="navItemClick(NavAction.Delete)">
             <i class="material-icons mr-3">delete</i>
             <a class="item-link">Delete</a>
         </li>
 
         <li class="menu-divide"></li>
 
-        <li class="menu-item">
+        <li class="menu-item" (click)="navItemClick(NavAction.NewFolder)">
             <i class="material-icons mr-3">create_new_folder</i>
             <a class="item-link">Create new folder</a>
         </li>
 
-        <li class="menu-item text-primary">
+        <li class="menu-item text-primary" (click)="navItemClick(NavAction.Upload)">
             <i class="material-icons mr-3">add</i>
             <a class="item-link">Upload</a>
         </li>
@@ -95,27 +95,27 @@
 
 <div class="dropdown raised" id="file-contextmenu">
     <ul class="dropdown-menu">
-        <li class="menu-item">
+        <li class="menu-item" (click)="dropdownClick(DropdownActions.Select)">
             <i class="material-icons mr-3">check</i>
             <a class="item-link">Select</a>
         </li>
 
-        <li class="menu-item">
+        <li class="menu-item" (click)="dropdownClick(DropdownActions.Star)">
             <i class="material-icons mr-3">star</i>
             <a class="item-link">Star</a>
         </li>
 
-        <li class="menu-item">
+        <li class="menu-item" (click)="dropdownClick(DropdownActions.Rename)">
             <i class="material-icons mr-3">edit</i>
             <a class="item-link">Rename</a>
         </li>
 
-        <li class="menu-item">
+        <li class="menu-item" (click)="dropdownClick(DropdownActions.Download)">
             <i class="material-icons mr-3">save_alt</i>
             <a class="item-link">Download</a>
         </li>
 
-        <li class="menu-item text-danger">
+        <li class="menu-item text-danger" (click)="dropdownClick(DropdownActions.Delete)">
             <i class="material-icons mr-3">delete</i>
             <a class="item-link">Delete</a>
         </li>
@@ -124,26 +124,38 @@
 
 <div class="dropdown raised" id="files-contextmenu">
     <ul class="dropdown-menu">
-        <li class="menu-item">
+        <li class="menu-item" (click)="generalClick(GeneralActions.NewFolder)">
             <i class="material-icons mr-3">create_new_folder</i>
             <a class="item-link">Create new folder</a>
         </li>
 
-        <li class="menu-item text-primary">
+        <li class="menu-item text-primary" (click)="generalClick(GeneralActions.Upload)">
             <i class="material-icons mr-3">add</i>
             <a class="item-link">Upload</a>
         </li>
     </ul>
 </div>
 
-<div class="container-fluid contextmenu-toggle" data-contextName="files">
-    <div class="row row-small pt-3" id="files">
-        <div class="col-3" *ngFor="let file of files">
-            <div class="card contextmenu-toggle" data-contextName="file" [class.selected]="isSelected(file)" (click)="clickFile(file)">
-                <h2>{{ file.name }}</h2>
+<div id="drop-area">
+    <div id="upload-progress" [class.show]="uploading" [style.width.%]="uploadPercentage"></div>
+    <form id="drop-form" [class.dropping]="showingDrop" #form enctype="multipart/form-data">
+        <div id="upload-text" *ngIf="showingDrop">
+            <p>Upload</p>
+            <material-icon icon="cloud_upload"></material-icon>
+        </div>
 
-                <p>{{ file.id }}</p>
+        <input type="file" id="fileElem" #upload name="file">
+
+        <div class="container-fluid contextmenu-toggle" data-contextName="files">
+            <div class="row row-small pt-3" id="files">
+                <div class="col-3" *ngFor="let file of files">
+                    <div class="card file-card contextmenu-toggle" [attr.data-id]="file.id" data-contextName="file" [class.selected]="isSelected(file)" (click)="clickFile(file)">
+                        <h2>{{ file.name }}</h2>
+
+                        <p>{{ file.id }}</p>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    </form>
 </div>

@@ -9,7 +9,7 @@ class FileService {
 
   final AuthService authService;
 
-  List<FetchedFile> selected = [];
+  final List<FetchedFile> selected = [];
 
   FileService(this.authService);
 

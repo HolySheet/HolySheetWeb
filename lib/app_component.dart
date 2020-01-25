@@ -52,15 +52,17 @@ class AppComponent implements OnInit, OnDestroy {
   ];
 
   AppComponent(this.fileService, this.authService, this.contextService, this._router) {
+//    authService.loginUser();
     active =
         sidebarNav.firstWhere((data) => data.isDefault, orElse: () => null);
+
     context['signInChange'] = (bool signedIn) {
       print('Signed in: $signedIn');
     };
 
     context['userChanged'] = (user) => 'console.log'(user);
 
-    print('Hello ${authService.basicProfile.fullName}!!!!');
+    print('Hello ${authService?.basicProfile?.fullName}!');
   }
 
   Map<String, bool> getClasses(NavListData navListData) => {

@@ -2,6 +2,23 @@
 
 int toInt(String string) => string.toInt();
 
+int get millsTime => DateTime.now().millisecondsSinceEpoch;
+
 extension StringUtils on String {
   int toInt() => int.parse(this);
+}
+
+extension ListUtils<T> on List<T> {
+
+  /// If [element] is contained in the list, it will remove it and return false.
+  /// If it is not contained, it is added and returns true.
+  bool toggle(T element) {
+    if (contains(element)) {
+      remove(element);
+      return false;
+    } else {
+      add(element);
+      return true;
+    }
+  }
 }
