@@ -47,3 +47,12 @@ $primary-blue: #3884ff;
         color: $primary-blue !important;
     }
 }
+
+#drop-area {
+    height: calc(100% - 65px);
+    padding: 10px;
+}
+
+#fileElem {
+    display: none;
+}

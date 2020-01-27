@@ -6,7 +6,6 @@ import 'package:angular/core.dart';
 
 @Injectable()
 class FileService {
-
   final AuthService authService;
 
   final List<FetchedFile> selected = [];
@@ -19,18 +18,20 @@ class FileService {
       return [];
     }
 
-    return authService.makeAuthedRequest('/list', query: {'path': ''}).then((response) {
-    if (!response.success) {
-      print('List request not successful. Code ${response.status}\n${response.json}');
-      return [];
-    }
+    return authService
+        .makeAuthedRequest('/list', query: {'path': ''}).then((response) {
+      if (!response.success) {
+        print(
+            'List request not successful. Code ${response.status}\n${response.json}');
+        return [];
+      }
 
-    print(response.json);
-
-      return List.of(response.json).map((item) {
-        return FetchedFile.fromJson(item);
-    }).toList();
-  });
+      print(response.json);
+      return List.of(response.json)
+          .map((item) => FetchedFile.fromJson(item))
+          .toList()
+            ..add(FetchedFile('Movies', '', '', true, 0, 0, 0, true, '', ''));
+    });
   }
 
   Future<void> deleteSelected() async => deleteFiles(selected);

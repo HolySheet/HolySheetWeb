@@ -136,7 +136,7 @@
     </ul>
 </div>
 
-<div id="drop-area">
+<div id="drop-area" class="contextmenu-toggle" data-contextName="files">
     <div id="upload-progress" [class.show]="uploading" [style.width.%]="uploadPercentage"></div>
     <form id="drop-form" [class.dropping]="showingDrop" #form enctype="multipart/form-data">
         <div id="upload-text" *ngIf="showingDrop">
@@ -146,6 +146,7 @@
 
         <input type="file" id="fileElem" #upload name="file">
 
+        <!--
         <div class="container-fluid contextmenu-toggle" data-contextName="files">
             <div class="row row-small pt-3" id="files">
                 <div class="col-3" *ngFor="let file of files">
@@ -154,6 +155,64 @@
 
                         <p>{{ file.id }}</p>
                     </div>
+                </div>
+            </div>
+        </div>
+        -->
+
+        <div class="row row-small ml-0 mr-0" *ngFor="let file of folders">
+            <div class="col-md-4 col-lg-3 mb-3">
+                <div class="card card-border card-hover raised contextmenu-toggle" [attr.data-id]="file.id" data-contextName="file" [class.card-primary]="isSelected(file)" (click)="clickFile(file)">
+                    <div class="card-header">
+                        <material-icon class="mr-3" icon="folder"></material-icon>
+                        <!--                            <i class="material-icons mr-3">folder</i>-->
+
+                        <h2 class="header-title header-title-large header-title-nowrap">{{ file.name }}</h2>
+
+                        <ul class="header-menu d-flex d-md-none">
+                            <li class="menu-item dropdown-toggle" data-dropdown="#folder-menu">
+                                <material-icon icon="more_vert"></material-icon>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row row-small ml-0 mr-0">
+            <div class="col-md-4 col-lg-3 mb-3" *ngFor="let file of files">
+                <div class="card card-border raised contextmenu-toggle" [attr.data-id]="file.id" data-contextName="file" [class.card-primary]="isSelected(file)" (click)="clickFile(file)">
+                    <div class="card-header mb-3">
+                        <material-icon class="mr-3" icon="attachment"></material-icon>
+
+                        <h2 class="header-title header-title-large header-title-nowrap">{{ file.name }}</h2>
+
+                        <ul class="header-menu d-flex d-md-none">
+                            <li class="menu-item dropdown-toggle" data-dropdown="#file-menu">
+                                <material-icon icon="more_vert"></material-icon>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <ul class="card-menu">
+                        <li class="menu-item">
+                            <p class="item-index">Size</p>
+
+                            <p class="item-value">{{ fileSize(file.size) }}</p>
+                        </li>
+
+                        <li class="menu-item">
+                            <p class="item-index">Modified</p>
+
+                            <p class="item-value">{{ formatTime(file.date) }}</p>
+                        </li>
+
+                        <li class="menu-item">
+                            <p class="item-index">Created</p>
+
+                            <p class="item-value">{{ formatDate(file.date) }}</p>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>

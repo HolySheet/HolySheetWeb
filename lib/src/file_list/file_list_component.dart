@@ -9,6 +9,8 @@ import 'package:HolySheetWeb/src/file_service.dart';
 import 'package:angular/angular.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
 import 'package:angular_router/angular_router.dart';
+import 'package:filesize/filesize.dart';
+import 'package:intl/intl.dart';
 
 import '../request_objects.dart';
 import '../utility.dart';
@@ -44,7 +46,13 @@ class FileListComponent implements OnInit, OnDestroy {
   @Input()
   int uploadPercentage = 0;
 
+  set allFiles(List<FetchedFile> files) {
+    files.forEach((file) => (file.folder ? folders : this.files).add(file));
+  }
+
   List<FetchedFile> files = [];
+  List<FetchedFile> folders = [];
+//  List<>
 
   // The currently browsing path
   String path = '';
@@ -67,7 +75,7 @@ class FileListComponent implements OnInit, OnDestroy {
 
   @override
   void ngOnInit() {
-    fileService.fetchFiles().then((fetched) => files = fetched);
+    fileService.fetchFiles().then((fetched) => allFiles = fetched);
 
     contextService.registerContext('files', '#files-contextmenu');
     contextService.registerContext('file', '#file-contextmenu');
@@ -183,6 +191,24 @@ class FileListComponent implements OnInit, OnDestroy {
       }
     }
   }
+
+  List<FetchedFile> getFiles([bool folders = false]) =>
+    files.where((file) => file.folder == folders).toList();
+
+  String formatDate(int date) {
+    var dateTime = DateTime.fromMillisecondsSinceEpoch(date);
+//    var format = DateFormat.yMd().add_jm();
+    var format = DateFormat.yMd();
+    return format.format(dateTime);
+  }
+
+  String formatTime(int date) {
+    var dateTime = DateTime.fromMillisecondsSinceEpoch(date);
+    var format = DateFormat.jm();
+    return format.format(dateTime);
+  }
+
+  String fileSize(int size) => filesize(size);
 
   bool isSelected(FetchedFile file) => fileService.selected.contains(file);
 
