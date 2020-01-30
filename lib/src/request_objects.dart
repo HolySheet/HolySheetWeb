@@ -26,4 +26,20 @@ class FetchedFile {
         selfOwned = json['selfOwned'],
         owner = json['owner'],
         driveLink = json['driveLink'];
+
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is FetchedFile &&
+          runtimeType == other.runtimeType &&
+          id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
+
+  @override
+  String toString() {
+    return 'FetchedFile{name: $name, id: $id, path: $path, folder: $folder, sheets: $sheets, size: $size, date: $date, selfOwned: $selfOwned, owner: $owner, driveLink: $driveLink}';
+  }
 }

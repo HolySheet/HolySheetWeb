@@ -101,6 +101,8 @@ class ContextService {
     } else {
       dropdown.style.left = '${left}px';
     }
+
+    context.showing = true;
   }
 
   bool _activateContext(MouseEvent event, HtmlElement target) {
@@ -154,6 +156,9 @@ class ContextService {
       contextNode.style.left = '${x}px';
     }
 
+    context.showing = true;
+    context.onShowContext?.call(_fileContextId);
+
     return true;
   }
 
@@ -168,12 +173,12 @@ class ContextService {
     _clickSub?.cancel();
   }
 
-  void registerContext(String name, String selector, [String buttonSelector]) {
+  void registerContext(String name, String selector, {String buttonSelector, Function(String) onShowContext}) {
     if (getContextMenu(name) != null) {
       return;
     }
 
-    contextMenus.add(Context(name, selector, buttonSelector));
+    contextMenus.add(Context(name, selector, buttonSelector, onShowContext));
   }
 
   Context getContextMenu(String name) => name == null
@@ -186,6 +191,7 @@ class Context {
   final String name;
   final String contextSelector;
   final String buttonSelector;
+  Function(String) onShowContext; // Gives the file ID
 
   bool _showing = false;
 
@@ -203,5 +209,5 @@ class Context {
     }
   }
 
-  Context(this.name, this.contextSelector, this.buttonSelector);
+  Context(this.name, this.contextSelector, this.buttonSelector, [this.onShowContext]);
 }

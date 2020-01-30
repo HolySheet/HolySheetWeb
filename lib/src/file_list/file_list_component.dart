@@ -46,12 +46,10 @@ class FileListComponent implements OnInit, OnDestroy {
   @Input()
   int uploadPercentage = 0;
 
-  set allFiles(List<FetchedFile> files) {
-    files.forEach((file) => (file.folder ? folders : this.files).add(file));
-  }
+  List<FetchedFile> get files => fileService.files;
 
-  List<FetchedFile> files = [];
-  List<FetchedFile> folders = [];
+  List<FetchedFile> get folders => fileService.folders;
+
 //  List<>
 
   // The currently browsing path
@@ -75,12 +73,22 @@ class FileListComponent implements OnInit, OnDestroy {
 
   @override
   void ngOnInit() {
-    fileService.fetchFiles().then((fetched) => allFiles = fetched);
+    fileService.fetchFiles();
 
     contextService.registerContext('files', '#files-contextmenu');
-    contextService.registerContext('file', '#file-contextmenu');
-    contextService.registerContext(
-        'actions', '#actions-dropdown', '#actions-button');
+    contextService.registerContext('file', '#file-contextmenu',
+        onShowContext: (fileID) {
+      final clickedFile =
+          files.firstWhere((file) => file.id == fileID, orElse: () => null);
+
+      if (!fileService.selected.contains(clickedFile)) {
+        fileService.selected
+          ..clear()
+          ..add(clickedFile);
+      }
+    });
+    contextService.registerContext('actions', '#actions-dropdown',
+        buttonSelector: '#actions-button');
 
     Timer waiting;
 
@@ -121,7 +129,9 @@ class FileListComponent implements OnInit, OnDestroy {
 
   void uploadFiles(File file) {
     final request = HttpRequest();
-    request.open('POST', 'http://localhost:8090/upload?t=${Random().nextInt(99999999)}', async: true);
+    request.open(
+        'POST', 'http://localhost:8090/upload?t=${Random().nextInt(99999999)}',
+        async: true);
     request.setRequestHeader('Authorization', authService.accessToken);
 
     // Percentage bar logic:
@@ -148,6 +158,27 @@ class FileListComponent implements OnInit, OnDestroy {
 
       var ws = WebSocket(
           'ws://localhost:8090/websocket?processingToken=$processingToken');
+      ws.onClose.listen((event) {
+        final code = event.code;
+        final reason = event.reason;
+
+        if (code == 1000 && reason == 'Success') {
+          print('Successful listing, refreshing listings');
+
+          fileService.fetchFiles();
+
+          if (uploading) {
+            uploading = false;
+            Timer(Duration(seconds: 1), () => uploadPercentage = 0);
+          }
+        } else if (code == 1011) {
+          print('The upload status socket has closed with an error:');
+          print(reason);
+        } else {
+          print('Unknown close response "$reason" with code $code');
+        }
+      });
+
       ws.onMessage.listen((event) {
         // 0-1 percentage
         final percentage = double.tryParse(event.data);
@@ -164,17 +195,10 @@ class FileListComponent implements OnInit, OnDestroy {
           uploading = false;
           Timer(Duration(seconds: 1), () => uploadPercentage = 0);
         }
-      }, onDone: () {
-        print('Done websocket!');
-        if (uploading) {
-          uploading = false;
-          Timer(Duration(seconds: 1), () => uploadPercentage = 0);
-        }
       });
     });
 
-    request.send(FormData()
-      ..set('file', file));
+    request.send(FormData()..set('file', file));
   }
 
   void clickFile(FetchedFile file) {
@@ -193,7 +217,7 @@ class FileListComponent implements OnInit, OnDestroy {
   }
 
   List<FetchedFile> getFiles([bool folders = false]) =>
-    files.where((file) => file.folder == folders).toList();
+      files.where((file) => file.folder == folders).toList();
 
   String formatDate(int date) {
     var dateTime = DateTime.fromMillisecondsSinceEpoch(date);
@@ -217,19 +241,21 @@ class FileListComponent implements OnInit, OnDestroy {
 
     switch (action) {
       case DropdownActions.Select:
-        fileService.selected.add(contextFile);
+        if (!fileService.selected.contains(contextFile)) {
+          fileService.selected.add(contextFile);
+        }
         break;
       case DropdownActions.Star:
-        print('Star ${contextService.fileContextId}');
+        star();
         break;
       case DropdownActions.Rename:
-        print('Rename ${contextService.fileContextId}');
+        rename();
         break;
       case DropdownActions.Download:
-        print('Download ${contextService.fileContextId}');
+        download();
         break;
       case DropdownActions.Delete:
-        print('Delete ${contextService.fileContextId}');
+        fileService.deleteSelected();
         break;
     }
   }
@@ -255,13 +281,13 @@ class FileListComponent implements OnInit, OnDestroy {
         fileService.selected.clear();
         break;
       case NavAction.Star:
-        print('Star');
+        star();
         break;
       case NavAction.Download:
-        print('Download');
+        download();
         break;
       case NavAction.Delete:
-        print('Delete');
+        fileService.deleteSelected();
         break;
       case NavAction.NewFolder:
         createFolder();
@@ -270,6 +296,18 @@ class FileListComponent implements OnInit, OnDestroy {
         uploadFile();
         break;
     }
+  }
+
+  void star() {
+    print('Star ${contextService.fileContextId}');
+  }
+
+  void rename() {
+    print('Rename ${contextService.fileContextId}');
+  }
+
+  void download() {
+    print('Download ${contextService.fileContextId}');
   }
 
   void createFolder() {

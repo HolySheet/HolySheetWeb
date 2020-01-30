@@ -21,4 +21,15 @@ extension ListUtils<T> on List<T> {
       return true;
     }
   }
+
+  /// Removes all of the given list from the current list.
+  List<T> removeAll(Iterable<T> items) {
+    final removed = <T>[];
+    for (var element in items) {
+      if (remove(element)) {
+        removed.add(element);
+      }
+    }
+    return removed;
+  }
 }
