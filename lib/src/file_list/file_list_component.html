@@ -69,7 +69,7 @@
 
         <li class="menu-item" (click)="navItemClick(NavAction.Star)">
             <i class="material-icons mr-3">star</i>
-            <a class="item-link">Star</a>
+            <a class="item-link">{{ starMode ? 'Star' : 'Unstar' }}</a>
         </li>
 
         <li class="menu-item" (click)="navItemClick(NavAction.Download)">
@@ -105,7 +105,7 @@
 
         <li class="menu-item" (click)="dropdownClick(DropdownActions.Star)">
             <i class="material-icons mr-3">star</i>
-            <a class="item-link">Star</a>
+            <a class="item-link">{{ starMode ? 'Star' : 'Unstar' }}</a>
         </li>
 
         <li *ngIf="fileService.selected.length == 1" class="menu-item" (click)="dropdownClick(DropdownActions.Rename)">
@@ -180,6 +180,8 @@
                                 <material-icon icon="more_vert"></material-icon>
                             </li>
                         </ul>
+
+                        <material-icon icon="star" class="star" *ngIf="file.starred"></material-icon>
                     </div>
 
                     <ul class="card-menu">

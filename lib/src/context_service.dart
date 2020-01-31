@@ -174,9 +174,7 @@ class ContextService {
   }
 
   void registerContext(String name, String selector, {String buttonSelector, Function(String) onShowContext}) {
-    if (getContextMenu(name) != null) {
-      return;
-    }
+    contextMenus.removeWhere((context) => context.name == name);
 
     contextMenus.add(Context(name, selector, buttonSelector, onShowContext));
   }

@@ -19,7 +19,6 @@ import '../utility.dart';
     selector: 'file-list',
     styleUrls: ['file_list_component.css'],
     templateUrl: 'file_list_component.html',
-//    changeDetection: ChangeDetectionStrategy.OnPush,
     directives: [
       MaterialIconComponent,
       NgClass,
@@ -27,7 +26,7 @@ import '../utility.dart';
       NgIf,
     ],
     exports: [NavAction, GeneralActions, DropdownActions])
-class FileListComponent implements OnInit, OnDestroy {
+class FileListComponent implements OnInit, OnDestroy, OnActivate {
   final AuthService authService;
   final FileService fileService;
   final ContextService contextService;
@@ -43,6 +42,13 @@ class FileListComponent implements OnInit, OnDestroy {
 
   bool uploading = false;
 
+  // true - "Star"
+  // false - "Unstar"
+  //
+  // true when at least one selected is unstarred
+  @Input()
+  bool starMode = true;
+
   @Input()
   int uploadPercentage = 0;
 
@@ -50,10 +56,10 @@ class FileListComponent implements OnInit, OnDestroy {
 
   List<FetchedFile> get folders => fileService.folders;
 
-//  List<>
-
   // The currently browsing path
   String path = '';
+
+  ListType listType = ListType.Default;
 
   List<PathElement> get pathElements => 'Documents/$path'
       .split('/')
@@ -63,18 +69,17 @@ class FileListComponent implements OnInit, OnDestroy {
         ..removeLast();
 
   FileListComponent(
-      this.authService, this.fileService, this.contextService, this.router) {
-    final curr = router.current;
-    print('Now at $curr params: ${curr?.routePath?.additionalData ?? {}}');
+      this.authService, this.fileService, this.contextService, this.router);
 
-    print('path = "$path"');
-    print(pathElements);
+  @override
+  void onActivate(RouterState previous, RouterState current) {
+    listType = current.routePath.additionalData as ListType;
+
+    fileService.fetchFiles(listType);
   }
 
   @override
   void ngOnInit() {
-    fileService.fetchFiles();
-
     contextService.registerContext('files', '#files-contextmenu');
     contextService.registerContext('file', '#file-contextmenu',
         onShowContext: (fileID) {
@@ -86,6 +91,8 @@ class FileListComponent implements OnInit, OnDestroy {
           ..clear()
           ..add(clickedFile);
       }
+
+      starMode = fileService.selected.any((file) => !file.starred);
     });
     contextService.registerContext('actions', '#actions-dropdown',
         buttonSelector: '#actions-button');
@@ -165,7 +172,7 @@ class FileListComponent implements OnInit, OnDestroy {
         if (code == 1000 && reason == 'Success') {
           print('Successful listing, refreshing listings');
 
-          fileService.fetchFiles();
+          fileService.fetchFiles(listType);
 
           if (uploading) {
             uploading = false;
@@ -246,7 +253,7 @@ class FileListComponent implements OnInit, OnDestroy {
         }
         break;
       case DropdownActions.Star:
-        star();
+        fileService.starSelected(starMode);
         break;
       case DropdownActions.Rename:
         rename();
@@ -281,7 +288,7 @@ class FileListComponent implements OnInit, OnDestroy {
         fileService.selected.clear();
         break;
       case NavAction.Star:
-        star();
+        fileService.starSelected(starMode);
         break;
       case NavAction.Download:
         download();
@@ -296,10 +303,6 @@ class FileListComponent implements OnInit, OnDestroy {
         uploadFile();
         break;
     }
-  }
-
-  void star() {
-    print('Star ${contextService.fileContextId}');
   }
 
   void rename() {
