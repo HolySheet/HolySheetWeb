@@ -3,14 +3,14 @@ import 'dart:convert';
 import 'dart:html';
 import 'dart:js';
 
-import 'package:HolySheetWeb/src/auth_service.dart';
-import 'package:HolySheetWeb/src/context_service.dart';
+import 'package:HolySheetWeb/src/services/auth_service.dart';
+import 'package:HolySheetWeb/src/services/context_service.dart';
 import 'package:HolySheetWeb/src/file_list/file_list_component.dart';
-import 'package:HolySheetWeb/src/file_service.dart';
+import 'package:HolySheetWeb/src/services/file_service.dart';
 import 'package:HolySheetWeb/src/js.dart';
 import 'package:HolySheetWeb/src/request_utils.dart';
 import 'package:HolySheetWeb/src/routes.dart';
-import 'package:HolySheetWeb/src/settings_service.dart';
+import 'package:HolySheetWeb/src/services/settings_service.dart';
 import 'package:angular/angular.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
 import 'package:angular_router/angular_router.dart';
@@ -46,7 +46,10 @@ class AppComponent implements OnInit, OnDestroy {
 
   NavListData active;
 
+  bool showNavigation = false;
+
   Map<String, bool> activeClasses = {};
+  final settingsNav = NavListData('Settings', '', RoutePaths.settings);
   final sidebarNav = [
     NavListData('Files', 'folder', RoutePaths.files),
     NavListData('Starred', 'star', RoutePaths.starred),
@@ -65,11 +68,24 @@ class AppComponent implements OnInit, OnDestroy {
     context['userChanged'] = (user) => 'console.log'(user);
 
     print('Hello ${authService?.basicProfile?.fullName}!');
+
+    _router.onRouteActivated.listen((state) {
+      var shit = [settingsNav, ...sidebarNav].firstWhere((data) => data.route.path == state.routePath.path, orElse: () => null);
+      if (showNavigation = shit != null) {
+        active = shit;
+      }
+    });
   }
 
+  void login() => authService.loginUser();
+
+  void logout() => authService.logoutUser();
+
+  void home() => _router.navigate(RoutePaths.home.path);
+
   Map<String, bool> getClasses(NavListData navListData) => {
-        'active': navListData == active,
-        'active-primary': navListData == active,
+        'is-active': navListData == active,
+        'menu-item-primary': navListData == active,
       };
 
   void navigate(NavListData navListData) {

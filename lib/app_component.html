@@ -1,6 +1,6 @@
 <nav class="navigation-bar">
     <div class="container-fluid">
-        <a class="brand brand-primary brand-hover mx-2">artex</a>
+        <a class="brand brand-primary brand-hover mx-2" (click)="home()">artex</a>
 
         <ul class="navigation-bar-menu d-flex d-md-none">
             <li class="menu-item" (click)="mobileToggle('#artex-mobile')">
@@ -16,28 +16,36 @@
             </li>
         </ul>
 
-        <ul class="navigation-bar-menu d-none d-md-flex">
-            <li class="menu-item">
-                <a class="item-link">Log out</a>
-            </li>
+        <ul class="navigation-bar-menu d-none d-md-flex" *ngIf="">
+            <template [ngIf]="authService.signedIn">
+                <li class="menu-item">
+                    <a class="item-link" (click)="logout()">Log out</a>
+                </li>
 
-            <li class="menu-item">
-                <a class="item-link">Support</a>
-            </li>
+                <li class="menu-item">
+                    <a class="item-link">Support</a>
+                </li>
 
-            <li class="menu-item">
-                <a class="item-link">Billing</a>
-            </li>
+                <li class="menu-item">
+                    <a class="item-link">Billing</a>
+                </li>
 
-            <li class="menu-item">
-                <img class="profile-picture profile-picture-small mr-2" [attr.src]="authService.basicProfile?.imageUrl">
-                <a class="item-link">{{ authService.basicProfile?.fullName }}</a>
-            </li>
+                <li class="menu-item">
+                    <img class="profile-picture profile-picture-small mr-2" [attr.src]="authService.basicProfile?.imageUrl">
+                    <a class="item-link">{{ authService.basicProfile?.fullName }}</a>
+                </li>
+            </template>
+
+            <template [ngIf]="!authService.signedIn">
+                <li class="menu-item">
+                    <a class="item-link" (click)="login()">Log in</a>
+                </li>
+            </template>
         </ul>
     </div>
 </nav>
 
-<nav class="sidebar d-none" id="artex-mobile">
+<nav class="sidebar d-none" id="artex-mobile" *ngIf="showNavigation">
     <nav class="navigation-bar mb-2">
         <div class="container-fluid">
             <a class="brand brand-primary brand-hover mx-2">artex</a>
@@ -71,7 +79,7 @@
 </nav>
 
 <div class="row no-gutters">
-    <div class="col-md-2">
+    <div class="col-md-2" *ngIf="showNavigation">
         <nav class="sidebar d-none d-md-flex" id="billing-mobile">
             <nav class="navigation-bar mb-2">
                 <div class="container-fluid">
@@ -92,24 +100,22 @@
             </nav>
 
             <ul class="sidebar-menu">
-                <li *ngFor="let nav of sidebarNav" class="menu-item" [ngClass]="getClasses(nav)" (click)="navigate(nav)">
+                <li *ngFor="let nav of sidebarNav" class="menu-item menu-item-primary" [class.is-active]="nav == active" (click)="navigate(nav)">
                     <material-icon icon="{{ nav.icon }}" class="mr-3" [class.text-primary]="nav == active"></material-icon>
-                    <a class="item-link">{{ nav.name }}</a>
+                    <a class="item-link" [class.current]="nav == active">{{ nav.name }}</a>
                 </li>
 
                 <li class="menu-divide"></li>
 
-                <li class="menu-item">
+                <li class="menu-item menu-item-primary" [class.is-active]="settingsNav == active" (click)="navigate(settingsNav)">
                     <material-icon icon="settings" class="mr-3"></material-icon>
-                    <a class="item-link"
-                       [routerLink]="RoutePaths.settings.toUrl()"
-                       [routerLinkActive]="'current'">Settings</a>
+                    <a class="item-link" [class.current]="settingsNav == active">Settings</a>
                 </li>
             </ul>
         </nav>
     </div>
 
-    <div class="col-md-10">
+    <div [ngClass]="showNavigation ? 'col-md-10' : 'col-md-12'">
         <router-outlet [routes]="Routes.all"></router-outlet>
     </div>
 </div>

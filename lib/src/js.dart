@@ -4,7 +4,6 @@ T js<T>(String methodGet, [List args]) {
   var access = getMethodAccess(methodGet);
   final ret = access.key.callMethod(access.value, args);
   if (T is JsObject) {
-    print('returning JsObject');
     return access.key as T;
   }
   return ret;

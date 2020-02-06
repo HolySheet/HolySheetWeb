@@ -2,10 +2,16 @@
 import 'package:HolySheetWeb/src/file_list/file_list_component.dart';
 import 'package:angular_router/angular_router.dart';
 
+import 'home/home_component.template.dart' as home_component;
 import 'file_list/file_list_component.template.dart' as file_list_component;
 import 'settings/settings_component.template.dart' as settings_component;
 
 class Routes {
+  static final home = RouteDefinition(
+    routePath: RoutePaths.home,
+    component: home_component.HomeComponentNgFactory,
+  );
+
   static final files = RouteDefinition(
     routePath: RoutePaths.files,
     additionalData: ListType.Default,
@@ -29,11 +35,12 @@ class Routes {
     component: settings_component.SettingsComponentNgFactory,
   );
 
-  static final all = <RouteDefinition>[files, starred, trash, settings];
+  static final all = <RouteDefinition>[home, files, starred, trash, settings];
 }
 
 class RoutePaths {
-  static final files = RoutePath(path: 'files', useAsDefault: true);
+  static final home = RoutePath(path: 'home', useAsDefault: true);
+  static final files = RoutePath(path: 'files');
   static final starred = RoutePath(path: 'starred');
   static final trash = RoutePath(path: 'trash');
   static final settings = RoutePath(path: 'settings');

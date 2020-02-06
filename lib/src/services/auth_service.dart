@@ -3,7 +3,6 @@ import 'dart:html';
 import 'dart:js';
 
 import 'package:HolySheetWeb/src/js.dart';
-import 'package:HolySheetWeb/src/request_utils.dart';
 import 'package:HolySheetWeb/src/utility.dart';
 import 'package:angular/angular.dart';
 
@@ -11,6 +10,7 @@ import 'package:angular/angular.dart';
 class AuthService {
   static final emptyJS = JsObject.jsify({});
 
+  @Input()
   bool get signedIn => 'auth2.isSignedIn.get'();
 
   String get accessToken =>
@@ -33,11 +33,9 @@ class AuthService {
     return _basicProfile;
   }
 
-  /// Logs in a user
-  void loginUser() => 'auth2.grantOfflineAccess'<JsObject>()(
-      'then',
-      (authResult) => HttpRequest.getString(
-          'http://localhost:8090/callback?code=${authResult['code']}'));
+  void loginUser() => 'auth2.grantOfflineAccess'();
+
+  void logoutUser() => 'auth2.signOut'();
 }
 
 class BasicProfile {

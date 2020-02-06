@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'dart:html';
 import 'dart:math';
 
-import 'package:HolySheetWeb/src/auth_service.dart';
-import 'package:HolySheetWeb/src/context_service.dart';
-import 'package:HolySheetWeb/src/file_service.dart';
+import 'package:HolySheetWeb/src/services/auth_service.dart';
+import 'package:HolySheetWeb/src/services/context_service.dart';
+import 'package:HolySheetWeb/src/services/file_service.dart';
 import 'package:angular/angular.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
 import 'package:angular_router/angular_router.dart';

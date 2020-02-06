@@ -55,7 +55,7 @@ class ContextService {
           .firstWhere(
               (context) => document
                   .querySelector(context.buttonSelector)
-                  .contains(clicked),
+                  ?.contains(clicked),
               orElse: () => null);
 
       if (clickedButton != null) {

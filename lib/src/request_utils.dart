@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 
-import 'package:HolySheetWeb/src/auth_service.dart';
+import 'package:HolySheetWeb/src/services/auth_service.dart';
 import 'package:HolySheetWeb/src/request_objects.dart';
 import 'package:angular/angular.dart';
 
