@@ -35,6 +35,10 @@
                     <material-icon icon="delete"></material-icon>
                 </li>
 
+                <li class="menu-item text-primary d-none d-md-flex" *ngIf="showRestore" (click)="navItemClick(NavAction.Restore)">
+                    <material-icon icon="restore_from_trash"></material-icon>
+                </li>
+
                 <li class="menu-divide d-none d-md-flex"></li>
             </template>
 
@@ -82,6 +86,11 @@
             <a class="item-link">Delete</a>
         </li>
 
+        <li class="menu-item text-primary" *ngIf="showRestore" (click)="navItemClick(NavAction.Restore)">
+            <i class="material-icons mr-3">restore_from_trash</i>
+            <a class="item-link">Restore</a>
+        </li>
+
         <li class="menu-divide"></li>
 
         <li class="menu-item" (click)="navItemClick(NavAction.NewFolder)">
@@ -121,6 +130,11 @@
         <li class="menu-item text-danger" (click)="dropdownClick(DropdownActions.Delete)">
             <i class="material-icons mr-3">delete</i>
             <a class="item-link">Delete</a>
+        </li>
+
+        <li class="menu-item text-primary" *ngIf="showRestore" (click)="dropdownClick(DropdownActions.Restore)">
+            <i class="material-icons mr-3">restore_from_trash</i>
+            <a class="item-link">Restore</a>
         </li>
     </ul>
 </div>

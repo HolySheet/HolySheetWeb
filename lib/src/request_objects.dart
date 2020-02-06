@@ -12,9 +12,10 @@ class FetchedFile {
   String owner;
   String driveLink;
   bool starred;
+  bool trashed;
 
   FetchedFile(this.name, this.id, this.path, this.folder, this.sheets, this.size, this.date,
-      this.selfOwned, this.owner, this.driveLink, this.starred);
+      this.selfOwned, this.owner, this.driveLink, this.starred, this.trashed);
 
   FetchedFile.fromJson(Map<String, dynamic> json)
       : name = json['name'],
@@ -27,7 +28,8 @@ class FetchedFile {
         selfOwned = json['selfOwned'],
         owner = json['owner'],
         driveLink = json['driveLink'],
-        starred = json['starred'] ?? false;
+        starred = json['starred'] ?? false,
+        trashed = json['trashed'] ?? false;
 
 
   @override
@@ -42,6 +44,6 @@ class FetchedFile {
 
   @override
   String toString() {
-    return 'FetchedFile{name: $name, id: $id, path: $path, folder: $folder, sheets: $sheets, size: $size, date: $date, selfOwned: $selfOwned, owner: $owner, driveLink: $driveLink, starred: $starred}';
+    return 'FetchedFile{name: $name, id: $id, path: $path, folder: $folder, sheets: $sheets, size: $size, date: $date, selfOwned: $selfOwned, owner: $owner, driveLink: $driveLink, starred: $starred, trashed: $trashed}';
   }
 }

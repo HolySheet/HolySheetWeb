@@ -39,6 +39,7 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
 
   bool showingDrop = false;
   bool ctrlDown = false;
+  bool showRestore = false;
 
   bool uploading = false;
 
@@ -74,6 +75,9 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
   @override
   void onActivate(RouterState previous, RouterState current) {
     listType = current.routePath.additionalData as ListType;
+
+    fileService.selected.clear();
+    showRestore = listType == ListType.Trash;
 
     fileService.fetchFiles(listType);
   }
@@ -264,6 +268,9 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
       case DropdownActions.Delete:
         fileService.deleteSelected();
         break;
+      case DropdownActions.Restore:
+        fileService.restoreSelected();
+        break;
     }
   }
 
@@ -295,6 +302,9 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
         break;
       case NavAction.Delete:
         fileService.deleteSelected();
+        break;
+      case NavAction.Restore:
+        fileService.restoreSelected();
         break;
       case NavAction.NewFolder:
         createFolder();
@@ -330,13 +340,13 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
 }
 
 /// Icons in the top right of the navigation bar.
-enum NavAction { Clear, Star, Download, Delete, NewFolder, Upload }
+enum NavAction { Clear, Star, Download, Delete, Restore, NewFolder, Upload }
 
 /// General blank-space context menu items' actions.
 enum GeneralActions { NewFolder, Upload }
 
 /// Actions for file's context menus.
-enum DropdownActions { Select, Star, Rename, Download, Delete }
+enum DropdownActions { Select, Star, Rename, Download, Delete, Restore }
 
 enum ListType { Default, Starred, Trash }
 

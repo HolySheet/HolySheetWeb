@@ -38,15 +38,6 @@ class AuthService {
       'then',
       (authResult) => HttpRequest.getString(
           'http://localhost:8090/callback?code=${authResult['code']}'));
-
-  Future<RequestResponse> makeAuthedRequest(String url,
-          {String baseUrl = BASE_URL,
-          Map<String, String> query = const {},
-          Map<String, String> requestHeaders = const {}}) async =>
-      makeRequest(url,
-          baseUrl: baseUrl,
-          query: query,
-          requestHeaders: {...requestHeaders, ...{'Authorization': accessToken}});
 }
 
 class BasicProfile {

@@ -8,6 +8,7 @@ import 'package:HolySheetWeb/src/context_service.dart';
 import 'package:HolySheetWeb/src/file_list/file_list_component.dart';
 import 'package:HolySheetWeb/src/file_service.dart';
 import 'package:HolySheetWeb/src/js.dart';
+import 'package:HolySheetWeb/src/request_utils.dart';
 import 'package:HolySheetWeb/src/routes.dart';
 import 'package:HolySheetWeb/src/settings_service.dart';
 import 'package:angular/angular.dart';
@@ -31,6 +32,7 @@ import 'package:js/js.dart';
   providers: [
     ClassProvider(FileService),
     ClassProvider(SettingsService),
+    ClassProvider(RequestService),
     ClassProvider(AuthService),
     ClassProvider(ContextService),
   ],
