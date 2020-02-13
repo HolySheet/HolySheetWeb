@@ -15,9 +15,10 @@ jobs:
       - uses: actions/checkout@v1
       - name: Install dependensies
         run: pub get
-      - run: export PATH="$PATH":"$HOME/.pub-cache/bin" && pub global activate webdev
+      - run: pub global activate webdev
+      - run: export PATH="$PATH":"$HOME/.pub-cache/bin"
       - name: Building
-        run: webdev build --output web:build
+        run: pub global run webdev build --output web:build
       - name: Cleaning up
         run: rm -rf build/packages && rm -f build/.build.manifest build/.packages
       - name: FTP-Deploy-Action
