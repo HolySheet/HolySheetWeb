@@ -5,3 +5,8 @@ A web app for [HolySheet](https://github.com/RubbaBoy/HolySheet) to allow the st
 Currently the frontend:
 
 ![Frontend](https://rubbaboy.me/images/wyouxkq)
+
+
+## Experimental
+
+HolySheet is currently in the process of containerizing everything, to allow for an extremely scalable storage solution.

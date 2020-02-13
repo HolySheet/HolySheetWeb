@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:html';
 import 'dart:math';
 
+import 'package:HolySheetWeb/src/constants.dart';
 import 'package:HolySheetWeb/src/services/auth_service.dart';
 import 'package:HolySheetWeb/src/services/context_service.dart';
 import 'package:HolySheetWeb/src/services/file_service.dart';
@@ -69,8 +70,7 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
       .toList()
         ..removeLast();
 
-  FileListComponent(
-      this.authService, this.fileService, this.contextService, this.router);
+  FileListComponent(this.authService, this.fileService, this.contextService, this.router);
 
   @override
   void onActivate(RouterState previous, RouterState current) {
@@ -141,7 +141,7 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
   void uploadFiles(File file) {
     final request = HttpRequest();
     request.open(
-        'POST', 'http://localhost:8090/upload?t=${Random().nextInt(99999999)}',
+        'POST', 'http://$API_URL/upload?t=${Random().nextInt(99999999)}',
         async: true);
     request.setRequestHeader('Authorization', authService.accessToken);
 
@@ -168,7 +168,7 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
       print('processingToken = $processingToken');
 
       var ws = WebSocket(
-          'ws://localhost:8090/websocket?processingToken=$processingToken');
+          'ws://$API_URL/websocket?processingToken=$processingToken');
       ws.onClose.listen((event) {
         final code = event.code;
         final reason = event.reason;

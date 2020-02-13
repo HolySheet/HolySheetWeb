@@ -1,3 +1,3 @@
 <center><h1>HolySheet Home!</h1></center>
 <center><p>This is the homepage for HolySheet!</p></center>
-<center><a class="item-link" (click)="goToFiles()">Go to files</a></center>
+<center *ngIf="authService.signedIn"><a class="item-link" (click)="goToFiles()">Go to files</a></center>

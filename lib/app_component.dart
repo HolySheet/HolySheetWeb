@@ -79,7 +79,10 @@ class AppComponent implements OnInit, OnDestroy {
 
   void login() => authService.loginUser();
 
-  void logout() => authService.logoutUser();
+  void logout() {
+    authService.logoutUser();
+    home();
+  }
 
   void home() => _router.navigate(RoutePaths.home.path);
 

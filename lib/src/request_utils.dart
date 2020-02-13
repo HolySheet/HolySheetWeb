@@ -2,11 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 
+import 'package:HolySheetWeb/src/constants.dart';
 import 'package:HolySheetWeb/src/services/auth_service.dart';
 import 'package:HolySheetWeb/src/request_objects.dart';
 import 'package:angular/angular.dart';
-
-const BASE_URL = 'http://localhost:8090';
 
 @Injectable()
 class RequestService {
@@ -16,7 +15,7 @@ class RequestService {
 
   /// Makes a GET request with given headers. Returns JSON.
   Future<RequestResponse> makeRequest(String url,
-      {String baseUrl = BASE_URL,
+      {String baseUrl = 'http://$API_URL',
       Map<String, String> query,
       Map<String, String> requestHeaders,
       void onProgress(ProgressEvent e)}) {
@@ -33,7 +32,7 @@ class RequestService {
   }
 
   Future<RequestResponse> makeAuthedRequest(String url,
-          {String baseUrl = BASE_URL,
+          {String baseUrl = 'http://$API_URL',
           Map<String, dynamic> query = const {},
           Map<String, String> requestHeaders = const {}}) async =>
       makeRequest(url,
