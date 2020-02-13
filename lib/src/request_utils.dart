@@ -15,7 +15,7 @@ class RequestService {
 
   /// Makes a GET request with given headers. Returns JSON.
   Future<RequestResponse> makeRequest(String url,
-      {String baseUrl = 'http://$API_URL',
+      {String baseUrl = 'https://$API_URL',
       Map<String, String> query,
       Map<String, String> requestHeaders,
       void onProgress(ProgressEvent e)}) {
@@ -32,7 +32,7 @@ class RequestService {
   }
 
   Future<RequestResponse> makeAuthedRequest(String url,
-          {String baseUrl = 'http://$API_URL',
+          {String baseUrl = 'https://$API_URL',
           Map<String, dynamic> query = const {},
           Map<String, String> requestHeaders = const {}}) async =>
       makeRequest(url,

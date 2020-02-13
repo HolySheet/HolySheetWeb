@@ -141,7 +141,7 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
   void uploadFiles(File file) {
     final request = HttpRequest();
     request.open(
-        'POST', 'http://$API_URL/upload?t=${Random().nextInt(99999999)}',
+        'POST', 'https://$API_URL/upload?t=${Random().nextInt(99999999)}',
         async: true);
     request.setRequestHeader('Authorization', authService.accessToken);
 

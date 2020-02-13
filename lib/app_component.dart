@@ -67,11 +67,7 @@ class AppComponent implements OnInit, OnDestroy {
 
     context['userChanged'] = (user) => 'console.log'(user);
 
-    print('11111111');
-//    if (authService?.basicProfile != null) {
-//      'console.log'('Hello ${authService.basicProfile?.fullName ?? 'idk'}!');
-//    }
-    print('22222222');
+    'console.log'('Hello ${authService.basicProfile?.fullName}!');
 
     _router.onRouteActivated.listen((state) {
       var shit = [settingsNav, ...sidebarNav].firstWhere((data) => data.route.path == state.routePath.path, orElse: () => null);
