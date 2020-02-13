@@ -24,7 +24,7 @@ class FileService {
 
   Future<List<FetchedFile>> fetchFiles(
       [ListType type = ListType.Default, bool update = true]) async {
-    if (!authService.signedIn) {
+    if (!authService.checkSignedIn) {
       print('User not logged in');
       return [];
     }

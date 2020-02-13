@@ -62,12 +62,16 @@ class AppComponent implements OnInit, OnDestroy {
         sidebarNav.firstWhere((data) => data.isDefault, orElse: () => null);
 
     context['signInChange'] = (bool signedIn) {
-      print('Signed in: $signedIn');
+      print('Signed in: ${authService.signedIn = signedIn}');
     };
 
-    context['userChanged'] = (user) => 'console.log'(user);
+    context['userChanged'] = (user) {
+      authService.signedIn = user != null;
+      print('Changed user!!! $user');
+      'console.log'('Hello ${authService.basicProfile?.fullName ?? 'unknown'}!');
+    };
 
-    'console.log'('Hello ${authService.basicProfile?.fullName}!');
+    'console.log'('Hello ${authService.basicProfile?.fullName ?? 'unknown'}!');
 
     _router.onRouteActivated.listen((state) {
       var shit = [settingsNav, ...sidebarNav].firstWhere((data) => data.route.path == state.routePath.path, orElse: () => null);

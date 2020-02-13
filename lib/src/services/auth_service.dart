@@ -11,18 +11,23 @@ class AuthService {
   static final emptyJS = JsObject.jsify({});
 
   @Input()
-  bool get signedIn => context['auth2'] != null && 'auth2.isSignedIn.get'();
+  bool signedIn = false;
+
+  @Input()
+  bool get checkSignedIn =>
+      (signedIn = context['auth2'] != null && 'auth2.isSignedIn.get'());
 
   String get accessToken =>
       'auth2.currentUser.get'<JsObject>()('getAuthResponse')['access_token'];
 
   int get userId =>
-      toInt(('auth2.currentUser.get'<JsObject>()('getBasicProfile') ?? {'Eea': '-1'}) ['Eea']);
+      toInt((('auth2.currentUser.get'() as JsObject)('getBasicProfile')
+          as JsObject)('getId'));
 
   BasicProfile _basicProfile;
 
   BasicProfile get basicProfile {
-    if (!signedIn) {
+    if (!checkSignedIn) {
       return null;
     }
 
@@ -30,6 +35,7 @@ class AuthService {
       _basicProfile = BasicProfile.fromJS(
           'auth2.currentUser.get'<JsObject>()('getBasicProfile') ?? emptyJS);
     }
+
     return _basicProfile;
   }
 
@@ -50,10 +56,10 @@ class BasicProfile {
       this.imageUrl, this.email);
 
   BasicProfile.fromJS(JsObject json)
-      : id = toInt(json['Eea'] ?? '0'),
-        fullName = json['ig'],
-        firstName = json['ofa'],
-        lastName = json['wea'],
-        imageUrl = json['Paa'],
-        email = json['U3'];
+      : id = toInt(json('getId') ?? '0'),
+        fullName = json('getName'),
+        firstName = json('getGivenName'),
+        lastName = json('getFamilyName'),
+        imageUrl = json('getImageUrl'),
+        email = json('getEmail');
 }

@@ -1,6 +1,6 @@
 // This class serves for general utilities
 
-int toInt(String string) => string.toInt();
+int toInt(String string) => string?.toInt() ?? 0;
 
 int get millsTime => DateTime.now().millisecondsSinceEpoch;
 
