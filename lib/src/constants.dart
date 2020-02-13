@@ -1,2 +1,2 @@
-const API_URL = '52.188.136.44';
+const API_URL = 'api.holysheet.net';
 String get BASE_URL => 'http://$API_URL';

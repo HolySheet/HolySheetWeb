@@ -5,7 +5,7 @@ int toInt(String string) => string.toInt();
 int get millsTime => DateTime.now().millisecondsSinceEpoch;
 
 extension StringUtils on String {
-  int toInt() => int.parse(this);
+  int toInt() => int.tryParse(this) ?? 0;
 }
 
 extension ListUtils<T> on List<T> {

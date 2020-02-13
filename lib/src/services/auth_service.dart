@@ -11,7 +11,7 @@ class AuthService {
   static final emptyJS = JsObject.jsify({});
 
   @Input()
-  bool get signedIn => 'auth2.isSignedIn.get'();
+  bool get signedIn => context['auth2'] != null && 'auth2.isSignedIn.get'();
 
   String get accessToken =>
       'auth2.currentUser.get'<JsObject>()('getAuthResponse')['access_token'];
