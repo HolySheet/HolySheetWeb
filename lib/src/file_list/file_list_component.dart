@@ -168,7 +168,7 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
       print('processingToken = $processingToken');
 
       var ws = WebSocket(
-          'ws://$API_URL/websocket?processingToken=$processingToken');
+          'wss://$API_URL/websocket?processingToken=$processingToken');
       ws.onClose.listen((event) {
         final code = event.code;
         final reason = event.reason;
