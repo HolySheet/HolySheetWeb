@@ -1,0 +1,30 @@
+name: Build
+
+on:
+  push:
+    branches:
+      master
+
+jobs:
+  build-windows:
+    name: Docker Build
+    runs-on: ubuntu-latest
+    container:
+      image:  google/dart:latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install dependensies
+        run: pub get
+      - name: Building
+        run: pub run build_runner build
+      - name: Cleaning up
+        run: rm -rf build/packages && rm -f build/.build.manifest build/.packages
+      - name: FTP-Deploy-Action
+        uses: SamKirkland/FTP-Deploy-Action@2.0.0
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USER }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          LOCAL_DIR: build
+          REMOTE_DIR: /var/www/holysheet.net/public_html
+          ARGS: --delete
