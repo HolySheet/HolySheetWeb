@@ -10,12 +10,29 @@ import 'package:angular/angular.dart';
 class AuthService {
   static final emptyJS = JsObject.jsify({});
 
+  final signInCallbacks = <Function>[];
+
   @Input()
   bool signedIn = false;
 
   @Input()
-  bool get checkSignedIn =>
-      (signedIn = context['auth2'] != null && 'auth2.isSignedIn.get'());
+  bool get checkSignedIn {
+    var signedIn = context['auth2'] != null && 'auth2.isSignedIn.get'();
+    if (!this.signedIn && signedIn) {
+      this.signedIn = signedIn;
+      updateCallbacks();
+    }
+
+    return signedIn;
+  }
+
+  void updateCallbacks() {
+    for (var callback in signInCallbacks) {
+      callback();
+    }
+
+    signInCallbacks.clear();
+  }
 
   String get accessToken =>
       'auth2.currentUser.get'<JsObject>()('getAuthResponse')['access_token'];
@@ -37,6 +54,14 @@ class AuthService {
     }
 
     return _basicProfile;
+  }
+
+  void onSignedIn(void Function() callback) {
+    if (checkSignedIn) {
+      callback();
+    } else {
+      signInCallbacks.add(callback);
+    }
   }
 
   void loginUser() => 'auth2.grantOfflineAccess'();

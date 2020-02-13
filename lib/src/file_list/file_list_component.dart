@@ -79,7 +79,9 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
     fileService.selected.clear();
     showRestore = listType == ListType.Trash;
 
-    fileService.fetchFiles(listType);
+    authService.onSignedIn(() {
+      fileService.fetchFiles(listType);
+    });
   }
 
   @override

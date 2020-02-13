@@ -63,6 +63,9 @@ class AppComponent implements OnInit, OnDestroy {
 
     context['signInChange'] = (bool signedIn) {
       print('Signed in: ${authService.signedIn = signedIn}');
+      if (signedIn) {
+        authService.updateCallbacks();
+      }
     };
 
     context['userChanged'] = (user) {
