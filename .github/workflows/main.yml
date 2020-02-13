@@ -16,7 +16,7 @@ jobs:
       - name: Install dependensies
         run: pub get
       - name: Building
-        run: webdev build --output web:build
+        run: pub global activate webdev && webdev build --output web:build
       - name: Cleaning up
         run: rm -rf build/packages && rm -f build/.build.manifest build/.packages
       - name: FTP-Deploy-Action
