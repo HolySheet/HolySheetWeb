@@ -4,7 +4,7 @@ A web app for [HolySheet](https://github.com/RubbaBoy/HolySheet) to allow the st
 
 Currently the frontend:
 
-![Frontend](https://rubbaboy.me/images/wyouxkq)
+![Frontend](https://rubbaboy.me/images/wyfna2l)
 
 
 ## Experimental

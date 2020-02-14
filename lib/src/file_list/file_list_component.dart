@@ -17,31 +17,41 @@ import '../request_objects.dart';
 import '../utility.dart';
 
 @Component(
-    selector: 'file-list',
-    styleUrls: ['file_list_component.css'],
-    templateUrl: 'file_list_component.html',
-    directives: [
-      MaterialIconComponent,
-      NgClass,
-      NgFor,
-      NgIf,
-    ],
-    exports: [NavAction, GeneralActions, DropdownActions])
+  selector: 'file-list',
+  styleUrls: ['file_list_component.css'],
+  templateUrl: 'file_list_component.html',
+  directives: [
+    MaterialIconComponent,
+    NgClass,
+    NgFor,
+    NgIf,
+  ],
+  exports: [NavAction, GeneralActions, DropdownActions],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+)
 class FileListComponent implements OnInit, OnDestroy, OnActivate {
   final AuthService authService;
   final FileService fileService;
   final ContextService contextService;
   final Router router;
+  final ChangeDetectorRef changeRef;
+  final NgZone zone;
   final streamSubscriptions = <StreamSubscription>[];
 
-  FetchedFile get contextFile =>
-      files.firstWhere((file) => file.id == contextService.fileContextId,
-          orElse: () => null);
+  FetchedFile get contextFile => fileService.files.firstWhere(
+      (file) => file.id == contextService.fileContextId,
+      orElse: () => null);
 
+  @Input()
   bool showingDrop = false;
+
+  @Input()
   bool ctrlDown = false;
+
+  @Input()
   bool showRestore = false;
 
+  @Input()
   bool uploading = false;
 
   // true - "Star"
@@ -54,9 +64,7 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
   @Input()
   int uploadPercentage = 0;
 
-  List<FetchedFile> get files => fileService.files;
-
-  List<FetchedFile> get folders => fileService.folders;
+  void Function() update;
 
   // The currently browsing path
   String path = '';
@@ -70,10 +78,15 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
       .toList()
         ..removeLast();
 
-  FileListComponent(this.authService, this.fileService, this.contextService, this.router);
+  FileListComponent(this.authService, this.fileService, this.contextService,
+      this.changeRef, this.router, this.zone);
 
   @override
   void onActivate(RouterState previous, RouterState current) {
+    fileService.updates.add(update = () => changeRef
+      ..markForCheck()
+      ..detectChanges());
+
     listType = current.routePath.additionalData as ListType;
 
     fileService.selected.clear();
@@ -89,8 +102,8 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
     contextService.registerContext('files', '#files-contextmenu');
     contextService.registerContext('file', '#file-contextmenu',
         onShowContext: (fileID) {
-      final clickedFile =
-          files.firstWhere((file) => file.id == fileID, orElse: () => null);
+      final clickedFile = fileService.files
+          .firstWhere((file) => file.id == fileID, orElse: () => null);
 
       if (!fileService.selected.contains(clickedFile)) {
         fileService.selected
@@ -230,7 +243,7 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
   }
 
   List<FetchedFile> getFiles([bool folders = false]) =>
-      files.where((file) => file.folder == folders).toList();
+      fileService.files.where((file) => file.folder == folders).toList();
 
   String formatDate(int date) {
     var dateTime = DateTime.fromMillisecondsSinceEpoch(date);
@@ -338,6 +351,8 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
     for (var stream in streamSubscriptions) {
       stream.cancel();
     }
+
+    fileService.updates.remove(update);
   }
 }
 

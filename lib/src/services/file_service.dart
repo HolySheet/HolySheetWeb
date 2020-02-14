@@ -12,11 +12,10 @@ class FileService {
   final AuthService authService;
   final RequestService requestService;
 
-  @Input()
-  final List<FetchedFile> files = [];
+  final updates = <void Function()>[];
 
-  @Input()
-  final List<FetchedFile> folders = [];
+  final files = <FetchedFile>[];
+  final folders = <FetchedFile>[];
 
   final List<FetchedFile> selected = [];
 
@@ -41,6 +40,7 @@ class FileService {
         folders.clear();
         this.files.clear();
         files.forEach((file) => (file.folder ? folders : this.files).add(file));
+        _triggerUpdate();
       }
 
       return files;
@@ -54,6 +54,7 @@ class FileService {
         folders.removeAll(files);
         this.files.removeAll(files);
         selected.removeAll(files);
+        _triggerUpdate();
       });
 
   Future<void> restoreSelected() async => restoreFiles(selected);
@@ -63,6 +64,7 @@ class FileService {
         folders.removeAll(files);
         this.files.removeAll(files);
         selected.removeAll(files);
+        _triggerUpdate();
       });
 
   Future<void> starSelected(bool starred) async => starFiles(starred, selected);
@@ -71,4 +73,10 @@ class FileService {
       requestService
           .starFiles(files, starred)
           .then((_) => files.forEach((file) => file.starred = starred));
+
+  void _triggerUpdate() {
+    for (var callback in updates) {
+      callback();
+    }
+  }
 }

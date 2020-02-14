@@ -43,6 +43,7 @@ class AppComponent implements OnInit, OnDestroy {
   final AuthService authService;
   final ContextService contextService;
   final Router _router;
+  final ChangeDetectorRef changeRef;
 
   NavListData active;
 
@@ -56,7 +57,8 @@ class AppComponent implements OnInit, OnDestroy {
     NavListData('Trash', 'delete', RoutePaths.trash)
   ];
 
-  AppComponent(this.fileService, this.authService, this.contextService, this._router) {
+  AppComponent(this.fileService, this.authService, this.contextService,
+      this._router, this.changeRef) {
 //    authService.loginUser();
     active =
         sidebarNav.firstWhere((data) => data.isDefault, orElse: () => null);
@@ -64,20 +66,26 @@ class AppComponent implements OnInit, OnDestroy {
     context['signInChange'] = (bool signedIn) {
       print('Signed in: ${authService.signedIn = signedIn}');
       if (signedIn) {
+        changeRef
+          ..markForCheck()
+          ..detectChanges();
         authService.updateCallbacks();
       }
     };
 
     context['userChanged'] = (user) {
       authService.signedIn = user != null;
-      print('Changed user!!! $user');
-      'console.log'('Hello ${authService.basicProfile?.fullName ?? 'unknown'}!');
+      changeRef
+        ..markForCheck()
+        ..detectChanges();
     };
 
     'console.log'('Hello ${authService.basicProfile?.fullName ?? 'unknown'}!');
 
     _router.onRouteActivated.listen((state) {
-      var shit = [settingsNav, ...sidebarNav].firstWhere((data) => data.route.path == state.routePath.path, orElse: () => null);
+      var shit = [settingsNav, ...sidebarNav].firstWhere(
+          (data) => data.route.path == state.routePath.path,
+          orElse: () => null);
       if (showNavigation = shit != null) {
         active = shit;
       }
@@ -103,8 +111,10 @@ class AppComponent implements OnInit, OnDestroy {
     _router.navigate(navListData.route.toUrl());
   }
 
-  void mobileToggle(String selector) =>
-      document.querySelector(selector).classes.toggleAll(['d-none', 'sidebar-mobile']);
+  void mobileToggle(String selector) => document
+      .querySelector(selector)
+      .classes
+      .toggleAll(['d-none', 'sidebar-mobile']);
 
   @override
   void ngOnInit() {
@@ -113,7 +123,7 @@ class AppComponent implements OnInit, OnDestroy {
 
   @override
   void ngOnDestroy() {
-   contextService.destroy();
+    contextService.destroy();
   }
 }
 
