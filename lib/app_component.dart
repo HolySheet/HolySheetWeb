@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 import 'dart:js';
+import 'dart:js_util';
 
 import 'package:HolySheetWeb/src/services/auth_service.dart';
 import 'package:HolySheetWeb/src/services/context_service.dart';
@@ -59,7 +60,6 @@ class AppComponent implements OnInit, OnDestroy {
 
   AppComponent(this.fileService, this.authService, this.contextService,
       this._router, this.changeRef) {
-//    authService.loginUser();
     active =
         sidebarNav.firstWhere((data) => data.isDefault, orElse: () => null);
 
@@ -73,21 +73,18 @@ class AppComponent implements OnInit, OnDestroy {
       }
     };
 
-    context['userChanged'] = (user) {
-      authService.signedIn = user != null;
-      changeRef
-        ..markForCheck()
-        ..detectChanges();
-    };
+    context['userChanged'] = (user) => changeRef
+      ..markForCheck()
+      ..detectChanges();
 
     'console.log'('Hello ${authService.basicProfile?.fullName ?? 'unknown'}!');
 
     _router.onRouteActivated.listen((state) {
-      var shit = [settingsNav, ...sidebarNav].firstWhere(
+      var activeNav = [settingsNav, ...sidebarNav].firstWhere(
           (data) => data.route.path == state.routePath.path,
           orElse: () => null);
-      if (showNavigation = shit != null) {
-        active = shit;
+      if (showNavigation = activeNav != null) {
+        active = activeNav;
       }
     });
   }

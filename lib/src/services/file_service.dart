@@ -74,6 +74,12 @@ class FileService {
           .starFiles(files, starred)
           .then((_) => files.forEach((file) => file.starred = starred));
 
+  void downloadSelected() =>
+    downloadFile(selected.start());
+
+  void downloadFile(FetchedFile file) =>
+      requestService.downloadFile(file);
+
   void _triggerUpdate() {
     for (var callback in updates) {
       callback();

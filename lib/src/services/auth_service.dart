@@ -19,7 +19,7 @@ class AuthService {
   bool get checkSignedIn {
     var signedIn = context['auth2'] != null && 'auth2.isSignedIn.get'();
     if (!this.signedIn && signedIn) {
-      this.signedIn = signedIn;
+      this.signedIn = true;
       updateCallbacks();
     }
 

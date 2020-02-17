@@ -32,4 +32,6 @@ extension ListUtils<T> on List<T> {
     }
     return removed;
   }
+
+  T start() => length > 0 ? elementAt(0) : null;
 }

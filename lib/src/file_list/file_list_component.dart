@@ -278,7 +278,7 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
         rename();
         break;
       case DropdownActions.Download:
-        download();
+        fileService.downloadSelected();
         break;
       case DropdownActions.Delete:
         fileService.deleteSelected();
@@ -313,7 +313,7 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
         fileService.starSelected(starMode);
         break;
       case NavAction.Download:
-        download();
+        fileService.downloadSelected();
         break;
       case NavAction.Delete:
         fileService.deleteSelected();
@@ -332,10 +332,6 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
 
   void rename() {
     print('Rename ${contextService.fileContextId}');
-  }
-
-  void download() {
-    print('Download ${contextService.fileContextId}');
   }
 
   void createFolder() {

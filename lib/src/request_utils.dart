@@ -19,11 +19,7 @@ class RequestService {
       Map<String, String> query,
       Map<String, String> requestHeaders,
       void onProgress(ProgressEvent e)}) {
-    var queryString = query.isNotEmpty ? '?' : '';
-    queryString +=
-        query.entries.map((entry) => '${entry.key}=${entry.value}').join('&');
-
-    return HttpRequest.request('$baseUrl$url$queryString',
+    return HttpRequest.request('$baseUrl$url${joinQuery(query)}',
             method: 'GET',
             requestHeaders: requestHeaders,
             onProgress: onProgress)
@@ -42,6 +38,21 @@ class RequestService {
             ...requestHeaders,
             ...{'Authorization': authService.accessToken}
           });
+
+  void downloadRequest(String url,
+      {String baseUrl = 'https://$API_URL',
+        Map<String, dynamic> query = const {}}) {
+    final body = document.querySelector('body');
+    final anchor = AnchorElement(href: '$baseUrl$url${joinQuery(query..addAll({'Authorization': authService.accessToken}))}');
+    anchor.classes = ['downloader'];
+    anchor.download = 'test.png';
+    anchor.target = '_blank';
+    body.append(anchor);
+    anchor.click();
+  }
+
+  String joinQuery(Map<String, dynamic> query) =>
+      (query.isNotEmpty ? '?' : '') + query.entries.map((entry) => '${entry.key}=${entry.value}').join('&');
 
   Future<List<FetchedFile>> listFiles(
       {String path = '', bool starred = false, bool trashed = false}) async {
@@ -75,6 +86,9 @@ class RequestService {
         'id': files.map((file) => file.id).join(','),
         'starred': starred.toString()
       });
+
+  void downloadFile(FetchedFile file) =>
+      downloadRequest('/download', query: {'id': file.id});
 }
 
 class RequestResponse {

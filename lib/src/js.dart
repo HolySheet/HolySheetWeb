@@ -39,4 +39,3 @@ extension JsObjectExtensions on JsObject {
   /// arguments.
   dynamic call(String method, [dynamic args = const []]) => callMethod(method, !(args is List) ? [args] : args);
 }
-
