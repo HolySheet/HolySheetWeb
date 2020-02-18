@@ -68,7 +68,7 @@ class RequestService {
         .map((item) => FetchedFile.fromJson(item))
         .toList()
           ..add(FetchedFile(
-              'Movies', '', '', true, 0, 0, 0, true, '', '', false, false));
+              'Movies', 'id-here-123', '', true, 0, 0, 0, true, '', '', false, false));
   }
 
   Future<void> deleteFiles(List<FetchedFile> files, [bool permanent = false]) =>

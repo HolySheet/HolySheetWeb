@@ -4,6 +4,7 @@ import 'dart:html';
 import 'dart:math';
 
 import 'package:HolySheetWeb/src/constants.dart';
+import 'package:HolySheetWeb/src/js.dart';
 import 'package:HolySheetWeb/src/services/auth_service.dart';
 import 'package:HolySheetWeb/src/services/context_service.dart';
 import 'package:HolySheetWeb/src/services/file_service.dart';
@@ -41,6 +42,8 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
   FetchedFile get contextFile => fileService.files.firstWhere(
       (file) => file.id == contextService.fileContextId,
       orElse: () => null);
+
+  DragType dragType;
 
   @Input()
   bool showingDrop = false;
@@ -119,6 +122,10 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
     Timer waiting;
 
     void startDrop(MouseEvent event) {
+      if (dragType != DragType.FileUpload) {
+        return;
+      }
+
       event.preventDefault();
       event.stopPropagation();
       waiting?.cancel();
@@ -126,6 +133,10 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
     }
 
     void stopDrop(MouseEvent event) {
+      if (dragType != DragType.FileUpload) {
+        return;
+      }
+
       event.preventDefault();
       event.stopPropagation();
       waiting = Timer(Duration(milliseconds: 200), () {
@@ -147,8 +158,10 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
       document.onDragOver.listen(startDrop),
       document.onDragLeave.listen(stopDrop),
       document.onDrop.listen((event) {
-        stopDrop(event);
-        uploadFiles(event.dataTransfer.files[0]);
+        if (dragType == DragType.FileUpload) {
+          stopDrop(event);
+          uploadFiles(event.dataTransfer.files[0]);
+        }
       }),
     ]);
   }
@@ -225,6 +238,55 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
     });
 
     request.send(FormData()..set('file', file));
+  }
+
+  void dragStart(MouseEvent event) {
+    dragType = DragType.InternalMoving;
+  }
+
+  void dropEnd(MouseEvent event) {
+    event.preventDefault();
+
+    if (dragType == DragType.InternalMoving) {
+      dragType = null;
+
+      final target = getDataParent(event.target);
+      target?.classes?.remove('drag-over');
+
+      print('into ID: ${target?.getAttribute('data-id') ?? 'unknown'}');
+    }
+  }
+
+  void dragEnter(MouseEvent event) {
+    event.preventDefault();
+    final target = getDataParent(event.target);
+
+    final id = target.getAttribute('data-id');
+    if (fileService.selected.any((file) => file.id == id)) {
+      return;
+    }
+
+    target?.classes?.add('drag-over');
+  }
+
+  void dragLeave(MouseEvent event) {
+    event.preventDefault();
+    final target = getDataParent(event.target);
+    target?.classes?.remove('drag-over');
+  }
+
+  /// Gets something like the title of a folder's card and goes up until it hits
+  /// anything with the [data-id] attribute. If none is fount, null is returned.
+  HtmlElement getDataParent(HtmlElement element) {
+    if (element.tagName == 'form') {
+      return null;
+    }
+
+    if (element.getAttribute('data-id') == null) {
+      return getDataParent(element.parentNode);
+    }
+
+    return element;
   }
 
   void clickFile(FetchedFile file) {
@@ -339,7 +401,7 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
   }
 
   void uploadFile() {
-    print('Uploading file');
+    querySelector('#fileElem').click();
   }
 
   @override
@@ -362,6 +424,33 @@ enum GeneralActions { NewFolder, Upload }
 enum DropdownActions { Select, Star, Rename, Download, Delete, Restore }
 
 enum ListType { Default, Starred, Trash }
+
+enum DragType {
+  FileUpload, InternalMoving
+}
+
+//class DragType {
+//  static const DragType FileUpload = DragType._('fileUpload');
+//  static const DragType InternalMoving = DragType._('internalMoving');
+//
+//  static const values = <DragType>[FileUpload, InternalMoving];
+//
+//  final String data;
+//
+//  const DragType._(this.data);
+//
+//  void setType(MouseEvent event) => event.dataTransfer.setData('text/plain', data);
+//
+//  static DragType getType(MouseEvent event) {
+//    final eventData = event.dataTransfer.getData('text/plain');
+//    return values.firstWhere((type) => type.data == eventData, orElse: () => null);
+//  }
+//}
+
+//extension DragTypeExtension on MouseEvent {
+//  void setType(DragType type) => type.setType(this);
+//  DragType getType() => DragType.getType(this);
+//}
 
 class PathElement {
   String text;

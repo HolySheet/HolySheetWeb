@@ -9,6 +9,10 @@ $red: #d32f2f;
     border-color: $primary-blue;
 }
 
+.drag-over {
+    border-color: $red;
+}
+
 #upload-progress {
     content: "";
     height: 5px;
