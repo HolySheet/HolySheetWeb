@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:HolySheetWeb/src/services/auth_service.dart';
 import 'package:HolySheetWeb/src/file_list/file_list_component.dart';
 import 'package:HolySheetWeb/src/request_objects.dart';
 import 'package:HolySheetWeb/src/request_utils.dart';
-import 'package:angular/core.dart';
+import 'package:HolySheetWeb/src/services/auth_service.dart';
 import 'package:HolySheetWeb/src/utility.dart';
+import 'package:angular/core.dart';
 
 @Injectable()
 class FileService {
@@ -67,18 +67,23 @@ class FileService {
         _triggerUpdate();
       });
 
-  Future<void> starSelected(bool starred) async => starFiles(starred, selected);
+  Future<void> starSelected(bool starred) async => starFiles(selected, starred);
 
-  Future<void> starFiles(bool starred, List<FetchedFile> files) async =>
+  Future<void> starFiles(List<FetchedFile> files, bool starred) async =>
       requestService
           .starFiles(files, starred)
           .then((_) => files.forEach((file) => file.starred = starred));
 
-  void downloadSelected() =>
-    downloadFile(selected.start());
+  void downloadSelected() => downloadFile(selected.start());
 
-  void downloadFile(FetchedFile file) =>
-      requestService.downloadFile(file);
+  void downloadFile(FetchedFile file) => requestService.downloadFile(file);
+
+  Future<void> moveSelected(String path) async => moveFiles(selected, path);
+
+  Future<void> moveFiles(List<FetchedFile> files, String path) async =>
+      requestService
+          .moveFiles(files, path)
+          .then((_) => files.forEach((file) => file.path = path));
 
   void _triggerUpdate() {
     for (var callback in updates) {

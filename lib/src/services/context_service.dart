@@ -1,10 +1,6 @@
 import 'dart:async';
 import 'dart:html';
-import 'dart:js';
 
-import 'package:HolySheetWeb/src/js.dart';
-import 'package:HolySheetWeb/src/request_utils.dart';
-import 'package:HolySheetWeb/src/utility.dart';
 import 'package:angular/angular.dart';
 
 @Injectable()

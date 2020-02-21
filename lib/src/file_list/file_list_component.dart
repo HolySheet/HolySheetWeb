@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
-import 'dart:math';
 
 import 'package:HolySheetWeb/src/constants.dart';
-import 'package:HolySheetWeb/src/js.dart';
 import 'package:HolySheetWeb/src/services/auth_service.dart';
 import 'package:HolySheetWeb/src/services/context_service.dart';
 import 'package:HolySheetWeb/src/services/file_service.dart';
+import 'package:HolySheetWeb/src/settings/file_send_service.dart';
 import 'package:angular/angular.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
 import 'package:angular_router/angular_router.dart';
@@ -31,9 +30,12 @@ import '../utility.dart';
   changeDetection: ChangeDetectionStrategy.OnPush,
 )
 class FileListComponent implements OnInit, OnDestroy, OnActivate {
+  static final PATH_REGEX = RegExp(r'^\/([\w-]+?(\/[\w-]+?){0,1})*\/$');
+
   final AuthService authService;
   final FileService fileService;
   final ContextService contextService;
+  final FileSendService fileSendService;
   final Router router;
   final ChangeDetectorRef changeRef;
   final NgZone zone;
@@ -70,18 +72,21 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
   void Function() update;
 
   // The currently browsing path
-  String path = '';
+  String path = '/';
 
   ListType listType = ListType.Default;
 
-  List<PathElement> get pathElements => 'Documents/$path'
-      .split('/')
-      .where((path) => path.isNotEmpty)
-      .expand((path) => [PathElement(path), PathElement()])
-      .toList()
-        ..removeLast();
+  List<PathElement> get pathElements {
+    var progress = <String>[];
+    return 'Documents$path'
+        .split('/')
+        .expand((path) =>
+            [PathElement(path, (progress..add(path)).join('/')), PathElement()])
+        .toList()
+          ..removeLast();
+  }
 
-  FileListComponent(this.authService, this.fileService, this.contextService,
+  FileListComponent(this.authService, this.fileService, this.contextService, this.fileSendService,
       this.changeRef, this.router, this.zone);
 
   @override
@@ -91,6 +96,11 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
       ..detectChanges());
 
     listType = current.routePath.additionalData as ListType;
+
+    var urlPath = current.queryParameters['path'] ?? '/';
+    if (PATH_REGEX.hasMatch(urlPath)) {
+      path = urlPath;
+    }
 
     fileService.selected.clear();
     showRestore = listType == ListType.Trash;
@@ -122,6 +132,10 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
     Timer waiting;
 
     void startDrop(MouseEvent event) {
+      if (event.dataTransfer.types.contains('Files')) {
+        dragType = DragType.FileUpload;
+      }
+
       if (dragType != DragType.FileUpload) {
         return;
       }
@@ -129,10 +143,17 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
       event.preventDefault();
       event.stopPropagation();
       waiting?.cancel();
-      showingDrop = true;
+      if (!showingDrop) {
+        showingDrop = true;
+        changeRef.markForCheck();
+      }
     }
 
     void stopDrop(MouseEvent event) {
+      if (event.dataTransfer.types.contains('Files')) {
+        dragType = DragType.FileUpload;
+      }
+
       if (dragType != DragType.FileUpload) {
         return;
       }
@@ -141,7 +162,10 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
       event.stopPropagation();
       waiting = Timer(Duration(milliseconds: 200), () {
         waiting = null;
-        showingDrop = false;
+        if (showingDrop) {
+          showingDrop = false;
+          changeRef.markForCheck();
+        }
       });
     }
 
@@ -158,6 +182,10 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
       document.onDragOver.listen(startDrop),
       document.onDragLeave.listen(stopDrop),
       document.onDrop.listen((event) {
+        if (event.dataTransfer.types.contains('Files')) {
+          dragType = DragType.FileUpload;
+        }
+
         if (dragType == DragType.FileUpload) {
           stopDrop(event);
           uploadFiles(event.dataTransfer.files[0]);
@@ -167,10 +195,21 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
   }
 
   void uploadFiles(File file) {
+    print('Uploading file!!!!!!!!!!!!!!!!!!!!!!!!');
+
+    fileSendService.send(file,
+        onProgress: (percentage) {
+          uploadPercentage = (percentage * 100).floor();
+        },
+        onDone: () {
+          fileService.fetchFiles(listType);
+          uploading = false;
+          Timer(Duration(seconds: 1), () => uploadPercentage = 0);
+        });
+
+    return;
     final request = HttpRequest();
-    request.open(
-        'POST', 'https://$API_URL/upload?t=${Random().nextInt(99999999)}',
-        async: true);
+    request.open('POST', '$PROTOCOL://$API_URL/upload', async: true);
     request.setRequestHeader('Authorization', authService.accessToken);
 
     // Percentage bar logic:
@@ -196,7 +235,7 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
       print('processingToken = $processingToken');
 
       var ws = WebSocket(
-          'wss://$API_URL/websocket?processingToken=$processingToken');
+          '$WEBSOCKET_PROTOCOL://$API_URL/websocket?processingToken=$processingToken');
       ws.onClose.listen((event) {
         final code = event.code;
         final reason = event.reason;
@@ -274,6 +313,14 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
     final target = getDataParent(event.target);
     target?.classes?.remove('drag-over');
   }
+
+  void enterFolder(MouseEvent event, FetchedFile file) {
+    print('enter folder: ${file.id}');
+    navigatePath(file.path);
+  }
+
+  void navigatePath(String path) => router.navigate(router.current.toUrl(),
+      NavigationParams(queryParameters: {'path': path}));
 
   /// Gets something like the title of a folder's card and goes up until it hits
   /// anything with the [data-id] attribute. If none is fount, null is returned.
@@ -425,9 +472,7 @@ enum DropdownActions { Select, Star, Rename, Download, Delete, Restore }
 
 enum ListType { Default, Starred, Trash }
 
-enum DragType {
-  FileUpload, InternalMoving
-}
+enum DragType { FileUpload, InternalMoving }
 
 //class DragType {
 //  static const DragType FileUpload = DragType._('fileUpload');
@@ -454,8 +499,9 @@ enum DragType {
 
 class PathElement {
   String text;
+  String absolutePath;
 
   bool get icon => text == null;
 
-  PathElement([this.text]);
+  PathElement([this.text, this.absolutePath]);
 }

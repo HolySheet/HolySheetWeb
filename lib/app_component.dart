@@ -12,6 +12,7 @@ import 'package:HolySheetWeb/src/js.dart';
 import 'package:HolySheetWeb/src/request_utils.dart';
 import 'package:HolySheetWeb/src/routes.dart';
 import 'package:HolySheetWeb/src/services/settings_service.dart';
+import 'package:HolySheetWeb/src/settings/file_send_service.dart';
 import 'package:angular/angular.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
 import 'package:angular_router/angular_router.dart';
@@ -36,6 +37,7 @@ import 'package:js/js.dart';
     ClassProvider(RequestService),
     ClassProvider(AuthService),
     ClassProvider(ContextService),
+    ClassProvider(FileSendService),
   ],
   exports: [Routes, RoutePaths],
 )

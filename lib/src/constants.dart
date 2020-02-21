@@ -1,2 +1,5 @@
-const API_URL = 'api.holysheet.net';
-String get BASE_URL => 'https://$API_URL';
+const PRODUCTION = false;
+const API_URL = 'localhost';
+const PROTOCOL = PRODUCTION ? 'https' : 'http';
+const WEBSOCKET_PROTOCOL = PRODUCTION ? 'wss' : 'ws';
+const BASE_URL = '$PROTOCOL://$API_URL';

@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'dart:html';
 
 import 'package:HolySheetWeb/src/constants.dart';
-import 'package:HolySheetWeb/src/services/auth_service.dart';
 import 'package:HolySheetWeb/src/request_objects.dart';
+import 'package:HolySheetWeb/src/services/auth_service.dart';
 import 'package:angular/angular.dart';
 
 @Injectable()
@@ -15,20 +15,19 @@ class RequestService {
 
   /// Makes a GET request with given headers. Returns JSON.
   Future<RequestResponse> makeRequest(String url,
-      {String baseUrl = 'https://$API_URL',
-      Map<String, String> query,
-      Map<String, String> requestHeaders,
-      void onProgress(ProgressEvent e)}) {
-    return HttpRequest.request('$baseUrl$url${joinQuery(query)}',
-            method: 'GET',
-            requestHeaders: requestHeaders,
-            onProgress: onProgress)
-        .then((HttpRequest xhr) =>
-            RequestResponse(xhr.status, jsonDecode(xhr.responseText)));
-  }
+          {String baseUrl = BASE_URL,
+          Map<String, String> query,
+          Map<String, String> requestHeaders,
+          void onProgress(ProgressEvent e)}) =>
+      HttpRequest.request('$baseUrl$url${joinQuery(query)}',
+              method: 'GET',
+              requestHeaders: requestHeaders,
+              onProgress: onProgress)
+          .then((HttpRequest xhr) =>
+              RequestResponse(xhr.status, jsonDecode(xhr.responseText)));
 
   Future<RequestResponse> makeAuthedRequest(String url,
-          {String baseUrl = 'https://$API_URL',
+          {String baseUrl = BASE_URL,
           Map<String, dynamic> query = const {},
           Map<String, String> requestHeaders = const {}}) async =>
       makeRequest(url,
@@ -40,10 +39,13 @@ class RequestService {
           });
 
   void downloadRequest(String url,
-      {String baseUrl = 'https://$API_URL',
-        Map<String, dynamic> query = const {}}) {
+      {String baseUrl = BASE_URL,
+      Map<String, dynamic> query = const {}}) {
     final body = document.querySelector('body');
-    final anchor = AnchorElement(href: '$baseUrl$url${joinQuery(query..addAll({'Authorization': authService.accessToken}))}');
+    final anchor = AnchorElement(
+        href: '$baseUrl$url${joinQuery(query..addAll({
+            'Authorization': authService.accessToken
+          }))}');
     anchor.classes = ['downloader'];
     anchor.download = 'test.png';
     anchor.target = '_blank';
@@ -52,7 +54,8 @@ class RequestService {
   }
 
   String joinQuery(Map<String, dynamic> query) =>
-      (query.isNotEmpty ? '?' : '') + query.entries.map((entry) => '${entry.key}=${entry.value}').join('&');
+      (query.isNotEmpty ? '?' : '') +
+      query.entries.map((entry) => '${entry.key}=${entry.value}').join('&');
 
   Future<List<FetchedFile>> listFiles(
       {String path = '', bool starred = false, bool trashed = false}) async {
@@ -67,28 +70,29 @@ class RequestService {
     return List.of(response.json)
         .map((item) => FetchedFile.fromJson(item))
         .toList()
-          ..add(FetchedFile(
-              'Movies', 'id-here-123', '', true, 0, 0, 0, true, '', '', false, false));
+          ..add(FetchedFile('Movies', 'id-here-123', '/movies/', true, 0, 0, 0,
+              true, '', '', false, false));
   }
 
   Future<void> deleteFiles(List<FetchedFile> files, [bool permanent = false]) =>
-      makeAuthedRequest('/delete', query: {
-        'id': files.map((file) => file.id).join(','),
-        'permanent': permanent
-      });
+      makeAuthedRequest('/delete',
+          query: {'id': getIdList(files), 'permanent': permanent});
 
   Future<void> restoreFiles(List<FetchedFile> files) =>
-      makeAuthedRequest('/restore',
-          query: {'id': files.map((file) => file.id).join(',')});
+      makeAuthedRequest('/restore', query: {'id': getIdList(files)});
 
   Future<void> starFiles(List<FetchedFile> files, bool starred) =>
-      makeAuthedRequest('/star', query: {
-        'id': files.map((file) => file.id).join(','),
-        'starred': starred.toString()
-      });
+      makeAuthedRequest('/star',
+          query: {'id': getIdList(files), 'starred': starred.toString()});
 
   void downloadFile(FetchedFile file) =>
       downloadRequest('/download', query: {'id': file.id});
+
+  Future<void> moveFiles(List<FetchedFile> files, String path) =>
+      makeAuthedRequest('/move', query: {'id': getIdList(files), 'path': path});
+
+  String getIdList(List<FetchedFile> files) =>
+      files.map((file) => file.id).join(',');
 }
 
 class RequestResponse {

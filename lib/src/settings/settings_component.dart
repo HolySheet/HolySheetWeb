@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'dart:html';
 
-import 'package:HolySheetWeb/src/services/file_service.dart';
 import 'package:HolySheetWeb/src/services/settings_service.dart';
 import 'package:angular/angular.dart';
 
