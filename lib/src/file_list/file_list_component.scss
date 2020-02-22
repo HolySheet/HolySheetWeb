@@ -9,8 +9,62 @@ $red: #d32f2f;
     border-color: $primary-blue;
 }
 
-.drag-over {
-    border-color: $red;
+.navigation-bar-menu {
+    .path-item {
+        height: 32px !important;
+        padding: 0 !important;
+    }
+
+    li {
+        &.drag-over {
+            a {
+                border-color: $primary-blue;
+            }
+        }
+
+        a {
+            padding: 16px;
+            border: 1px solid transparent;
+        }
+
+        &:hover {
+            opacity: 1 !important;
+
+            a {
+                opacity: 0.5;
+            }
+        }
+    }
+
+    .path-item:not(:last-of-type) {
+        &::after {
+            // >
+            content: '\e315';
+
+            padding-left: 0;
+            direction: ltr;
+            display: inline-block;
+            font-family: 'Material Icons', sans-serif;
+            font-size: 24px;
+            font-style: normal;
+            font-weight: normal;
+            letter-spacing: normal;
+            line-height: 1;
+            text-transform: none;
+            white-space: nowrap;
+            word-wrap: normal;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+    }
+}
+
+div.drag-over {
+    border-color: $primary-blue;
+}
+
+.folder {
+    user-select: none;
 }
 
 #upload-progress {

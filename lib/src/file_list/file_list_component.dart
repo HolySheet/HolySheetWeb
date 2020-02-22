@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:html';
 
-import 'package:HolySheetWeb/src/constants.dart';
 import 'package:HolySheetWeb/src/services/auth_service.dart';
 import 'package:HolySheetWeb/src/services/context_service.dart';
 import 'package:HolySheetWeb/src/services/file_service.dart';
@@ -15,6 +13,7 @@ import 'package:intl/intl.dart';
 
 import '../request_objects.dart';
 import '../utility.dart';
+import '../js.dart';
 
 @Component(
   selector: 'file-list',
@@ -72,22 +71,28 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
   void Function() update;
 
   // The currently browsing path
-  String path = '/';
+  String _path = '/';
+
+  set path(String path) {
+    _path = path;
+      var progress = <String>[];
+      var p1 = ['', ...'$path'
+          .trimText('/')
+          .split('/')];
+    print(p1);
+    pathElements = p1.expand((path) => [PathElement(path, (progress..add(path)).join('/'))]).toList()
+        ..first.text = 'Documents'
+        ..first.absolutePath = '/';
+  }
+
+  String get path => _path;
 
   ListType listType = ListType.Default;
 
-  List<PathElement> get pathElements {
-    var progress = <String>[];
-    return 'Documents$path'
-        .split('/')
-        .expand((path) =>
-            [PathElement(path, (progress..add(path)).join('/')), PathElement()])
-        .toList()
-          ..removeLast();
-  }
+  List<PathElement> pathElements = [PathElement('Documents', '/')];
 
-  FileListComponent(this.authService, this.fileService, this.contextService, this.fileSendService,
-      this.changeRef, this.router, this.zone);
+  FileListComponent(this.authService, this.fileService, this.contextService,
+      this.fileSendService, this.changeRef, this.router, this.zone);
 
   @override
   void onActivate(RouterState previous, RouterState current) {
@@ -106,7 +111,7 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
     showRestore = listType == ListType.Trash;
 
     authService.onSignedIn(() {
-      fileService.fetchFiles(listType);
+      fileService.fetchFiles(listType, path);
     });
   }
 
@@ -195,95 +200,37 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
   }
 
   void uploadFiles(File file) {
-    print('Uploading file!!!!!!!!!!!!!!!!!!!!!!!!');
-
-    fileSendService.send(file,
-        onProgress: (percentage) {
-          uploadPercentage = (percentage * 100).floor();
-        },
-        onDone: () {
-          fileService.fetchFiles(listType);
-          uploading = false;
-          Timer(Duration(seconds: 1), () => uploadPercentage = 0);
-        });
-
-    return;
-    final request = HttpRequest();
-    request.open('POST', '$PROTOCOL://$API_URL/upload', async: true);
-    request.setRequestHeader('Authorization', authService.accessToken);
-
-    // Percentage bar logic:
-    // [0-50] is for uploading the file to the server
-    // (51-100] is for server processing and uploading
-
-    request.onLoadStart.listen((e) {
-      uploadPercentage = 0;
-      uploading = true;
+    uploading = true;
+    fileSendService.send(file, path, onProgress: (percentage) {
+      uploadPercentage = (percentage * 100).floor();
+    }, onDone: () {
+      fileService.fetchFiles(listType, path);
+      uploading = false;
+      Timer(Duration(seconds: 1), () => uploadPercentage = 0);
     });
-    request.upload.onProgress.listen((ProgressEvent e) {
-      uploadPercentage = e.loaded * 50 ~/ e.total;
-    });
-    request.onLoad.listen((e) {
-      uploadPercentage = 50;
-
-      final response = jsonDecode(request.response);
-
-      print('Upload response: ${response['message']}');
-
-      final processingToken = response['processingToken'];
-
-      print('processingToken = $processingToken');
-
-      var ws = WebSocket(
-          '$WEBSOCKET_PROTOCOL://$API_URL/websocket?processingToken=$processingToken');
-      ws.onClose.listen((event) {
-        final code = event.code;
-        final reason = event.reason;
-
-        if (code == 1000 && reason == 'Success') {
-          print('Successful listing, refreshing listings');
-
-          fileService.fetchFiles(listType);
-
-          if (uploading) {
-            uploading = false;
-            Timer(Duration(seconds: 1), () => uploadPercentage = 0);
-          }
-        } else if (code == 1011) {
-          print('The upload status socket has closed with an error:');
-          print(reason);
-        } else {
-          print('Unknown close response "$reason" with code $code');
-        }
-      });
-
-      ws.onMessage.listen((event) {
-        // 0-1 percentage
-        final percentage = double.tryParse(event.data);
-        if (percentage == null) {
-          return;
-        }
-
-        uploadPercentage = 50 + (percentage * 50).ceil();
-        print('second $uploadPercentage');
-
-        if (uploadPercentage == 100) {
-          print('upload percentage hit 100');
-
-          uploading = false;
-          Timer(Duration(seconds: 1), () => uploadPercentage = 0);
-        }
-      });
-    });
-
-    request.send(FormData()..set('file', file));
   }
+
+  List<FetchedFile> dragging = [];
 
   void dragStart(MouseEvent event) {
     dragType = DragType.InternalMoving;
+    dragging = [...fileService.selected];
+    if (dragging.isEmpty) {
+      final target = getDataParent(event.target)?.getAttribute('data-id');
+      if (target == null) {
+        return;
+      }
+
+      final clickedFile = fileService.files
+          .firstWhere((file) => file.id == target, orElse: () => null);
+
+      if (clickedFile != null) {
+        dragging.add(clickedFile);
+      }
+    }
   }
 
-  void dropEnd(MouseEvent event) {
+  void dropEnd(MouseEvent event, [bool absolutePath = false]) {
     event.preventDefault();
 
     if (dragType == DragType.InternalMoving) {
@@ -292,7 +239,13 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
       final target = getDataParent(event.target);
       target?.classes?.remove('drag-over');
 
-      print('into ID: ${target?.getAttribute('data-id') ?? 'unknown'}');
+      var calculatedPath = target?.getAttribute('data-id') ?? '/';
+      if (!absolutePath) {
+        calculatedPath = '$path$calculatedPath';
+      }
+
+      fileService.moveFiles(dragging, calculatedPath).then((_) => update());
+      dragging = [];
     }
   }
 
@@ -301,7 +254,7 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
     final target = getDataParent(event.target);
 
     final id = target.getAttribute('data-id');
-    if (fileService.selected.any((file) => file.id == id)) {
+    if (dragging.any((file) => file.id == id)) {
       return;
     }
 
@@ -314,12 +267,13 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
     target?.classes?.remove('drag-over');
   }
 
-  void enterFolder(MouseEvent event, FetchedFile file) {
-    print('enter folder: ${file.id}');
-    navigatePath(file.path);
+  void enterFolder(MouseEvent event, String file) {
+    file = '$path$file/';
+    navigatePath(file);
   }
 
-  void navigatePath(String path) => router.navigate(router.current.toUrl(),
+  void navigatePath(String path) => router.navigate(
+      router.current.routePath.toUrl(),
       NavigationParams(queryParameters: {'path': path}));
 
   /// Gets something like the title of a folder's card and goes up until it hits
@@ -350,9 +304,6 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
       }
     }
   }
-
-  List<FetchedFile> getFiles([bool folders = false]) =>
-      fileService.files.where((file) => file.folder == folders).toList();
 
   String formatDate(int date) {
     var dateTime = DateTime.fromMillisecondsSinceEpoch(date);
@@ -444,7 +395,10 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
   }
 
   void createFolder() {
-    print('Creating folder');
+    String path = 'prompt'('Name of folder to create:');
+    if (path != null && path.trim().isNotEmpty) {
+      fileService.createFolder(path);
+    }
   }
 
   void uploadFile() {
@@ -473,29 +427,6 @@ enum DropdownActions { Select, Star, Rename, Download, Delete, Restore }
 enum ListType { Default, Starred, Trash }
 
 enum DragType { FileUpload, InternalMoving }
-
-//class DragType {
-//  static const DragType FileUpload = DragType._('fileUpload');
-//  static const DragType InternalMoving = DragType._('internalMoving');
-//
-//  static const values = <DragType>[FileUpload, InternalMoving];
-//
-//  final String data;
-//
-//  const DragType._(this.data);
-//
-//  void setType(MouseEvent event) => event.dataTransfer.setData('text/plain', data);
-//
-//  static DragType getType(MouseEvent event) {
-//    final eventData = event.dataTransfer.getData('text/plain');
-//    return values.firstWhere((type) => type.data == eventData, orElse: () => null);
-//  }
-//}
-
-//extension DragTypeExtension on MouseEvent {
-//  void setType(DragType type) => type.setType(this);
-//  DragType getType() => DragType.getType(this);
-//}
 
 class PathElement {
   String text;

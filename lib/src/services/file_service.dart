@@ -15,35 +15,36 @@ class FileService {
   final updates = <void Function()>[];
 
   final files = <FetchedFile>[];
-  final folders = <FetchedFile>[];
+  final folders = <String>[];
 
   final List<FetchedFile> selected = [];
 
   FileService(this.authService, this.requestService);
 
-  Future<List<FetchedFile>> fetchFiles(
-      [ListType type = ListType.Default, bool update = true]) async {
+  Future<FetchedList> fetchFiles(
+      [ListType type = ListType.Default,
+      String path = '',
+      bool update = true]) async {
     if (!authService.checkSignedIn) {
       print('User not logged in');
-      return [];
+      return FetchedList();
     }
 
-    print('Fetching starred: $type');
-
+    print('Fetching for $path');
     return requestService
         .listFiles(
-            path: '',
+            path: path,
             starred: type == ListType.Starred,
             trashed: type == ListType.Trash)
-        .then((files) {
+        .then((fetched) {
       if (update) {
-        folders.clear();
-        this.files.clear();
-        files.forEach((file) => (file.folder ? folders : this.files).add(file));
+        print('Done fetched!!!!!! Found ${fetched.files.length} files and ${fetched.folders.length} folders');
+        folders..clear()..addAll(fetched.folders);
+        files..clear()..addAll(fetched.files);
         _triggerUpdate();
       }
 
-      return files;
+      return fetched;
     });
   }
 
@@ -51,7 +52,6 @@ class FileService {
 
   Future<void> deleteFiles(List<FetchedFile> files) async =>
       requestService.deleteFiles(files).then((_) {
-        folders.removeAll(files);
         this.files.removeAll(files);
         selected.removeAll(files);
         _triggerUpdate();
@@ -61,7 +61,6 @@ class FileService {
 
   Future<void> restoreFiles(List<FetchedFile> files) async =>
       requestService.restoreFiles(files).then((_) {
-        folders.removeAll(files);
         this.files.removeAll(files);
         selected.removeAll(files);
         _triggerUpdate();
@@ -83,7 +82,14 @@ class FileService {
   Future<void> moveFiles(List<FetchedFile> files, String path) async =>
       requestService
           .moveFiles(files, path)
-          .then((_) => files.forEach((file) => file.path = path));
+          .then((_) => this.files.removeAll(files..forEach((file) => file.path = path)));
+
+  Future<void> createFolder(String path) async => requestService
+      .createFolder(path)
+      .then((_) {
+        print('folders add "$path"');
+        folders.add(path);
+      });
 
   void _triggerUpdate() {
     for (var callback in updates) {

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:html';
+import '../js.dart';
 
 import 'package:angular/angular.dart';
 
@@ -131,8 +132,8 @@ class ContextService {
 
     _fileContextId = target.getAttribute('data-id');
 
-    var x = event.page.x;
-    var y = event.page.y;
+    var x = event.page.x - window.scrollX;
+    var y = event.page.y - window.scrollY;
 
     var dropdownHeight = contextNode.clientHeight;
     var dropdownWidth = contextNode.clientWidth;

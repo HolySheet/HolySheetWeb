@@ -13,8 +13,8 @@ class FileSendService {
 
   FileSendService(this.authService, this.fileService);
 
-  void send(File file, {Function(double) onProgress, Function() onDone}) {
-    var ws = WebSocket('$WEBSOCKET_PROTOCOL://$API_URL/shit?Authorization=${authService.accessToken}&name=${file.name}&length=${file.size}');
+  void send(File file, String path, {Function(double) onProgress, Function() onDone}) {
+    var ws = WebSocket('$WEBSOCKET_PROTOCOL://$API_URL/upload?Authorization=${authService.accessToken}&name=${file.name}&length=${file.size}&path=${Uri.encodeComponent(path)}');
 
     ws.onClose.listen((event) {
       final code = event.code;
@@ -22,7 +22,7 @@ class FileSendService {
 
       if (code == 1000) {
         var status = jsonDecode(reason);
-        if (status == 'done') {
+        if (status['status'] == 'done') {
           print('Done with upload!');
         } else {
           print('Non-done status successfully closed websocket: $status');
@@ -30,6 +30,9 @@ class FileSendService {
       } else if (code == 1009) {
         print('Message too large. Close response:');
         print(reason);
+      } else if (code != 1011) {
+        final json = jsonDecode(reason);
+        print('Closed upload websocket with an Internal Server Error (1011). Error:\n${json['error']}\nStacktrace:\n${json['stacktrace']}');
       } else if (code != 1000) {
         print('Unknown close response "$reason" with code $code');
       }

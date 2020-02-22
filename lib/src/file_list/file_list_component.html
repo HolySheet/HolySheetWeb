@@ -1,15 +1,9 @@
 <nav class="navigation-bar raised">
     <div class="container-fluid">
         <ul class="navigation-bar-menu">
-            <template ngFor let-elem [ngForOf]="pathElements">
-                <li *ngIf="!elem.icon" class="menu-item">
-                    <a class="item-link" (click)="navigatePath(elem.absolutePath)">{{ elem.text }}</a>
-                </li>
-
-                <li *ngIf="elem.icon" class="menu-item disabled p-0">
-                    <material-icon icon="keyboard_arrow_right"></material-icon>
-                </li>
-            </template>
+            <li *ngFor="let elem of pathElements" class="menu-item path-item" [attr.data-id]="elem.absolutePath" (dragover)="dragEnter($event)" (dragleave)="dragLeave($event)" (drop)="dropEnd($event, true)">
+                <a class="item-link" (click)="navigatePath(elem.absolutePath)">{{ elem.text }}</a>
+            </li>
         </ul>
 
         <ul class="navigation-bar-menu">
@@ -163,13 +157,13 @@
 
         <input type="file" id="fileElem" #upload name="file">
 
-        <div class="row row-small ml-0 mr-0" *ngFor="let file of fileService.folders">
-            <div class="col-md-4 col-lg-3 mb-3">
-                <div class="card card-border card-hover raised contextmenu-toggle" [attr.data-id]="file.id" data-contextName="file" [class.card-primary]="isSelected(file)" (click)="clickFile(file)" (dragover)="dragEnter($event)" (dragleave)="dragLeave($event)" (drop)="dropEnd($event)" (dblclick)="enterFolder($event, file)">
+        <div class="row row-small ml-0 mr-0">
+            <div class="col-md-4 col-lg-3 mb-3" *ngFor="let file of fileService.folders">
+                <div class="card card-border card-hover raised contextmenu-toggle folder" [attr.data-id]="file" data-contextName="file"  (dragover)="dragEnter($event)" (dragleave)="dragLeave($event)" (drop)="dropEnd($event)" (dblclick)="enterFolder($event, file)">
                     <div class="card-header">
                         <material-icon class="mr-3" icon="folder"></material-icon>
 
-                        <h2 class="header-title header-title-large header-title-nowrap">{{ file.name }}</h2>
+                        <h2 class="header-title header-title-large header-title-nowrap">{{ file }}</h2>
 
                         <ul class="header-menu d-flex d-md-none">
                             <li class="menu-item dropdown-toggle" data-dropdown="#folder-menu">

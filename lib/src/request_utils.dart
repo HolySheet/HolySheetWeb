@@ -6,6 +6,14 @@ import 'package:HolySheetWeb/src/constants.dart';
 import 'package:HolySheetWeb/src/request_objects.dart';
 import 'package:HolySheetWeb/src/services/auth_service.dart';
 import 'package:angular/angular.dart';
+import 'js.dart';
+
+class FetchedList {
+  List<FetchedFile> files;
+  List<String> folders;
+
+  FetchedList([this.files = const [], this.folders = const []]);
+}
 
 @Injectable()
 class RequestService {
@@ -32,23 +40,22 @@ class RequestService {
           Map<String, String> requestHeaders = const {}}) async =>
       makeRequest(url,
           baseUrl: baseUrl,
-          query: query.map((k, v) => MapEntry(k, '${v ?? ''}')),
+          query: query
+              .map((k, v) => MapEntry(k, Uri.encodeComponent('${v ?? ''}'))),
           requestHeaders: {
             ...requestHeaders,
             ...{'Authorization': authService.accessToken}
           });
 
   void downloadRequest(String url,
-      {String baseUrl = BASE_URL,
-      Map<String, dynamic> query = const {}}) {
+      {String baseUrl = BASE_URL, Map<String, dynamic> query = const {}}) {
     final body = document.querySelector('body');
     final anchor = AnchorElement(
         href: '$baseUrl$url${joinQuery(query..addAll({
             'Authorization': authService.accessToken
           }))}');
     anchor.classes = ['downloader'];
-    anchor.download = 'test.png';
-    anchor.target = '_blank';
+    anchor.download = 'test';
     body.append(anchor);
     anchor.click();
   }
@@ -57,7 +64,7 @@ class RequestService {
       (query.isNotEmpty ? '?' : '') +
       query.entries.map((entry) => '${entry.key}=${entry.value}').join('&');
 
-  Future<List<FetchedFile>> listFiles(
+  Future<FetchedList> listFiles(
       {String path = '', bool starred = false, bool trashed = false}) async {
     var response = await makeAuthedRequest('/list',
         query: {'path': path, 'starred': starred, 'trashed': trashed});
@@ -66,12 +73,9 @@ class RequestService {
       throw ('List request not successful. Code ${response.status}\n${response.json}');
     }
 
-    print(response.json);
-    return List.of(response.json)
-        .map((item) => FetchedFile.fromJson(item))
-        .toList()
-          ..add(FetchedFile('Movies', 'id-here-123', '/movies/', true, 0, 0, 0,
-              true, '', '', false, false));
+    return FetchedList(List.of(response.json['files'])
+        .map<FetchedFile>((item) => FetchedFile.fromJson(item)).toList(),
+        response.json['folders'].cast<String>()..remove(''));
   }
 
   Future<void> deleteFiles(List<FetchedFile> files, [bool permanent = false]) =>
@@ -90,6 +94,9 @@ class RequestService {
 
   Future<void> moveFiles(List<FetchedFile> files, String path) =>
       makeAuthedRequest('/move', query: {'id': getIdList(files), 'path': path});
+
+  Future<void> createFolder(String path) =>
+      makeAuthedRequest('/createfolder', query: {'path': path});
 
   String getIdList(List<FetchedFile> files) =>
       files.map((file) => file.id).join(',');

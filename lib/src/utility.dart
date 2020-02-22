@@ -6,6 +6,28 @@ int get millsTime => DateTime.now().millisecondsSinceEpoch;
 
 extension StringUtils on String {
   int toInt() => int.tryParse(this) ?? 0;
+
+  String trimText(String text) {
+    var out = this;
+    while (out.startsWith(text)) {
+      out = out.substring(text.length, out.length);
+    }
+
+    while (out.endsWith(text)) {
+      out = out.substring(0, out.length - text.length);
+    }
+
+    return out;
+  }
+
+  String trimRightText(String text) {
+    var out = this;
+    while (out.endsWith(text)) {
+      out = out.substring(0, out.length - text.length);
+    }
+
+    return out;
+  }
 }
 
 extension ListUtils<T> on List<T> {
