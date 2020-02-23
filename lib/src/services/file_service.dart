@@ -30,7 +30,6 @@ class FileService {
       return FetchedList();
     }
 
-    print('Fetching for $path');
     return requestService
         .listFiles(
             path: path,
@@ -38,9 +37,30 @@ class FileService {
             trashed: type == ListType.Trash)
         .then((fetched) {
       if (update) {
-        print('Done fetched!!!!!! Found ${fetched.files.length} files and ${fetched.folders.length} folders');
-        folders..clear()..addAll(fetched.folders);
-        files..clear()..addAll(fetched.files);
+        var baseParts = path.trimText('/').split('/');
+        if (baseParts.length == 1 && baseParts[0].isEmpty) {
+          baseParts = [];
+        }
+
+        folders
+          ..clear()
+          ..addAll(fetched.folders.map((folder) {
+            var parts = folder.trimText('/').split('/');
+
+            for (var i in baseParts.asMap().keys) {
+              if (baseParts[i] != parts.elementAt(i)) {
+                return null;
+              }
+            }
+
+            parts.removeRange(0, baseParts.length);
+
+            return parts.length == 1 ? parts.single : null;
+          }).where((i) => i != null));
+
+        files
+          ..clear()
+          ..addAll(fetched.files);
         _triggerUpdate();
       }
 
@@ -82,11 +102,10 @@ class FileService {
   Future<void> moveFiles(List<FetchedFile> files, String path) async =>
       requestService
           .moveFiles(files, path)
-          .then((_) => this.files.removeAll(files..forEach((file) => file.path = path)));
+          .then((_) => this.files.removeAll(files));
 
-  Future<void> createFolder(String path) async => requestService
-      .createFolder(path)
-      .then((_) {
+  Future<void> createFolder(String path) async =>
+      requestService.createFolder(path).then((_) {
         print('folders add "$path"');
         folders.add(path);
       });

@@ -244,7 +244,8 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
         calculatedPath = '$path$calculatedPath';
       }
 
-      fileService.moveFiles(dragging, calculatedPath).then((_) => update());
+      fileService.moveFiles(dragging, calculatedPath)
+          .then((_) => update());
       dragging = [];
     }
   }
