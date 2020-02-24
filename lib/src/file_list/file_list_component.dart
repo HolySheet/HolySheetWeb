@@ -46,6 +46,7 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
 
   DragType dragType;
   List<FetchedFile> dragging = [];
+  Timer searchInputTimer;
 
   @Input()
   bool showingDrop = false;
@@ -121,7 +122,7 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
     showRestore = listType == ListType.Trash;
 
     authService.onSignedIn(() =>
-        fileService.fetchFiles(listType, path, true, sortType, sortOrder));
+        fileService.fetchFiles(type: listType, path: path, sortType: sortType, sortOrder: sortOrder));
   }
 
   @override
@@ -224,7 +225,7 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
       uploadPercentage = (percentage * 100).floor();
       update();
     }, onDone: () {
-      fileService.fetchFiles(listType, path, true, sortType, sortOrder);
+      fileService.fetchFiles(type: listType, path: path, sortType: sortType, sortOrder: sortOrder);
       uploadPercentage = 100;
       update();
       Timer(Duration(seconds: 1), () {
@@ -413,7 +414,10 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
 
   // Top bar
 
-  void enableSearch() => searching = true;
+  void enableSearch() {
+    searching = true;
+    Timer(Duration(milliseconds: 100), () => document.getElementById('search').focus());
+  }
 
   void disableSearch() => searching = false;
 
@@ -424,6 +428,15 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
       fileService.sortFiles(sortType = type, sortOrder);
 
   List classIf(bool test, List classes) => test ? classes : [];
+
+  // Searching
+
+  void changeSearch(Event shit) {
+    final elem = shit.target as InputElement;
+    searchInputTimer?.cancel();
+    searchInputTimer = Timer(Duration(milliseconds: 250), () =>
+        fileService.fetchFiles(type: listType, path: path, sortType: sortType, sortOrder: sortOrder, useCached: true, searchQuery: elem.value));
+  }
 
   @override
   void ngOnDestroy() {

@@ -14,30 +14,44 @@ class FileService {
 
   final updates = <void Function()>[];
 
+//  final _files = <FetchedFile>[];
+//  final _folders = <String>[];
+
+  // The things displayed, filtered out when searched
   final files = <FetchedFile>[];
   final folders = <String>[];
 
   final List<FetchedFile> selected = [];
 
+  FetchedList cached;
+
   FileService(this.authService, this.requestService);
 
   Future<FetchedList> fetchFiles(
-      [ListType type = ListType.Default,
+      {ListType type = ListType.Default,
       String path = '',
       bool update = true,
       SortType sortType = SortType.Time,
-      SortOrder sortOrder = SortOrder.Desc]) async {
+      SortOrder sortOrder = SortOrder.Desc,
+      bool useCached = false,
+      String searchQuery}) async {
     if (!authService.checkSignedIn) {
       print('User not logged in');
       return FetchedList();
     }
 
-    return requestService
-        .listFiles(
-            path: path,
-            starred: type == ListType.Starred,
-            trashed: type == ListType.Trash)
-        .then((fetched) {
+    Future<FetchedList> fetchedList;
+    if (!useCached || cached == null) {
+      fetchedList = requestService
+          .listFiles(
+          path: path,
+          starred: type == ListType.Starred,
+          trashed: type == ListType.Trash);
+    } else {
+      fetchedList = Future.value(cached);
+    }
+
+    return fetchedList.then((fetched) {
       if (update) {
         var baseParts = path.trimText('/').split('/');
         if (baseParts.length == 1 && baseParts[0].isEmpty) {
@@ -60,10 +74,15 @@ class FileService {
 
         files.setEverything(fetched.files);
 
+        if (searchQuery?.isNotEmpty ?? false) {
+          folders.retainWhere((file) => file.contains(searchQuery));
+          files.retainWhere((file) => file.name.contains(searchQuery));
+        }
+
         sortFiles(sortType, sortOrder);
       }
 
-      return fetched;
+      return cached = fetched;
     });
   }
 

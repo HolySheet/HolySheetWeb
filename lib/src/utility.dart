@@ -62,10 +62,9 @@ extension ListUtils<T> on List<T> {
   List<T> setEverything(Iterable<T> items) => this..clear()..addAll(items);
 
   void reverse() {
-//    setAll(0, reversed.clone());
-    var rev = reversed.clone();
+    var temp = reversed.clone();
     clear();
-    addAll(rev);
+    addAll(temp);
   }
 
   T start() => length > 0 ? elementAt(0) : null;

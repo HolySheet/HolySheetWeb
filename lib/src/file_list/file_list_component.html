@@ -1,14 +1,9 @@
 <div class="dropdown raised" id="sort-dropdown">
     <ul class="dropdown-menu">
-        <li class="menu-item" (click)="toggleSortOrder()">
-            <material-icon [icon]="sortOrder.icon" class="mr-3"></material-icon>
-            <a class="item-link">{{ sortOrder.name }}</a>
-        </li>
-
-        <li class="menu-separator"></li>
-
         <li *ngFor="let type of SortType.values" class="menu-item" [ngClass]="classIf(type == sortType, ['is-active', 'menu-item-primary'])" (click)="sortBy(type)">
-            <material-icon class="mr-3" icon="{{ type.icon }}"></material-icon>
+            <material-icon *ngIf="type != sortType" class="mr-3" icon="{{ type.icon }}"></material-icon>
+            <material-icon *ngIf="type == sortType" [icon]="sortOrder.icon" class="mr-3" (click)="toggleSortOrder()"></material-icon>
+
             <a class="item-link">{{ type.name }}</a>
         </li>
     </ul>
@@ -37,7 +32,7 @@
             </li>
         </ul>
 
-        <input *ngIf="searching" class="input input-round mx-2" placeholder="Search">
+        <input *ngIf="searching" id="search" class="input input-round mx-2" placeholder="Search" (input)="changeSearch($event)" (propertychange)="changeSearch($event)">
 
         <ul class="navigation-bar-menu">
             <template [ngIf]="fileService.selected.isNotEmpty">

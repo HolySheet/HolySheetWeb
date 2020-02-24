@@ -9,6 +9,10 @@ $red: #d32f2f;
     border-color: $primary-blue;
 }
 
+#search:focus {
+    outline: none;
+}
+
 .navigation-bar-menu {
     .path-item {
         height: 32px !important;
