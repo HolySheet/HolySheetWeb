@@ -1,10 +1,43 @@
+<div class="dropdown raised" id="sort-dropdown">
+    <ul class="dropdown-menu">
+        <li class="menu-item" (click)="toggleSortOrder()">
+            <material-icon [icon]="sortOrder.icon" class="mr-3"></material-icon>
+            <a class="item-link">{{ sortOrder.name }}</a>
+        </li>
+
+        <li class="menu-separator"></li>
+
+        <li *ngFor="let type of SortType.values" class="menu-item" [ngClass]="classIf(type == sortType, ['is-active', 'menu-item-primary'])" (click)="sortBy(type)">
+            <material-icon class="mr-3" icon="{{ type.icon }}"></material-icon>
+            <a class="item-link">{{ type.name }}</a>
+        </li>
+    </ul>
+</div>
+
 <nav class="navigation-bar raised">
     <div class="container-fluid">
+
         <ul class="navigation-bar-menu">
-            <li *ngFor="let elem of pathElements" class="menu-item path-item" [attr.data-id]="elem.absolutePath" (dragover)="dragEnter($event)" (dragleave)="dragLeave($event)" (drop)="dropEnd($event, true)">
-                <a class="item-link" (click)="navigatePath(elem.absolutePath)">{{ elem.text }}</a>
+            <li class="menu-item dropdown-toggle" id="sort-button">
+                <i class="material-icons">filter_list</i>
+            </li>
+
+            <template [ngIf]="!searching">
+                <li class="menu-item dropdown-toggle" (click)="enableSearch()">
+                    <i class="material-icons">search</i>
+                </li>
+
+                <li *ngFor="let elem of pathElements" class="menu-item path-item" [attr.data-id]="elem.absolutePath" (dragover)="dragEnter($event)" (dragleave)="dragLeave($event)" (drop)="dropEnd($event, true)">
+                    <a class="item-link" (click)="navigatePath(elem.absolutePath)">{{ elem.text }}</a>
+                </li>
+            </template>
+
+            <li *ngIf="searching" class="menu-item dropdown-toggle" (click)="disableSearch()">
+                <i class="material-icons">clear</i>
             </li>
         </ul>
+
+        <input *ngIf="searching" class="input input-round mx-2" placeholder="Search">
 
         <ul class="navigation-bar-menu">
             <template [ngIf]="fileService.selected.isNotEmpty">

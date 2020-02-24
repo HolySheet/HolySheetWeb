@@ -3,17 +3,17 @@ import 'dart:html';
 
 import 'package:HolySheetWeb/src/services/auth_service.dart';
 import 'package:HolySheetWeb/src/services/context_service.dart';
-import 'package:HolySheetWeb/src/services/file_service.dart';
 import 'package:HolySheetWeb/src/services/file_send_service.dart';
+import 'package:HolySheetWeb/src/services/file_service.dart';
 import 'package:angular/angular.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:filesize/filesize.dart';
 import 'package:intl/intl.dart';
 
+import '../js.dart';
 import '../request_objects.dart';
 import '../utility.dart';
-import '../js.dart';
 
 @Component(
   selector: 'file-list',
@@ -25,7 +25,7 @@ import '../js.dart';
     NgFor,
     NgIf,
   ],
-  exports: [NavAction, GeneralActions, DropdownActions],
+  exports: [NavAction, GeneralActions, DropdownActions, SortType, SortOrder],
   changeDetection: ChangeDetectionStrategy.OnPush,
 )
 class FileListComponent implements OnInit, OnDestroy, OnActivate {
@@ -45,6 +45,7 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
       orElse: () => null);
 
   DragType dragType;
+  List<FetchedFile> dragging = [];
 
   @Input()
   bool showingDrop = false;
@@ -68,6 +69,15 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
   @Input()
   int uploadPercentage = 0;
 
+  @Input()
+  bool searching = false;
+
+  @Input()
+  SortType sortType = SortType.Time;
+
+  @Input()
+  SortOrder sortOrder = SortOrder.Desc;
+
   void Function() update;
 
   // The currently browsing path
@@ -75,14 +85,14 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
 
   set path(String path) {
     _path = path;
-      var progress = <String>[];
-      var p1 = ['', ...'$path'
-          .trimText('/')
-          .split('/')];
+    var progress = <String>[];
+    var p1 = ['', ...'$path'.trimText('/').split('/')];
     print(p1);
-    pathElements = p1.expand((path) => [PathElement(path, (progress..add(path)).join('/'))]).toList()
-        ..first.text = 'Documents'
-        ..first.absolutePath = '/';
+    pathElements = p1
+        .expand((path) => [PathElement(path, (progress..add(path)).join('/'))])
+        .toList()
+          ..first.text = 'Documents'
+          ..first.absolutePath = '/';
   }
 
   String get path => _path;
@@ -110,9 +120,8 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
     fileService.selected.clear();
     showRestore = listType == ListType.Trash;
 
-    authService.onSignedIn(() {
-      fileService.fetchFiles(listType, path);
-    });
+    authService.onSignedIn(() =>
+        fileService.fetchFiles(listType, path, true, sortType, sortOrder));
   }
 
   @override
@@ -137,6 +146,9 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
 
     contextService.registerContext('file-context', '#file-contextmenu',
         buttonSelector: '.file-contextmenu-button');
+
+    contextService.registerContext('sort-dropdown', '#sort-dropdown',
+        buttonSelector: '#sort-button');
 
     Timer waiting;
 
@@ -203,6 +215,8 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
     ]);
   }
 
+  // Upload/file controls
+
   void uploadFiles(File file) {
     uploading = true;
     update();
@@ -210,7 +224,7 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
       uploadPercentage = (percentage * 100).floor();
       update();
     }, onDone: () {
-      fileService.fetchFiles(listType, path);
+      fileService.fetchFiles(listType, path, true, sortType, sortOrder);
       uploadPercentage = 100;
       update();
       Timer(Duration(seconds: 1), () {
@@ -221,11 +235,9 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
     });
   }
 
-  List<FetchedFile> dragging = [];
-
   void dragStart(MouseEvent event) {
     dragType = DragType.InternalMoving;
-    dragging = [...fileService.selected];
+    dragging = fileService.selected.clone();
     if (dragging.isEmpty) {
       final target = getDataParent(event.target)?.getAttribute('data-id');
       if (target == null) {
@@ -255,8 +267,7 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
         calculatedPath = '$path$calculatedPath';
       }
 
-      fileService.moveFiles(dragging, calculatedPath)
-          .then((_) => update());
+      fileService.moveFiles(dragging, calculatedPath).then((_) => update());
       dragging = [];
     }
   }
@@ -283,10 +294,6 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
     file = '$path$file/';
     navigatePath(file);
   }
-
-  void navigatePath(String path) => router.navigate(
-      router.current.routePath.toUrl(),
-      NavigationParams(queryParameters: {'path': path}));
 
   /// Gets something like the title of a folder's card and goes up until it hits
   /// anything with the [data-id] attribute. If none is fount, null is returned.
@@ -317,22 +324,11 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
     }
   }
 
-  String formatDate(int date) {
-    var dateTime = DateTime.fromMillisecondsSinceEpoch(date);
-//    var format = DateFormat.yMd().add_jm();
-    var format = DateFormat.yMd();
-    return format.format(dateTime);
-  }
+  void navigatePath(String path) => router.navigate(
+      router.current.routePath.toUrl(),
+      NavigationParams(queryParameters: {'path': path}));
 
-  String formatTime(int date) {
-    var dateTime = DateTime.fromMillisecondsSinceEpoch(date);
-    var format = DateFormat.jm();
-    return format.format(dateTime);
-  }
-
-  String fileSize(int size) => filesize(size);
-
-  bool isSelected(FetchedFile file) => fileService.selected.contains(file);
+  // Dropdown clicks
 
   void dropdownClick(DropdownActions action) {
     contextService.hideContext();
@@ -413,9 +409,21 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
     }
   }
 
-  void uploadFile() {
-    querySelector('#fileElem').click();
-  }
+  void uploadFile() => querySelector('#fileElem').click();
+
+  // Top bar
+
+  void enableSearch() => searching = true;
+
+  void disableSearch() => searching = false;
+
+  void toggleSortOrder() =>
+      fileService.sortFiles(sortType, sortOrder = sortOrder.invert());
+
+  void sortBy(SortType type) =>
+      fileService.sortFiles(sortType = type, sortOrder);
+
+  List classIf(bool test, List classes) => test ? classes : [];
 
   @override
   void ngOnDestroy() {
@@ -425,6 +433,18 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
 
     fileService.updates.remove(update);
   }
+
+  // Utility methods
+
+  String formatDate(int date) =>
+      DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(date));
+
+  String formatTime(int date) =>
+      DateFormat.jm().format(DateTime.fromMillisecondsSinceEpoch(date));
+
+  String fileSize(int size) => filesize(size);
+
+  bool isSelected(FetchedFile file) => fileService.selected.contains(file);
 }
 
 /// Icons in the top right of the navigation bar.
@@ -439,6 +459,32 @@ enum DropdownActions { Select, Star, Rename, Download, Delete, Restore }
 enum ListType { Default, Starred, Trash }
 
 enum DragType { FileUpload, InternalMoving }
+
+class SortType {
+  static const Time = SortType('Time', 'access_time');
+  static const Name = SortType('Name', 'title');
+
+  static const values = <SortType>[SortType.Time, SortType.Name];
+
+  final String name;
+  final String icon;
+
+  const SortType(this.name, this.icon);
+}
+
+class SortOrder {
+  static const Asc = SortOrder('Ascend', 'keyboard_arrow_up');
+  static const Desc = SortOrder('Descend', 'keyboard_arrow_down');
+
+  static const values = <SortOrder>[SortOrder.Asc, SortOrder.Desc];
+
+  final String name;
+  final String icon;
+
+  const SortOrder(this.name, this.icon);
+
+  SortOrder invert() => this == Asc ? Desc : Asc;
+}
 
 class PathElement {
   String text;

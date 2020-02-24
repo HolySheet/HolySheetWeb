@@ -24,20 +24,13 @@ class FileService {
   Future<FetchedList> fetchFiles(
       [ListType type = ListType.Default,
       String path = '',
-      bool update = true]) async {
+      bool update = true,
+      SortType sortType = SortType.Time,
+      SortOrder sortOrder = SortOrder.Desc]) async {
     if (!authService.checkSignedIn) {
       print('User not logged in');
       return FetchedList();
     }
-
-    folders.clear();
-    files.clear();
-
-    folders.add('Movies');
-    files.add(FetchedFile('InfinityWar.mp4', '1Yb1djf22hLGv0DyvZu4MLkczap-k-qZC', '/', 51, 506978846, 1582064474667, false, 'Amazon Accounts', 'https://drive.google.com/drive/folders/1Yb1djf22hLGv0DyvZu4MLkczap-k-qZC', false, false));
-    _triggerUpdate();
-
-    return null;
 
     return requestService
         .listFiles(
@@ -51,30 +44,43 @@ class FileService {
           baseParts = [];
         }
 
-        folders
-          ..clear()
-          ..addAll(fetched.folders.map((folder) {
-            var parts = folder.trimText('/').split('/');
+        folders.setEverything(fetched.folders.map((folder) {
+              var parts = folder.trimText('/').split('/');
 
-            for (var i in baseParts.asMap().keys) {
-              if (baseParts[i] != parts.elementAt(i)) {
-                return null;
+              for (var i in baseParts.asMap().keys) {
+                if (baseParts[i] != parts.elementAt(i)) {
+                  return null;
+                }
               }
-            }
 
-            parts.removeRange(0, baseParts.length);
+              parts.removeRange(0, baseParts.length);
 
-            return parts.length == 1 ? parts.single : null;
-          }).where((i) => i?.isNotEmpty ?? false));
+              return parts.length == 1 ? parts.single : null;
+            }).where((i) => i?.isNotEmpty ?? false));
 
-        files
-          ..clear()
-          ..addAll(fetched.files);
-        _triggerUpdate();
+        files.setEverything(fetched.files);
+
+        sortFiles(sortType, sortOrder);
       }
 
       return fetched;
     });
+  }
+
+  void sortFiles(SortType type, SortOrder order) {
+    files.sort(<SortType, int Function(FetchedFile, FetchedFile)>{
+      SortType.Time: (a, b) => a.date.compareTo(b.date),
+      SortType.Name: (a, b) => a.name.toUpperCase().compareTo(b.name.toUpperCase())
+    }[type]);
+
+    folders.sort();
+
+    if (order == SortOrder.Asc) {
+      files.reverse();
+      folders.reverse();
+    }
+
+    _triggerUpdate();
   }
 
   Future<void> deleteSelected() async => deleteFiles(selected);

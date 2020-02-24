@@ -30,6 +30,10 @@ extension StringUtils on String {
   }
 }
 
+extension IterationUtils<T> on Iterable<T> {
+  List<T> clone() => [...this];
+}
+
 extension ListUtils<T> on List<T> {
 
   /// If [element] is contained in the list, it will remove it and return false.
@@ -53,6 +57,15 @@ extension ListUtils<T> on List<T> {
       }
     }
     return removed;
+  }
+
+  List<T> setEverything(Iterable<T> items) => this..clear()..addAll(items);
+
+  void reverse() {
+//    setAll(0, reversed.clone());
+    var rev = reversed.clone();
+    clear();
+    addAll(rev);
   }
 
   T start() => length > 0 ? elementAt(0) : null;
