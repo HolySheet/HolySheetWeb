@@ -12,7 +12,7 @@ import 'package:HolySheetWeb/src/js.dart';
 import 'package:HolySheetWeb/src/request_utils.dart';
 import 'package:HolySheetWeb/src/routes.dart';
 import 'package:HolySheetWeb/src/services/settings_service.dart';
-import 'package:HolySheetWeb/src/settings/file_send_service.dart';
+import 'package:HolySheetWeb/src/services/file_send_service.dart';
 import 'package:angular/angular.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
 import 'package:angular_router/angular_router.dart';
@@ -53,7 +53,6 @@ class AppComponent implements OnInit, OnDestroy {
   bool showNavigation = false;
 
   Map<String, bool> activeClasses = {};
-  final settingsNav = NavListData('Settings', '', RoutePaths.settings);
   final sidebarNav = [
     NavListData('Files', 'folder', RoutePaths.files),
     NavListData('Starred', 'star', RoutePaths.starred),
@@ -82,7 +81,7 @@ class AppComponent implements OnInit, OnDestroy {
     'console.log'('Hello ${authService.basicProfile?.fullName ?? 'unknown'}!');
 
     _router.onRouteActivated.listen((state) {
-      var activeNav = [settingsNav, ...sidebarNav].firstWhere(
+      var activeNav = sidebarNav.firstWhere(
           (data) => data.route.path == state.routePath.path,
           orElse: () => null);
       if (showNavigation = activeNav != null) {
@@ -112,8 +111,19 @@ class AppComponent implements OnInit, OnDestroy {
 
   void mobileToggle(String selector) => document
       .querySelector(selector)
-      .classes
-      .toggleAll(['d-none', 'sidebar-mobile']);
+      ?.classes
+//      .toggleAll(['d-none', 'sidebar-mobile']);
+      ?.toggle('is-active');
+
+  void toggleSidebar() => document.getElementById('sidebar')?.classes?.toggle('is-collapsed');
+
+  void closeMobileSidebar() => mobileToggle('#sidebar-mobile');
+
+  void sidebarExit(MouseEvent event) {
+    if ((event.target as HtmlElement).id == 'sidebar-mobile') {
+      closeMobileSidebar();
+    }
+  }
 
   @override
   void ngOnInit() {

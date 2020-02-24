@@ -70,7 +70,7 @@ class RequestService {
         query: {'path': path, 'starred': starred, 'trashed': trashed});
 
     if (!response.success) {
-      throw ('List request not successful. Code ${response.status}\n${response.json}');
+      throw 'List request not successful. Code ${response.status}\n${response.json}';
     }
 
     return FetchedList(List.of(response.json['files'])

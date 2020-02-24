@@ -45,8 +45,8 @@
                 <material-icon icon="add"></material-icon>
             </li>
 
-            <li class="menu-item d-md-none contextmenu-toggle" id="actions-button">
-                <i class="material-icons">more_vert</i>
+            <li class="menu-item contextmenu-toggle d-md-none" id="actions-button">
+                <material-icon icon="more_vert"></material-icon>
             </li>
         </ul>
     </div>
@@ -147,7 +147,7 @@
     </ul>
 </div>
 
-<div id="drop-area" [class.dropping]="showingDrop" class="contextmenu-toggle" data-contextName="files">
+<div id="drop-area" [class.dropping]="showingDrop" class="contextmenu-toggle right-content container-fluid pt-2" data-contextName="files">
     <div id="upload-progress" [class.show]="uploading" [style.width.%]="uploadPercentage"></div>
     <form id="drop-form" #form enctype="multipart/form-data">
         <div id="upload-text" *ngIf="showingDrop">
@@ -166,7 +166,7 @@
                         <h2 class="header-title header-title-large header-title-nowrap">{{ file }}</h2>
 
                         <ul class="header-menu d-flex d-md-none">
-                            <li class="menu-item dropdown-toggle" data-dropdown="#folder-menu">
+                            <li class="menu-item dropdown-toggle file-contextmenu-button">
                                 <material-icon icon="more_vert"></material-icon>
                             </li>
                         </ul>
@@ -184,7 +184,7 @@
                         <h2 class="header-title header-title-large header-title-nowrap">{{ file.name }}</h2>
 
                         <ul class="header-menu d-flex d-md-none">
-                            <li class="menu-item dropdown-toggle" data-dropdown="#file-menu">
+                            <li class="menu-item dropdown-toggle file-contextmenu-button">
                                 <material-icon icon="more_vert"></material-icon>
                             </li>
                         </ul>

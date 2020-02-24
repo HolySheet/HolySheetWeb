@@ -4,7 +4,7 @@ import 'dart:html';
 import 'package:HolySheetWeb/src/services/auth_service.dart';
 import 'package:HolySheetWeb/src/services/context_service.dart';
 import 'package:HolySheetWeb/src/services/file_service.dart';
-import 'package:HolySheetWeb/src/settings/file_send_service.dart';
+import 'package:HolySheetWeb/src/services/file_send_service.dart';
 import 'package:angular/angular.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
 import 'package:angular_router/angular_router.dart';
@@ -129,10 +129,14 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
           ..add(clickedFile);
       }
 
-      starMode = fileService.selected.any((file) => !file.starred);
+      starMode = fileService.selected.any((file) => !(file?.starred ?? false));
     });
+
     contextService.registerContext('actions', '#actions-dropdown',
         buttonSelector: '#actions-button');
+
+    contextService.registerContext('file-context', '#file-contextmenu',
+        buttonSelector: '.file-contextmenu-button');
 
     Timer waiting;
 
@@ -201,12 +205,19 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
 
   void uploadFiles(File file) {
     uploading = true;
+    update();
     fileSendService.send(file, path, onProgress: (percentage) {
       uploadPercentage = (percentage * 100).floor();
+      update();
     }, onDone: () {
       fileService.fetchFiles(listType, path);
-      uploading = false;
-      Timer(Duration(seconds: 1), () => uploadPercentage = 0);
+      uploadPercentage = 100;
+      update();
+      Timer(Duration(seconds: 1), () {
+        uploading = false;
+        update();
+        Timer(Duration(seconds: 1), () => uploadPercentage = 0);
+      });
     });
   }
 

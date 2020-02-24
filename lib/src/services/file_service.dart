@@ -30,6 +30,15 @@ class FileService {
       return FetchedList();
     }
 
+    folders.clear();
+    files.clear();
+
+    folders.add('Movies');
+    files.add(FetchedFile('InfinityWar.mp4', '1Yb1djf22hLGv0DyvZu4MLkczap-k-qZC', '/', 51, 506978846, 1582064474667, false, 'Amazon Accounts', 'https://drive.google.com/drive/folders/1Yb1djf22hLGv0DyvZu4MLkczap-k-qZC', false, false));
+    _triggerUpdate();
+
+    return null;
+
     return requestService
         .listFiles(
             path: path,
@@ -56,7 +65,7 @@ class FileService {
             parts.removeRange(0, baseParts.length);
 
             return parts.length == 1 ? parts.single : null;
-          }).where((i) => i != null));
+          }).where((i) => i?.isNotEmpty ?? false));
 
         files
           ..clear()
@@ -105,10 +114,7 @@ class FileService {
           .then((_) => this.files.removeAll(files));
 
   Future<void> createFolder(String path) async =>
-      requestService.createFolder(path).then((_) {
-        print('folders add "$path"');
-        folders.add(path);
-      });
+      requestService.createFolder(path).then((_) => folders.add(path));
 
   void _triggerUpdate() {
     for (var callback in updates) {

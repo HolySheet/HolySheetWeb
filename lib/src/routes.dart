@@ -30,12 +30,12 @@ class Routes {
     component: file_list_component.FileListComponentNgFactory,
   );
 
-  static final settings = RouteDefinition(
-    routePath: RoutePaths.settings,
-    component: settings_component.SettingsComponentNgFactory,
-  );
+//  static final settings = RouteDefinition(
+//    routePath: RoutePaths.settings,
+//    component: settings_component.SettingsComponentNgFactory,
+//  );
 
-  static final all = <RouteDefinition>[home, files, starred, trash, settings];
+  static final all = <RouteDefinition>[home, files, starred, trash];
 }
 
 class RoutePaths {
@@ -43,5 +43,5 @@ class RoutePaths {
   static final files = RoutePath(path: 'files');
   static final starred = RoutePath(path: 'starred');
   static final trash = RoutePath(path: 'trash');
-  static final settings = RoutePath(path: 'settings');
+//  static final settings = RoutePath(path: 'settings');
 }

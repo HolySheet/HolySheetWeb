@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:html';
-import '../js.dart';
 
 import 'package:angular/angular.dart';
+
+import '../js.dart';
 
 @Injectable()
 class ContextService {
@@ -16,6 +17,7 @@ class ContextService {
 
   // The ID of the file that has the context menu for it, if any
   String _fileContextId;
+
   String get fileContextId => _fileContextId;
 
   void init() {
@@ -47,16 +49,20 @@ class ContextService {
         return;
       }
 
+      var button;
       var clickedButton = contextMenus
           .where((context) => context.buttonSelector != null)
           .firstWhere(
-              (context) => document
-                  .querySelector(context.buttonSelector)
-                  ?.contains(clicked) ?? false,
+              (context) {
+                button = document
+                      .querySelectorAll(context.buttonSelector)
+                      ?.firstWhere((element) => element.contains(clicked), orElse: () => null);
+                return button != null;
+              },
               orElse: () => null);
 
       if (clickedButton != null) {
-        _activeDropdown(clickedButton);
+        _activeDropdown(clickedButton, button);
         return;
       }
 
@@ -67,37 +73,18 @@ class ContextService {
     });
   }
 
-  void _activeDropdown(Context context) {
+  void _activeDropdown(Context context, Element button) {
     if (!(context.showing = !context.showing)) {
       return;
     }
 
-    final button = document.querySelector(context.buttonSelector);
     final dropdown = document.querySelector(context.contextSelector);
 
-    var height = button.clientHeight;
-    var width = button.clientWidth;
-
-    var top = button.offset.top;
-    var left = button.offset.left;
-
-    var dropdownHeight = dropdown.clientHeight;
-    var dropdownWidth = dropdown.clientWidth;
-
-    var documentHeight = document.body.clientHeight;
-    var documentWidth = document.body.clientWidth;
-
-    if (top + height + dropdownHeight > documentHeight) {
-      dropdown.style.top = '${top - dropdownHeight}px';
-    } else {
-      dropdown.style.top = '${top + height}px';
-    }
-
-    if (left + dropdownWidth > documentWidth) {
-      dropdown.style.left = '${left + width - dropdownWidth}px';
-    } else {
-      dropdown.style.left = '${left}px';
-    }
+    setDropdownPos(dropdown,
+        x: button.getBoundingClientRect().left,
+        y: button.getBoundingClientRect().top,
+        offsetX: button.clientWidth,
+        offsetY: button.offsetHeight);
 
     context.showing = true;
   }
@@ -132,31 +119,37 @@ class ContextService {
 
     _fileContextId = target.getAttribute('data-id');
 
-    var x = event.page.x - window.scrollX;
-    var y = event.page.y - window.scrollY;
-
-    var dropdownHeight = contextNode.clientHeight;
-    var dropdownWidth = contextNode.clientWidth;
-
-    var documentHeight = document.body.clientHeight;
-    var documentWidth = document.body.clientWidth;
-
-    if (y + dropdownHeight > documentHeight) {
-      contextNode.style.top = '${y - dropdownHeight}px';
-    } else {
-      contextNode.style.top = '${y}px';
-    }
-
-    if (x + dropdownWidth > documentWidth) {
-      contextNode.style.left = '${x - dropdownWidth}px';
-    } else {
-      contextNode.style.left = '${x}px';
-    }
+    setDropdownPos(contextNode, x: event.page.x, y: event.page.y);
 
     context.showing = true;
     context.onShowContext?.call(_fileContextId);
 
     return true;
+  }
+
+  void setDropdownPos(Element dropdown,
+      {int x, int y, int offsetX = 0, int offsetY = 0}) {
+
+    x -= window.scrollX;
+    y -= window.scrollY;
+
+    var dropdownHeight = dropdown.clientHeight;
+    var dropdownWidth = dropdown.clientWidth;
+
+    var documentHeight = document.body.clientHeight;
+    var documentWidth = document.body.clientWidth;
+
+    if (y + dropdownHeight > documentHeight) {
+      dropdown.style.top = '${y + offsetY}px';
+    } else {
+      dropdown.style.top = '${y + offsetY}px';
+    }
+
+    if (x + dropdownWidth > documentWidth) {
+      dropdown.style.left = '${x + offsetX - dropdownWidth}px';
+    } else {
+      dropdown.style.left = '${x + offsetX}px';
+    }
   }
 
   void hideContext() {
@@ -170,7 +163,8 @@ class ContextService {
     _clickSub?.cancel();
   }
 
-  void registerContext(String name, String selector, {String buttonSelector, Function(String) onShowContext}) {
+  void registerContext(String name, String selector,
+      {String buttonSelector, Function(String) onShowContext}) {
     contextMenus.removeWhere((context) => context.name == name);
 
     contextMenus.add(Context(name, selector, buttonSelector, onShowContext));
@@ -204,5 +198,6 @@ class Context {
     }
   }
 
-  Context(this.name, this.contextSelector, this.buttonSelector, [this.onShowContext]);
+  Context(this.name, this.contextSelector, this.buttonSelector,
+      [this.onShowContext]);
 }
