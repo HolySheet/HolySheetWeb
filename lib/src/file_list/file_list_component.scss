@@ -13,6 +13,10 @@ $red: #d32f2f;
     outline: none;
 }
 
+.overflow-break {
+    overflow-wrap: break-word;
+}
+
 .navigation-bar-menu {
     .path-item {
         height: 32px !important;

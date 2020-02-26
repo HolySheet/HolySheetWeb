@@ -98,6 +98,9 @@ class RequestService {
   Future<void> createFolder(String path) =>
       makeAuthedRequest('/createfolder', query: {'path': path});
 
+  Future<void> renameFile(FetchedFile file, String name) =>
+    makeAuthedRequest('/rename', query: {'id': file.id, 'name': name});
+
   String getIdList(List<FetchedFile> files) =>
       files.map((file) => file.id).join(',');
 }

@@ -1,3 +1,5 @@
+<!-- Dropdown/contexts -->
+
 <div class="dropdown raised" id="sort-dropdown">
     <ul class="dropdown-menu">
         <li *ngFor="let type of SortType.values" class="menu-item" [ngClass]="classIf(type == sortType, ['is-active', 'menu-item-primary'])" (click)="sortBy(type)">
@@ -8,6 +10,135 @@
         </li>
     </ul>
 </div>
+
+<div class="dropdown raised">
+    <a class="item-link">Documents</a>
+    <material-icon icon="keyboard_arrow_right"></material-icon>
+    <a class="item-link">Other</a>
+</div>
+
+<div class="dropdown raised" id="actions-dropdown">
+    <ul class="dropdown-menu">
+        <li class="menu-item" (click)="navItemClick(NavAction.Clear)">
+            <i class="material-icons mr-3">clear</i>
+            <a class="item-link">Clear</a>
+        </li>
+
+        <li class="menu-item" (click)="navItemClick(NavAction.Star)">
+            <i class="material-icons mr-3">star</i>
+            <a class="item-link">{{ starMode ? 'Star' : 'Unstar' }}</a>
+        </li>
+
+        <li class="menu-item" (click)="navItemClick(NavAction.Download)">
+            <i class="material-icons mr-3">save_alt</i>
+            <a class="item-link">Download</a>
+        </li>
+
+        <li class="menu-item text-danger" (click)="navItemClick(NavAction.Delete)">
+            <i class="material-icons mr-3">delete</i>
+            <a class="item-link">Delete</a>
+        </li>
+
+        <li class="menu-item text-primary" *ngIf="showRestore" (click)="navItemClick(NavAction.Restore)">
+            <i class="material-icons mr-3">restore_from_trash</i>
+            <a class="item-link">Restore</a>
+        </li>
+
+        <li class="menu-divide"></li>
+
+        <li class="menu-item" (click)="navItemClick(NavAction.NewFolder)">
+            <i class="material-icons mr-3">create_new_folder</i>
+            <a class="item-link">Create new folder</a>
+        </li>
+
+        <li class="menu-item text-primary" (click)="navItemClick(NavAction.Upload)">
+            <i class="material-icons mr-3">add</i>
+            <a class="item-link">Upload</a>
+        </li>
+    </ul>
+</div>
+
+<div class="dropdown raised" id="file-contextmenu">
+    <ul class="dropdown-menu">
+        <li class="menu-item" (click)="dropdownClick(DropdownActions.Select)">
+            <i class="material-icons mr-3">check</i>
+            <a class="item-link">Select</a>
+        </li>
+
+        <li class="menu-item" (click)="dropdownClick(DropdownActions.Star)">
+            <i class="material-icons mr-3">star</i>
+            <a class="item-link">{{ starMode ? 'Star' : 'Unstar' }}</a>
+        </li>
+
+        <li *ngIf="fileService.selected.length <= 1" class="menu-item" (click)="dropdownClick(DropdownActions.Rename)">
+            <i class="material-icons mr-3">edit</i>
+            <a class="item-link">Rename</a>
+        </li>
+
+        <li class="menu-item" (click)="dropdownClick(DropdownActions.Download)">
+            <i class="material-icons mr-3">save_alt</i>
+            <a class="item-link">Download</a>
+        </li>
+
+        <li class="menu-item text-danger" (click)="dropdownClick(DropdownActions.Delete)">
+            <i class="material-icons mr-3">delete</i>
+            <a class="item-link">Delete</a>
+        </li>
+
+        <li class="menu-item text-primary" *ngIf="showRestore" (click)="dropdownClick(DropdownActions.Restore)">
+            <i class="material-icons mr-3">restore_from_trash</i>
+            <a class="item-link">Restore</a>
+        </li>
+    </ul>
+</div>
+
+<div class="dropdown raised" id="files-contextmenu">
+    <ul class="dropdown-menu">
+        <li class="menu-item" (click)="generalClick(GeneralActions.NewFolder)">
+            <i class="material-icons mr-3">create_new_folder</i>
+            <a class="item-link">Create new folder</a>
+        </li>
+
+        <li class="menu-item text-primary" (click)="generalClick(GeneralActions.Upload)">
+            <i class="material-icons mr-3">add</i>
+            <a class="item-link">Upload</a>
+        </li>
+    </ul>
+</div>
+
+<!-- End of dropdown/contexts -->
+
+<!-- Modals -->
+
+<hs-modal #deleteModal id="delete-modal" title="Permanent deletion confirmation">
+    <p *ngIf="(deleteModal['files']?.length ?? 0) == 1" class="card-description mb-2">Are you sure you want to delete <span class="text-danger">{{ deleteModal['files'][0] }}</span>? This action is <em>not</em> reversible.</p>
+
+    <template [ngIf]="(deleteModal['files']?.length ?? 0) > 1">
+        <p class="card-description mb-2">Are you sure you want to delete the following files? This action is <em>not</em> reversible.</p>
+        <ul class="overflow-break mb-2">
+            <li *ngFor="let file of deleteModal['files']"><span class="text-danger">{{ file }}</span></li>
+        </ul>
+    </template>
+
+    <div button>
+        <button class="button rounded button-danger mr-1" (click)="deleteModal.confirm()">Yes</button>
+        <button class="button button-outline rounded" (click)="deleteModal.cancel()">No</button>
+    </div>
+</hs-modal>
+
+<hs-modal #renameModal title="Rename file">
+    <p>Rename <span class="text-danger">{{ renameModal['filename'] }}</span> to:</p>
+
+    <label class="label" for="renameInput">File</label>
+    <input #renameInput class="rounded input input-border mb-3" id="renameInput" placeholder="file.extension">
+
+    <div button>
+        <button class="button rounded button-primary mr-1" (click)="renameModal.confirm()">Rename</button>
+        <button class="button button-outline rounded" (click)="renameModal.cancel()">Cancel</button>
+    </div>
+</hs-modal>
+
+<!-- End of modals -->
 
 <nav class="navigation-bar raised">
     <div class="container-fluid">
@@ -80,102 +211,7 @@
     </div>
 </nav>
 
-<div class="dropdown raised">
-    <a class="item-link">Documents</a>
-    <material-icon icon="keyboard_arrow_right"></material-icon>
-    <a class="item-link">Other</a>
-</div>
-
-<div class="dropdown raised" id="actions-dropdown">
-    <ul class="dropdown-menu">
-        <li class="menu-item" (click)="navItemClick(NavAction.Clear)">
-            <i class="material-icons mr-3">clear</i>
-            <a class="item-link">Clear</a>
-        </li>
-
-        <li class="menu-item" (click)="navItemClick(NavAction.Star)">
-            <i class="material-icons mr-3">star</i>
-            <a class="item-link">{{ starMode ? 'Star' : 'Unstar' }}</a>
-        </li>
-
-        <li class="menu-item" (click)="navItemClick(NavAction.Download)">
-            <i class="material-icons mr-3">save_alt</i>
-            <a class="item-link">Download</a>
-        </li>
-
-        <li class="menu-item text-danger" (click)="navItemClick(NavAction.Delete)">
-            <i class="material-icons mr-3">delete</i>
-            <a class="item-link">Delete</a>
-        </li>
-
-        <li class="menu-item text-primary" *ngIf="showRestore" (click)="navItemClick(NavAction.Restore)">
-            <i class="material-icons mr-3">restore_from_trash</i>
-            <a class="item-link">Restore</a>
-        </li>
-
-        <li class="menu-divide"></li>
-
-        <li class="menu-item" (click)="navItemClick(NavAction.NewFolder)">
-            <i class="material-icons mr-3">create_new_folder</i>
-            <a class="item-link">Create new folder</a>
-        </li>
-
-        <li class="menu-item text-primary" (click)="navItemClick(NavAction.Upload)">
-            <i class="material-icons mr-3">add</i>
-            <a class="item-link">Upload</a>
-        </li>
-    </ul>
-</div>
-
-<div class="dropdown raised" id="file-contextmenu">
-    <ul class="dropdown-menu">
-        <li class="menu-item" (click)="dropdownClick(DropdownActions.Select)">
-            <i class="material-icons mr-3">check</i>
-            <a class="item-link">Select</a>
-        </li>
-
-        <li class="menu-item" (click)="dropdownClick(DropdownActions.Star)">
-            <i class="material-icons mr-3">star</i>
-            <a class="item-link">{{ starMode ? 'Star' : 'Unstar' }}</a>
-        </li>
-
-        <li *ngIf="fileService.selected.length == 1" class="menu-item" (click)="dropdownClick(DropdownActions.Rename)">
-            <i class="material-icons mr-3">edit</i>
-            <a class="item-link">Rename</a>
-        </li>
-
-        <li class="menu-item" (click)="dropdownClick(DropdownActions.Download)">
-            <i class="material-icons mr-3">save_alt</i>
-            <a class="item-link">Download</a>
-        </li>
-
-        <li class="menu-item text-danger" (click)="dropdownClick(DropdownActions.Delete)">
-            <i class="material-icons mr-3">delete</i>
-            <a class="item-link">Delete</a>
-        </li>
-
-        <li class="menu-item text-primary" *ngIf="showRestore" (click)="dropdownClick(DropdownActions.Restore)">
-            <i class="material-icons mr-3">restore_from_trash</i>
-            <a class="item-link">Restore</a>
-        </li>
-    </ul>
-</div>
-
-<div class="dropdown raised" id="files-contextmenu">
-    <ul class="dropdown-menu">
-        <li class="menu-item" (click)="generalClick(GeneralActions.NewFolder)">
-            <i class="material-icons mr-3">create_new_folder</i>
-            <a class="item-link">Create new folder</a>
-        </li>
-
-        <li class="menu-item text-primary" (click)="generalClick(GeneralActions.Upload)">
-            <i class="material-icons mr-3">add</i>
-            <a class="item-link">Upload</a>
-        </li>
-    </ul>
-</div>
-
-<div id="drop-area" [class.dropping]="showingDrop" class="contextmenu-toggle right-content container-fluid pt-2" data-contextName="files">
+<div id="drop-area" [class.dropping]="showingDrop" class="contextmenu-toggle pt-2" data-contextName="files">
     <div id="upload-progress" [class.show]="uploading" [style.width.%]="uploadPercentage"></div>
     <form id="drop-form" #form enctype="multipart/form-data">
         <div id="upload-text" *ngIf="showingDrop">

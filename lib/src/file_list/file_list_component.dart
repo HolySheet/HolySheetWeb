@@ -5,7 +5,9 @@ import 'package:HolySheetWeb/src/services/auth_service.dart';
 import 'package:HolySheetWeb/src/services/context_service.dart';
 import 'package:HolySheetWeb/src/services/file_send_service.dart';
 import 'package:HolySheetWeb/src/services/file_service.dart';
+import 'package:HolySheetWeb/src/settings/modal_component.dart';
 import 'package:angular/angular.dart';
+import 'package:angular_components/angular_components.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:filesize/filesize.dart';
@@ -20,6 +22,7 @@ import '../utility.dart';
   styleUrls: ['file_list_component.css'],
   templateUrl: 'file_list_component.html',
   directives: [
+    HSModalComponent,
     MaterialIconComponent,
     NgClass,
     NgFor,
@@ -47,6 +50,8 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
   DragType dragType;
   List<FetchedFile> dragging = [];
   Timer searchInputTimer;
+
+  bool showBasicDialog = true;
 
   @Input()
   bool showingDrop = false;
@@ -80,6 +85,15 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
   SortOrder sortOrder = SortOrder.Desc;
 
   void Function() update;
+
+  @ViewChild('deleteModal', read: HSModalComponent)
+  HSModalComponent deleteConfirm;
+
+  @ViewChild('renameModal', read: HSModalComponent)
+  HSModalComponent renameModal;
+
+  @ViewChild('renameInput')
+  InputElement renameInput;
 
   // The currently browsing path
   String _path = '/';
@@ -121,8 +135,8 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
     fileService.selected.clear();
     showRestore = listType == ListType.Trash;
 
-    authService.onSignedIn(() =>
-        fileService.fetchFiles(type: listType, path: path, sortType: sortType, sortOrder: sortOrder));
+    authService.onSignedIn(() => fileService.fetchFiles(
+        type: listType, path: path, sortType: sortType, sortOrder: sortOrder));
   }
 
   @override
@@ -225,7 +239,8 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
       uploadPercentage = (percentage * 100).floor();
       update();
     }, onDone: () {
-      fileService.fetchFiles(type: listType, path: path, sortType: sortType, sortOrder: sortOrder);
+      fileService.fetchFiles(
+          type: listType, path: path, sortType: sortType, sortOrder: sortOrder);
       uploadPercentage = 100;
       update();
       Timer(Duration(seconds: 1), () {
@@ -350,7 +365,7 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
         fileService.downloadSelected();
         break;
       case DropdownActions.Delete:
-        fileService.deleteSelected();
+        deleteSelected();
         break;
       case DropdownActions.Restore:
         fileService.restoreSelected();
@@ -385,7 +400,7 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
         fileService.downloadSelected();
         break;
       case NavAction.Delete:
-        fileService.deleteSelected();
+        deleteSelected();
         break;
       case NavAction.Restore:
         fileService.restoreSelected();
@@ -399,8 +414,27 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
     }
   }
 
+  void deleteSelected() {
+    if (listType == ListType.Trash) {
+      deleteConfirm.openPrompt(content: {
+        'files': fileService.selectedOrContext.map((file) => file.name).toList()
+      }, onConfirm: () => fileService.deleteSelected());
+    } else {
+      fileService.deleteSelected();
+    }
+  }
+
   void rename() {
-    print('Rename ${contextService.fileContextId}');
+    var renaming = fileService.selectedOrContext[0];
+    renameModal.openPrompt(
+        content: {'filename': renaming.name},
+        onConfirm: () {
+          var name = renameInput?.value ?? '';
+          if (name.isNotEmpty) {
+            fileService.renameFile(renaming, name)
+                .then((_) => update());
+          }
+        });
   }
 
   void createFolder() {
@@ -416,7 +450,8 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
 
   void enableSearch() {
     searching = true;
-    Timer(Duration(milliseconds: 100), () => document.getElementById('search').focus());
+    Timer(Duration(milliseconds: 100),
+        () => document.getElementById('search').focus());
   }
 
   void disableSearch() => searching = false;
@@ -434,8 +469,15 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
   void changeSearch(Event shit) {
     final elem = shit.target as InputElement;
     searchInputTimer?.cancel();
-    searchInputTimer = Timer(Duration(milliseconds: 250), () =>
-        fileService.fetchFiles(type: listType, path: path, sortType: sortType, sortOrder: sortOrder, useCached: true, searchQuery: elem.value));
+    searchInputTimer = Timer(
+        Duration(milliseconds: 250),
+        () => fileService.fetchFiles(
+            type: listType,
+            path: path,
+            sortType: sortType,
+            sortOrder: sortOrder,
+            useCached: true,
+            searchQuery: elem.value));
   }
 
   @override

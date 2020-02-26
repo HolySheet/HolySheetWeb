@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-windows:
-    name: Docker Build
+    name: Deploy
     runs-on: ubuntu-latest
     container:
       image:  google/dart:latest

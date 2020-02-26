@@ -1,0 +1,17 @@
+<div id="delete" class="modal modal-card-wrapper" [class.is-active]="show">
+    <div class="card card-border-top card-danger rounded-bottom raised">
+        <div class="card-header mb-2">
+            <h2 class="header-title">{{ title }}</h2>
+
+            <ul class="header-menu">
+                <li class="menu-item">
+                    <material-icon icon="close" class="modal-toggle" (click)="onCancel()"></material-icon>
+                </li>
+            </ul>
+        </div>
+
+        <ng-content></ng-content>
+
+        <ng-content select="[button]"></ng-content>
+    </div>
+</div>
