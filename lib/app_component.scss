@@ -5,3 +5,20 @@
 a.downloader {
     display: none;
 }
+
+.brand-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 54px;
+}
+
+#logo {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+
+    &:hover {
+        filter: opacity(70%);
+    }
+}
