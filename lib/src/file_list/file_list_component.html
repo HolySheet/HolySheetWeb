@@ -115,7 +115,7 @@
 
 <!-- Modals -->
 
-<hs-modal #deleteModal id="delete-modal" title="Permanent deletion confirmation">
+<hs-modal #deleteModal id="delete-modal" [title]="'Permanent deletion confirmation'">
     <p *ngIf="(deleteModal['files']?.length ?? 0) == 1" class="card-description mb-2">Are you sure you want to delete <span class="text-danger">{{ deleteModal['files'][0] }}</span>? This action is <em>not</em> reversible.</p>
 
     <template [ngIf]="(deleteModal['files']?.length ?? 0) > 1">
@@ -131,7 +131,7 @@
     </div>
 </hs-modal>
 
-<hs-modal #renameModal title="Rename file">
+<hs-modal #renameModal [title]="'Rename file'">
     <p>Rename <span class="text-danger">{{ renameModal['filename'] }}</span> to:</p>
 
     <label class="label" for="renameInput">File</label>
@@ -143,7 +143,7 @@
     </div>
 </hs-modal>
 
-<hs-modal #infoModal title="File info">
+<hs-modal #infoModal [title]="'File info'">
     <p>Information for the file <span class="text-danger">{{ infoModal['file']?.name }}</span></p>
 
     <div class="card-menu mb-2 mt-2">

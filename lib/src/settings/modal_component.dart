@@ -13,7 +13,9 @@ import 'package:angular/angular.dart';
 class HSModalComponent {
   final ChangeDetectorRef changeRef;
 
+  @Input()
   String title;
+
   Map<String, dynamic> content = {};
   Function() onConfirm;
   Function() onCancel;
