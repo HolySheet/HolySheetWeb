@@ -70,6 +70,11 @@
             <a class="item-link">{{ starMode ? 'Star' : 'Unstar' }}</a>
         </li>
 
+        <li class="menu-item" (click)="dropdownClick(DropdownActions.Info)">
+            <i class="material-icons mr-3">info</i>
+            <a class="item-link">Info</a>
+        </li>
+
         <li *ngIf="fileService.selected.length <= 1" class="menu-item" (click)="dropdownClick(DropdownActions.Rename)">
             <i class="material-icons mr-3">edit</i>
             <a class="item-link">Rename</a>
@@ -138,6 +143,42 @@
     </div>
 </hs-modal>
 
+<hs-modal #infoModal title="File info">
+    <p>Information for the file <span class="text-danger">{{ infoModal['file']?.name }}</span></p>
+
+    <div class="card-menu mb-2 mt-2">
+        <li class="menu-item">
+            <p class="item-index">Size</p>
+
+            <p class="item-value">{{ infoModal['file']?.sheets }} Sheets / {{ fileSize(infoModal['file']?.size) }}</p>
+        </li>
+
+        <li class="menu-item">
+            <p class="item-index">Path</p>
+
+            <p class="item-value">{{ infoModal['file']?.path }}</p>
+        </li>
+
+        <li class="menu-item">
+            <p class="item-index">Created</p>
+
+            <p class="item-value">{{ formatDateTime(infoModal['file']?.date) }}</p>
+        </li>
+
+        <li class="menu-item">
+            <p class="item-index">Owner</p>
+
+            <p class="item-value"><span *ngIf="!(infoModal['file']?.selfOwned ?? false)" class="text-primary mr-2">Externally owned</span>{{ infoModal['file']?.owner }}</p>
+        </li>
+    </div>
+
+
+    <div button>
+        <button class="button rounded button-primary mr-1" (click)="openInDrive(infoModal['file']?.driveLink, infoModal)">Open in Drive</button>
+        <button class="button button-outline rounded" (click)="infoModal.cancel()">Close</button>
+    </div>
+</hs-modal>
+
 <!-- End of modals -->
 
 <nav class="navigation-bar raised">
@@ -178,6 +219,10 @@
 
                 <li class="menu-item d-none d-md-flex" (click)="navItemClick(NavAction.Star)">
                     <material-icon icon="star"></material-icon>
+                </li>
+
+                <li class="menu-item d-none d-md-flex" (click)="navItemClick(NavAction.Info)">
+                    <material-icon icon="info"></material-icon>
                 </li>
 
                 <li class="menu-item d-none d-md-flex" (click)="navItemClick(NavAction.Download)">

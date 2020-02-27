@@ -95,6 +95,9 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
   @ViewChild('renameInput')
   InputElement renameInput;
 
+  @ViewChild('infoModal', read: HSModalComponent)
+  HSModalComponent infoModal;
+
   // The currently browsing path
   String _path = '/';
 
@@ -358,6 +361,9 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
       case DropdownActions.Star:
         fileService.starSelected(starMode);
         break;
+      case DropdownActions.Info:
+        showInfo();
+        break;
       case DropdownActions.Rename:
         rename();
         break;
@@ -395,6 +401,9 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
         break;
       case NavAction.Star:
         fileService.starSelected(starMode);
+        break;
+      case NavAction.Info:
+        showInfo();
         break;
       case NavAction.Download:
         fileService.downloadSelected();
@@ -435,6 +444,16 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
                 .then((_) => update());
           }
         });
+  }
+
+  void showInfo() {
+    print('info for ${fileService.selectedOrContext[0].name}');
+    infoModal.openPrompt(content: {'file': fileService.selectedOrContext[0]});
+  }
+
+  void openInDrive(String link, HSModalComponent modal) {
+    modal.cancel();
+    window.open(link, '_blank');
   }
 
   void createFolder() {
@@ -491,25 +510,28 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
 
   // Utility methods
 
+  String formatDateTime(int date) =>
+      date == null ? null : DateFormat.yMd().add_jm().format(DateTime.fromMillisecondsSinceEpoch(date));
+
   String formatDate(int date) =>
-      DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(date));
+      date == null ? null : DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(date));
 
   String formatTime(int date) =>
-      DateFormat.jm().format(DateTime.fromMillisecondsSinceEpoch(date));
+      date == null ? null : DateFormat.jm().format(DateTime.fromMillisecondsSinceEpoch(date));
 
-  String fileSize(int size) => filesize(size);
+  String fileSize(int size) => size == null ? null : filesize(size);
 
   bool isSelected(FetchedFile file) => fileService.selected.contains(file);
 }
 
 /// Icons in the top right of the navigation bar.
-enum NavAction { Clear, Star, Download, Delete, Restore, NewFolder, Upload }
+enum NavAction { Clear, Star, Info, Download, Delete, Restore, NewFolder, Upload }
 
 /// General blank-space context menu items' actions.
 enum GeneralActions { NewFolder, Upload }
 
 /// Actions for file's context menus.
-enum DropdownActions { Select, Star, Rename, Download, Delete, Restore }
+enum DropdownActions { Select, Star, Info, Rename, Download, Delete, Restore }
 
 enum ListType { Default, Starred, Trash }
 

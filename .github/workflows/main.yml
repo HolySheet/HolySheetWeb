@@ -29,4 +29,3 @@ jobs:
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           LOCAL_DIR: build
           REMOTE_DIR: /var/www/holysheet.net/public_html
-          ARGS: --delete
