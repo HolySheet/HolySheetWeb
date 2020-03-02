@@ -1,3 +1,136 @@
-<center><h1>HolySheet Home!</h1></center>
-<center><p>This is the homepage for HolySheet!</p></center>
-<center *ngIf="authService.signedIn"><a class="item-link" (click)="goToFiles()">Go to files</a></center>
+<nav class="d-none d-lg-flex navigation-bar raised sticky sticky-top">
+    <div class="container">
+        <ul class="navigation-bar-menu">
+            <li class="menu-item menu-item-primary is-active">
+                <i class="material-icons mr-1">bookmark</i>
+                <a class="item-link">Overview</a>
+            </li>
+
+            <li class="menu-item">
+                <i class="material-icons mr-1">visibility</i>
+                <a class="item-link">Behind the scenes</a>
+            </li>
+
+            <li class="menu-item">
+                <i class="material-icons mr-1">code</i>
+                <a class="item-link">Open source</a>
+            </li>
+        </ul>
+
+        <ul class="navigation-bar-menu">
+            <li class="menu-item" (click)="launch()">
+                <i class="material-icons mr-1">launch</i>
+                <a class="item-link">Launch</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<nav class="d-lg-none navigation-bar raised sticky sticky-top">
+    <div class="container">
+        <ul class="navigation-bar-menu">
+            <li class="menu-item">
+                <i class="material-icons">menu</i>
+            </li>
+        </ul>
+
+        <a class="brand brand-hover brand-primary">holysheet</a>
+
+        <ul class="navigation-bar-menu">
+            <li class="menu-item">
+                <img class="profile-picture profile-picture-small" src="https://static.artex.dev/artex.svg">
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="__holysheet-splash">
+    <span class="splash-pattern"></span>
+    <span class="splash-pattern"></span>
+
+    <div class="container">
+        <p class="splash-description">Unlimited file storage?</p>
+
+        <h2 class="splash-title">holy. sh*t.</h2>
+
+        <a class="button button-primary rounded mr-1">
+            <i class="material-icons mr-1">play_arrow</i>
+            Watch tutorial
+        </a>
+        <a class="button button-primary rounded" (click)="launch()">
+            <i class="material-icons mr-1">launch</i>
+            Launch
+        </a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="__holysheet-content">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card raised rounded-bottom card-border-top card-primary mb-5">
+                    <div class="card-header mb-2">
+                        <h2 class="header-title">Secure</h2>
+                    </div>
+
+                    <p class="card-description mb-1">We do not store any data on our own servers.</p>
+                    <p class="card-description mb-1">Instead, we use your Google account to efficiently store your files in Google Sheets.</p>
+                    <p class="card-description mb-3">You keep <strong>total control</strong> over your files.</p>
+
+                    <a class="button button-primary rounded">Read more</a>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card raised rounded-bottom card-border-top card-primary mb-5">
+                    <div class="card-header mb-2">
+                        <h2 class="header-title">Unlimited</h2>
+                    </div>
+
+                    <p class="card-description mb-3">Store any file of any size for <strong>free</strong> from anywhere. There are <strong>zero</strong> restrictions or limitations.</p>
+
+                    <ul class="card-menu">
+                        <li class="menu-item">
+                            <p class="item-index">Dropbox</p>
+
+                            <p class="item-value">
+                                <i class="material-icons mr-1 text-danger">close</i>
+                                2GB
+                            </p>
+                        </li>
+
+                        <li class="menu-item">
+                            <p class="item-index">Google Drive</p>
+
+                            <p class="item-value">
+                                <i class="material-icons mr-1 text-danger">close</i>
+                                15GB
+                            </p>
+                        </li>
+
+                        <li class="menu-item">
+                            <p class="item-index">HolySheet</p>
+
+                            <p class="item-value">
+                                <i class="material-icons mr-1 text-success">check</i>
+                                Unlimited
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card raised rounded-bottom card-border-top card-primary mb-5">
+                    <div class="card-header mb-2">
+                        <h2 class="header-title">User-friendly</h2>
+                    </div>
+
+                    <p class="card-description mb-3">Not only do we provide an intuitive online dashboard for managing your files, but we also created a command-line interface and desktop application for managing your files from anywhere.</p>
+
+                    <a class="button button-primary rounded mr-1">Download</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

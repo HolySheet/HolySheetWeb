@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:html';
 
+import 'package:HolySheetWeb/src/dashboard/dashboard_component.dart';
 import 'package:HolySheetWeb/src/services/auth_service.dart';
 import 'package:HolySheetWeb/src/services/context_service.dart';
 import 'package:HolySheetWeb/src/services/file_send_service.dart';
 import 'package:HolySheetWeb/src/services/file_service.dart';
-import 'package:HolySheetWeb/src/settings/modal_component.dart';
+import 'package:HolySheetWeb/src/modal/modal_component.dart';
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
@@ -24,6 +25,7 @@ import '../utility.dart';
   directives: [
     HSModalComponent,
     MaterialIconComponent,
+    DashboardComponent,
     NgClass,
     NgFor,
     NgIf,
@@ -128,7 +130,7 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
       ..markForCheck()
       ..detectChanges());
 
-    listType = current.routePath.additionalData as ListType;
+    listType = current.routePath.additionalData['listType'] as ListType;
 
     var urlPath = current.queryParameters['path'] ?? '/';
     if (PATH_REGEX.hasMatch(urlPath)) {

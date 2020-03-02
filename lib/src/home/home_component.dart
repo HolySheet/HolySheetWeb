@@ -27,4 +27,16 @@ class HomeComponent implements OnInit {
   void goToFiles() {
     _router.navigate(RoutePaths.files.path);
   }
+
+  void launch() {
+    print('launch');
+    if (authService.checkSignedIn) {
+      print('111');
+      _router.navigate(RoutePaths.files.path);
+//      RoutePaths.nav(_router, RoutePaths.files);
+    } else {
+      print('222');
+      authService.loginUser();
+    }
+  }
 }

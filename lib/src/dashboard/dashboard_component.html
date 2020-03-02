@@ -1,0 +1,67 @@
+<div id="sidebar-mobile" class="modal" (click)="sidebarExit($event)">
+    <nav class="sidebar">
+        <nav class="navigation-bar mb-1">
+            <div class="container-fluid">
+                <ul class="navigation-bar-menu">
+                    <li class="menu-item">
+                        <a class="item-link">HolySheet</a>
+                    </li>
+                </ul>
+
+                <ul class="navigation-bar-menu">
+                    <li class="menu-item modal-toggle" (click)="closeMobileSidebar()">
+                        <i class="material-icons">close</i>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <ul class="sidebar-menu">
+            <li *ngFor="let nav of sidebarNav" class="menu-item menu-item-primary" [class.is-active]="nav == active" (click)="navigate(nav)">
+                <material-icon icon="{{ nav.icon }}" class="mr-2" [class.text-primary]="nav == active"></material-icon>
+                <a class="item-link" [class.current]="nav == active">{{ nav.name }}</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<div class="dashboard">
+    <div class="dashboard-left d-none d-md-block">
+        <div id="sidebar" class="sidebar-wrapper">
+            <nav class="sidebar">
+                <nav class="navigation-bar mb-1">
+                    <div class="container-fluid">
+                        <ul class="navigation-bar-menu">
+                            <li class="menu-item">
+                                <a class="item-link">HolySheet</a>
+                            </li>
+                        </ul>
+
+                        <ul class="navigation-bar-menu">
+                            <li class="menu-item sidebar-toggle" (click)="toggleSidebar()">
+                                <i class="material-icons">close</i>
+                            </li>
+                        </ul>
+
+                        <ul class="navigation-bar-menu">
+                            <li class="menu-item sidebar-toggle" (click)="toggleSidebar()">
+                                <i class="material-icons">menu_open</i>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+
+                <ul class="sidebar-menu">
+                    <li *ngFor="let nav of sidebarNav" class="menu-item menu-item-primary" [class.is-active]="nav == active" (click)="navigate(nav)">
+                        <material-icon icon="{{ nav.icon }}" class="mr-2" [class.text-primary]="nav == active"></material-icon>
+                        <a class="item-link" [class.current]="nav == active">{{ nav.name }}</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <div class="dashboard-right">
+        <ng-content></ng-content>
+    </div>
+</div>

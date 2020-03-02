@@ -1,7 +1,7 @@
-<nav class="navigation-bar">
-    <div class="container-fluid">
+<nav class="d-none d-lg-flex navigation-bar">
+    <div [ngClass]="compactNavbar ? 'container' : 'container-fluid'">
         <div class="brand-container">
-            <img src="logos/holysheet.svg" alt="HolySheet logo" id="logo" class="mx-2" (click)="home()"/>
+            <img [class.mr-2]="!compactNavbar" src="logos/holysheet.svg" alt="HolySheet logo" id="logo" class="ml-2" (click)="home()"/>
             <a class="brand brand-primary brand-hover mx-1" (click)="home()">HolySheet</a>
         </div>
 
@@ -10,11 +10,11 @@
                 <a class="item-link" (click)="logout()">Log out</a>
             </li>
 
-            <li class="menu-item" (click)="mobileToggle('#sidebar-mobile')">
-                <a class="item-link">
-                    <material-icon icon="menu"></material-icon>
-                </a>
-            </li>
+<!--            <li class="menu-item" (click)="mobileToggle('#sidebar-mobile')">-->
+<!--                <a class="item-link">-->
+<!--                    <material-icon icon="menu"></material-icon>-->
+<!--                </a>-->
+<!--            </li>-->
         </ul>
 
         <ul class="navigation-bar-menu d-none d-md-flex" *ngIf="">
@@ -38,74 +38,4 @@
     </div>
 </nav>
 
-<div id="sidebar-mobile" class="modal" (click)="sidebarExit($event)">
-    <nav class="sidebar">
-        <nav class="navigation-bar mb-1">
-            <div class="container-fluid">
-                <!-- .is-collapsed issue: requires four .navigation-bar-menu -->
-                <ul class="navigation-bar-menu">
-                    <li class="menu-item">
-                        <a class="item-link">HolySheet</a>
-                    </li>
-                </ul>
-
-                <ul class="navigation-bar-menu">
-                    <li class="menu-item modal-toggle" (click)="closeMobileSidebar()">
-                        <i class="material-icons">close</i>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
-        <ul class="sidebar-menu">
-            <li *ngFor="let nav of sidebarNav" class="menu-item menu-item-primary" [class.is-active]="nav == active" (click)="navigate(nav)">
-                <material-icon icon="{{ nav.icon }}" class="mr-2" [class.text-primary]="nav == active"></material-icon>
-                <a class="item-link" [class.current]="nav == active">{{ nav.name }}</a>
-            </li>
-        </ul>
-    </nav>
-</div>
-
-
-
-<div class="dashboard">
-    <div *ngIf="showNavigation" class="dashboard-left d-none d-md-block">
-        <div id="sidebar" class="sidebar-wrapper">
-            <nav class="sidebar">
-                <nav class="navigation-bar mb-1">
-                    <div class="container-fluid">
-                        <!-- .is-collapsed issue: requires three .navigation-bar-menu -->
-                        <ul class="navigation-bar-menu">
-                            <li class="menu-item">
-                                <a class="item-link">HolySheet</a>
-                            </li>
-                        </ul>
-
-                        <ul class="navigation-bar-menu">
-                            <li class="menu-item sidebar-toggle" (click)="toggleSidebar()">
-                                <i class="material-icons">close</i>
-                            </li>
-                        </ul>
-
-                        <ul class="navigation-bar-menu">
-                            <li class="menu-item sidebar-toggle" (click)="toggleSidebar()">
-                                <i class="material-icons">menu_open</i>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
-
-                <ul class="sidebar-menu">
-                    <li *ngFor="let nav of sidebarNav" class="menu-item menu-item-primary" [class.is-active]="nav == active" (click)="navigate(nav)">
-                        <material-icon icon="{{ nav.icon }}" class="mr-2" [class.text-primary]="nav == active"></material-icon>
-                        <a class="item-link" [class.current]="nav == active">{{ nav.name }}</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </div>
-
-    <div class="dashboard-right"> <!--  [ngClass]="showNavigation ? 'col-md-10' : 'col-md-12'" -->
-        <router-outlet [routes]="Routes.all"></router-outlet>
-    </div>
-</div>
+<router-outlet [routes]="Routes.all"></router-outlet>
