@@ -1,24 +1,18 @@
-import 'dart:async';
-import 'dart:convert';
-import 'dart:html';
 import 'dart:js';
-import 'dart:js_util';
 
 import 'package:HolySheetWeb/src/dashboard/dashboard_component.dart';
-import 'package:HolySheetWeb/src/services/auth_service.dart';
-import 'package:HolySheetWeb/src/services/context_service.dart';
 import 'package:HolySheetWeb/src/file_list/file_list_component.dart';
-import 'package:HolySheetWeb/src/services/file_service.dart';
 import 'package:HolySheetWeb/src/js.dart';
 import 'package:HolySheetWeb/src/request_utils.dart';
 import 'package:HolySheetWeb/src/routes.dart';
-import 'package:HolySheetWeb/src/services/settings_service.dart';
+import 'package:HolySheetWeb/src/services/auth_service.dart';
+import 'package:HolySheetWeb/src/services/context_service.dart';
 import 'package:HolySheetWeb/src/services/file_send_service.dart';
+import 'package:HolySheetWeb/src/services/file_service.dart';
+import 'package:HolySheetWeb/src/services/settings_service.dart';
 import 'package:angular/angular.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
 import 'package:angular_router/angular_router.dart';
-import 'package:angular_router/testing.dart';
-import 'package:js/js.dart';
 
 @Component(
   selector: 'my-app',
@@ -55,13 +49,12 @@ class AppComponent {
 
   AppComponent(this.fileService, this.authService, this.contextService,
       this._router, this.changeRef) {
-
     context['signInChange'] = (bool signedIn) {
       print('Signed in: ${authService.signedIn = signedIn}');
+      changeRef
+        ..markForCheck()
+        ..detectChanges();
       if (signedIn) {
-        changeRef
-          ..markForCheck()
-          ..detectChanges();
         authService.updateCallbacks();
       }
     };
@@ -82,7 +75,16 @@ class AppComponent {
   void login() => authService.loginUser();
 
   void logout() {
-    authService.logoutUser();
-    home();
+    authService.logoutUser().then((_) {
+      print('bruh');
+      authService.checkSignedIn;
+      if (Routes.dashboard.contains(_router.current.routePath)) {
+        home();
+      }
+
+      changeRef
+        ..markForCheck()
+        ..detectChanges();
+    });
   }
 }

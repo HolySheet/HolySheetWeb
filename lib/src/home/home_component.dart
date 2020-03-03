@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:HolySheetWeb/src/routes.dart';
+import 'package:HolySheetWeb/src/js.dart';
 import 'package:HolySheetWeb/src/services/auth_service.dart';
 import 'package:angular/angular.dart';
+import 'package:angular_components/angular_components.dart';
 import 'package:angular_router/angular_router.dart';
 
 @Component(
@@ -12,6 +14,7 @@ import 'package:angular_router/angular_router.dart';
   directives: [
     NgFor,
     NgIf,
+    MaterialIconComponent,
   ],
 )
 class HomeComponent implements OnInit {
@@ -29,14 +32,14 @@ class HomeComponent implements OnInit {
   }
 
   void launch() {
-    print('launch');
     if (authService.checkSignedIn) {
-      print('111');
       _router.navigate(RoutePaths.files.path);
-//      RoutePaths.nav(_router, RoutePaths.files);
     } else {
-      print('222');
-      authService.loginUser();
+      authService.loginUser().then((user) {
+        if (authService.checkSignedIn) {
+          _router.navigate(RoutePaths.files.path);
+        }
+      });
     }
   }
 }

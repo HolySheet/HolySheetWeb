@@ -41,6 +41,9 @@ class Routes {
   );
 
   static final all = <RouteDefinition>[home, files, starred, trash];
+
+  // Pages in the dashboard will be left when logged out
+  static final dashboard = <RouteDefinition>[files, starred, trash];
 }
 
 class RoutePaths {

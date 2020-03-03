@@ -17,7 +17,7 @@
 <!--            </li>-->
         </ul>
 
-        <ul class="navigation-bar-menu d-none d-md-flex" *ngIf="">
+        <ul class="navigation-bar-menu d-none d-md-flex">
             <template [ngIf]="authService.signedIn">
                 <li class="menu-item">
                     <a class="item-link" (click)="logout()">Log out</a>

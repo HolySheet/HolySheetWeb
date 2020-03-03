@@ -28,20 +28,12 @@ import 'package:angular_router/angular_router.dart';
   ],
   exports: [Routes, RoutePaths],
 )
-class DashboardComponent implements OnInit {
+class DashboardComponent implements OnInit, OnDestroy {
   final FileService fileService;
   final AuthService authService;
   final ContextService contextService;
   final Router _router;
   final ChangeDetectorRef changeRef;
-
-  @ViewChild('shit')
-  set outlet(HtmlElement out) {
-    final outlet = out as RouterOutlet;
-    print('setting out! $outlet');
-    _router.registerRootOutlet(outlet);
-  }
-//  RouterOutlet outlet;
 
   NavListData active;
 
@@ -56,20 +48,6 @@ class DashboardComponent implements OnInit {
       this._router, this.changeRef) {
     active =
         sidebarNav.firstWhere((data) => data.isDefault, orElse: () => null);
-
-    context['signInChange'] = (bool signedIn) {
-      print('Signed in: ${authService.signedIn = signedIn}');
-      if (signedIn) {
-        changeRef
-          ..markForCheck()
-          ..detectChanges();
-        authService.updateCallbacks();
-      }
-    };
-
-    context['userChanged'] = (user) => changeRef
-      ..markForCheck()
-      ..detectChanges();
 
     _router.onRouteActivated.listen((state) {
       var activeNav = sidebarNav.firstWhere(
@@ -119,10 +97,6 @@ class DashboardComponent implements OnInit {
   @override
   void ngOnInit() {
     contextService.init();
-
-//    print('outlet: $outlet');
-
-//    _router.registerRootOutlet(outlet);
   }
 
   @override

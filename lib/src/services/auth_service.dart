@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:js';
 
 import 'package:HolySheetWeb/src/js.dart';
@@ -62,9 +63,11 @@ class AuthService {
     }
   }
 
-  void loginUser() => 'auth2.grantOfflineAccess'();
+  Future<dynamic> loginUser() =>
+      complete((completer) => 'auth2.signIn'<JsObject>().callMethod('then', [completer.complete]));
 
-  void logoutUser() => 'auth2.signOut'();
+  Future<void> logoutUser() =>
+      complete((completer) => 'auth2.signOut'<JsObject>().callMethod('then', [completer.complete]));
 }
 
 class BasicProfile {
