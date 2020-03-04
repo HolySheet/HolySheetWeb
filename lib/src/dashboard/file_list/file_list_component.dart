@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:html';
 
+import 'package:HolySheetWeb/src/js.dart';
+import 'package:HolySheetWeb/src/request_objects.dart';
+import 'package:HolySheetWeb/src/utility.dart';
 import 'package:HolySheetWeb/src/dashboard/dashboard_component.dart';
 import 'package:HolySheetWeb/src/services/auth_service.dart';
 import 'package:HolySheetWeb/src/services/context_service.dart';
@@ -13,10 +16,6 @@ import 'package:angular_components/material_icon/material_icon.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:filesize/filesize.dart';
 import 'package:intl/intl.dart';
-
-import '../js.dart';
-import '../request_objects.dart';
-import '../utility.dart';
 
 @Component(
   selector: 'file-list',

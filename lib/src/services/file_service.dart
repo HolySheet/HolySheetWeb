@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:HolySheetWeb/src/file_list/file_list_component.dart';
+import 'package:HolySheetWeb/src/dashboard/file_list/file_list_component.dart';
 import 'package:HolySheetWeb/src/request_objects.dart';
 import 'package:HolySheetWeb/src/request_utils.dart';
 import 'package:HolySheetWeb/src/services/auth_service.dart';

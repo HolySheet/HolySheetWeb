@@ -1,4 +1,5 @@
 import 'package:angular/angular.dart';
+import 'package:angular_router/angular_router.dart';
 
 @Component(
   selector: 'error',
@@ -13,5 +14,9 @@ import 'package:angular/angular.dart';
 class ErrorComponent {
   final ChangeDetectorRef changeRef;
 
-  ErrorComponent(this.changeRef);
+  String text = '-';
+
+  ErrorComponent(this.changeRef) {
+      text = '404! Uh oh!';
+  }
 }

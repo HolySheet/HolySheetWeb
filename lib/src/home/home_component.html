@@ -1,19 +1,9 @@
 <nav class="d-none d-lg-flex navigation-bar raised sticky sticky-top" xmlns="http://www.w3.org/1999/html">
     <div class="container">
         <ul class="navigation-bar-menu">
-            <li class="menu-item menu-item-primary is-active">
-                <material-icon icon="bookmark" class="mr-1"></material-icon>
-                <a class="item-link">Overview</a>
-            </li>
-
-            <li class="menu-item">
-                <material-icon icon="visibility" class="mr-1"></material-icon>
-                <a class="item-link">Behind the scenes</a>
-            </li>
-
-            <li class="menu-item">
-                <material-icon icon="code" class="mr-1"></material-icon>
-                <a class="item-link">Open source</a>
+            <li *ngFor="let tab of HomeTab.values" [ngClass]="getClasses(tab)" class="menu-item" (click)="switchTab(tab)">
+                <material-icon icon="{{ tab.icon }}" class="mr-1"></material-icon>
+                <a class="item-link">{{ tab.display }}</a>
             </li>
         </ul>
 
@@ -34,103 +24,154 @@
             </li>
         </ul>
 
-        <a class="brand brand-hover brand-primary">holysheet</a>
+        <a class="brand brand-hover brand-primary">HolySheet</a>
 
         <ul class="navigation-bar-menu">
             <li class="menu-item">
-                <img class="profile-picture profile-picture-small" src="https://static.artex.dev/artex.svg">
+                <img class="profile-picture profile-picture-small" [attr.src]="authService.basicProfile?.imageUrl">
             </li>
         </ul>
     </div>
 </nav>
 
-<div class="__holysheet-splash">
-    <span class="splash-pattern"></span>
-    <span class="splash-pattern"></span>
+<div [ngSwitch]="activeTab">
+    <template [ngSwitchCase]="HomeTab.Overview">
+        <div class="__holysheet-splash primary-landing">
+            <span class="splash-pattern"></span>
+            <span class="splash-pattern"></span>
+            <div class="container">
+                <p class="splash-description">Unlimited file storage?</p>
 
-    <div class="container">
-        <p class="splash-description">Unlimited file storage?</p>
+                <h2 class="splash-title">holy. sh*t.</h2>
 
-        <h2 class="splash-title">holy. sh*t.</h2>
-
-        <a class="button button-primary rounded mr-1" href="https://youtube.com/">
-            <material-icon icon="play_arrow" class="mr-1"></material-icon>
-            Watch tutorial
-        </a>
-        <a class="button button-primary rounded" (click)="launch()">
-            <material-icon icon="launch" class="mr-1"></material-icon>
-            Launch
-        </a>
-    </div>
-</div>
-
-<div class="container">
-    <div class="__holysheet-content">
-        <div class="row">
-            <div class="col-lg-4">
-                <div class="card raised rounded-bottom card-border-top card-primary mb-5">
-                    <div class="card-header mb-2">
-                        <h2 class="header-title">Secure</h2>
-                    </div>
-
-                    <p class="card-description mb-1">We do not store any data on our own servers.</p>
-                    <p class="card-description mb-1">Instead, we use your Google account to efficiently store your files in Google Sheets.</p>
-                    <p class="card-description mb-3">You keep <strong>total control</strong> over your files.</p>
-
-                    <a class="button button-primary rounded">Read more</a>
-                </div>
+                <a class="button button-primary rounded mr-1" href="https://youtube.com/">
+                    <material-icon icon="play_arrow" class="mr-1"></material-icon>
+                    Watch tutorial
+                </a>
+                <a class="button button-primary rounded" (click)="launch()">
+                    <material-icon icon="launch" class="mr-1"></material-icon>
+                    Launch
+                </a>
             </div>
+        </div>
 
-            <div class="col-lg-4">
-                <div class="card raised rounded-bottom card-border-top card-primary mb-5">
-                    <div class="card-header mb-2">
-                        <h2 class="header-title">Unlimited</h2>
+        <div class="container">
+            <div class="__holysheet-content">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="card raised rounded-bottom card-border-top card-primary mb-5">
+                            <div class="card-header mb-2">
+                                <h2 class="header-title">Secure</h2>
+                            </div>
+
+                            <p class="card-description mb-1">We do not store any data on our own servers.</p>
+                            <p class="card-description mb-1">Instead, we use your Google account to efficiently store your files in Google Sheets.</p>
+                            <p class="card-description mb-3">You keep <strong>total control</strong> over your files.</p>
+
+                            <a class="button button-primary rounded">Read more</a>
+                        </div>
                     </div>
 
-                    <p class="card-description mb-3">Store any file of any size for <strong>free</strong> from anywhere. There are <strong>zero</strong> restrictions or limitations.</p>
+                    <div class="col-lg-4">
+                        <div class="card raised rounded-bottom card-border-top card-primary mb-5">
+                            <div class="card-header mb-2">
+                                <h2 class="header-title">Unlimited</h2>
+                            </div>
 
-                    <ul class="card-menu">
-                        <li class="menu-item">
-                            <p class="item-index">Dropbox</p>
+                            <p class="card-description mb-3">Store any file of any size for <strong>free</strong> from anywhere. There are <strong>zero</strong> restrictions or limitations.</p>
 
-                            <p class="item-value">
-                                <material-icon icon="close" class="mr-1 text-danger"></material-icon>
-                                2GB
-                            </p>
-                        </li>
+                            <ul class="card-menu">
+                                <li class="menu-item">
+                                    <p class="item-index">Dropbox</p>
 
-                        <li class="menu-item">
-                            <p class="item-index">Google Drive</p>
+                                    <p class="item-value">
+                                        <material-icon icon="close" class="mr-1 text-danger"></material-icon>
+                                        2GB
+                                    </p>
+                                </li>
 
-                            <p class="item-value">
-                                <material-icon icon="close" class="mr-1 text-danger"></material-icon>
-                                15GB
-                            </p>
-                        </li>
+                                <li class="menu-item">
+                                    <p class="item-index">Google Drive</p>
 
-                        <li class="menu-item">
-                            <p class="item-index">HolySheet</p>
+                                    <p class="item-value">
+                                        <material-icon icon="close" class="mr-1 text-danger"></material-icon>
+                                        15GB
+                                    </p>
+                                </li>
 
-                            <p class="item-value">
-                                <material-icon icon="check" class="mr-1 text-success"></material-icon>
-                                Unlimited
-                            </p>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+                                <li class="menu-item">
+                                    <p class="item-index">HolySheet</p>
 
-            <div class="col-lg-4">
-                <div class="card raised rounded-bottom card-border-top card-primary mb-5">
-                    <div class="card-header mb-2">
-                        <h2 class="header-title">User-friendly</h2>
+                                    <p class="item-value">
+                                        <material-icon icon="check" class="mr-1 text-success"></material-icon>
+                                        Unlimited
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
 
-                    <p class="card-description mb-3">Not only do we provide an intuitive online dashboard for managing your files, but we also created a command-line interface and desktop application for managing your files from anywhere.</p>
+                    <div class="col-lg-4">
+                        <div class="card raised rounded-bottom card-border-top card-primary mb-5">
+                            <div class="card-header mb-2">
+                                <h2 class="header-title">User-friendly</h2>
+                            </div>
 
-                    <a class="button button-primary rounded mr-1">Download</a>
+                            <p class="card-description mb-3">Not only do we provide an intuitive online dashboard for managing your files, but we also created a command-line interface and desktop application for managing your files from anywhere.</p>
+
+                            <a class="button button-primary rounded mr-1">Download</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </template>
+    <template [ngSwitchCase]="HomeTab.BehindTheScenes">
+        <div class="__holysheet-splash">
+            <span class="splash-pattern"></span>
+            <span class="splash-pattern"></span>
+            <div class="container">
+                <h2 class="splash-title">Behind The Scenes</h2>
+                <p class="splash-description">How HolySheet works</p>
+            </div>
+        </div>
+        <div class="container">
+            <div class="__holysheet-content">
+                <p>I'll do this later</p>
+            </div>
+        </div>
+    </template>
+    <template [ngSwitchCase]="HomeTab.OpenSource">
+        <div class="__holysheet-splash">
+            <span class="splash-pattern"></span>
+            <span class="splash-pattern"></span>
+            <div class="container">
+                <h2 class="splash-title">Open Source</h2>
+                <p class="splash-description">HolySheet is entirely open source, feel free to contribute!</p>
+            </div>
+        </div>
+        <div class="container">
+            <div class="__holysheet-content">
+                <div class="row">
+                    <div class="col-lg-4" *ngFor="let repo of Repo.values">
+                        <div class="card raised rounded-bottom card-border-top card-primary mb-5">
+                            <div class="card-header mb-1">
+                                <h2 class="header-title">{{ repo.name }}</h2>
+                            </div>
+                            <div class="mb-1">
+                                <div *ngFor="let lang of repo.langs"><i [ngClass]="lang.toLowerCase()" class="circle mr-1"></i>{{ lang }}</div>
+                            </div>
+
+                            <div class="descriptions">
+                                <p *ngFor="let desc of repo.description" class="card-description">{{ desc }}</p>
+                            </div>
+
+                            <a class="button button-primary rounded" href="https://github.com/HolySheet/{{ repo.repoName }}">Go to repo</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
 </div>
+

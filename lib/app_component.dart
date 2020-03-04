@@ -1,10 +1,10 @@
 import 'dart:js';
 
 import 'package:HolySheetWeb/src/dashboard/dashboard_component.dart';
-import 'package:HolySheetWeb/src/file_list/file_list_component.dart';
+import 'package:HolySheetWeb/src/dashboard/file_list/file_list_component.dart';
 import 'package:HolySheetWeb/src/js.dart';
 import 'package:HolySheetWeb/src/request_utils.dart';
-import 'package:HolySheetWeb/src/routes.dart';
+import 'package:HolySheetWeb/src/primary_routes.dart';
 import 'package:HolySheetWeb/src/services/auth_service.dart';
 import 'package:HolySheetWeb/src/services/context_service.dart';
 import 'package:HolySheetWeb/src/services/file_send_service.dart';
