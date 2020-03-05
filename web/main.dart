@@ -5,7 +5,7 @@ import 'package:HolySheetWeb/app_component.template.dart' as ng;
 import 'main.template.dart' as self;
 
 @GenerateInjector(
-  routerProvidersHash, // You can use routerProviders in production
+  routerProviders, // You can use routerProviders in production
 )
 final InjectorFactory injector = self.injector$Injector;
 

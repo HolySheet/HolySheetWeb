@@ -15,12 +15,12 @@ class Routes {
         'compactNavbar': true
       });
 
-  static final homeTab = RouteDefinition(
-      routePath: RoutePaths.homeTab,
-      component: home_component.HomeComponentNgFactory,
-      additionalData: {
-        'compactNavbar': true
-      });
+//  static final homeTab = RouteDefinition(
+//      routePath: RoutePaths.homeTab,
+//      component: home_component.HomeComponentNgFactory,
+//      additionalData: {
+//        'compactNavbar': true
+//      });
 
   static final files = RouteDefinition(
     routePath: RoutePaths.files,
@@ -54,7 +54,7 @@ class Routes {
 
   static final all = <RouteDefinition>[
     home,
-    homeTab,
+//    homeTab,
     files,
     starred,
     trash,
@@ -67,8 +67,6 @@ class Routes {
 
 class RoutePaths {
   static final home = RoutePath(path: '', useAsDefault: true);
-  static final homeTab = RoutePath(path: ':id');
-
   static final files = RoutePath(path: 'files');
   static final starred = RoutePath(path: 'starred');
   static final trash = RoutePath(path: 'trash');

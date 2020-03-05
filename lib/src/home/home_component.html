@@ -68,7 +68,7 @@
                             <p class="card-description mb-1">Instead, we use your Google account to efficiently store your files in Google Sheets.</p>
                             <p class="card-description mb-3">You keep <strong>total control</strong> over your files.</p>
 
-                            <a class="button button-primary rounded">Read more</a>
+                            <a class="button button-primary rounded" (click)="switchTab(HomeTab.BehindTheScenes)">Read more</a>
                         </div>
                     </div>
 
@@ -137,7 +137,34 @@
         </div>
         <div class="container">
             <div class="__holysheet-content">
-                <p>I'll do this later</p>
+                <div class="row justify-content-md-center mb-3">
+                    <div class="col-lg-8">
+                        <div class="card raised rounded-bottom card-border-top card-primary mb-5">
+                            <p class="card-description">The way HolySheet works is relatively simple. It works on the following premises:</p>
+
+                            <ul class="card-description">
+                                <li>Google Sheets does <strong>not</strong> effect your account's Drive quota of 15GB</li>
+                                <li>Each Google Sheet allows for 10MB* of data to be uploaded</li>
+                                <li>Base91 encryption/decryption allows for the conversion of arbitrary files to text</li>
+                            </ul>
+
+                            <p class="card-description">Implementation details on how the website works are displayed below.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4" *ngFor="let step of BTSDesc.values">
+                        <div class="card raised rounded-bottom card-border-top card-primary mb-5">
+                            <div class="card-header mb-1">
+                                <h2 class="header-title">{{ step.title }}</h2>
+                            </div>
+
+                            <div class="descriptions auto-margin-no-button">
+                                <p *ngFor="let desc of step.description" class="card-description">{{ desc }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </template>
@@ -159,10 +186,10 @@
                                 <h2 class="header-title">{{ repo.name }}</h2>
                             </div>
                             <div class="mb-1">
-                                <div *ngFor="let lang of repo.langs"><i [ngClass]="lang.toLowerCase()" class="circle mr-1"></i>{{ lang }}</div>
+                                <div *ngFor="let lang of repo.langs" class="lang-circle"><i [ngClass]="lang.toLowerCase()" class="circle mr-1"></i>{{ lang }}</div>
                             </div>
 
-                            <div class="descriptions">
+                            <div class="descriptions auto-margin">
                                 <p *ngFor="let desc of repo.description" class="card-description">{{ desc }}</p>
                             </div>
 

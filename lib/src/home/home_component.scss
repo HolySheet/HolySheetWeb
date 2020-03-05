@@ -39,6 +39,10 @@
 
 // Added by RubbaBoy
 
+.__holysheet-splash {
+    overflow: visible;
+}
+
 .__holysheet-splash:not(.primary-landing) {
     height: calc(100vh - 250px);
 }
@@ -50,10 +54,15 @@
     margin-bottom: 32px;
 }
 
-.card-description:not(:last-child) {
+.auto-margin .card-description:not(:last-child), .auto-margin-no-button .card-description:not(:last-child) {
     margin-bottom: 8px !important;
 }
 
-.card-description:last-child {
+.auto-margin .card-description:last-child {
     margin-bottom: 24px !important;
+}
+
+.card p.card-description, .card ul.card-description li {
+    font-size: 14px;
+    line-height: 1.5;
 }

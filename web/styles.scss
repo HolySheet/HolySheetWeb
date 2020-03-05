@@ -39,6 +39,18 @@ material-icon {
     user-select: none;
 }
 
+.lang-circle {
+    display: inline;
+
+    &:first-child {
+        margin-right: 5px;
+    }
+
+    &:last-child {
+        margin-left: 5px;
+    }
+}
+
 .circle {
     height: 15px;
     width: 15px;
