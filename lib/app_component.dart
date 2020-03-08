@@ -51,6 +51,7 @@ class AppComponent {
   AppComponent(this.fileService, this.authService, this.contextService,
       this._router, this.changeRef) {
     context['signInChange'] = (bool signedIn) {
+      authService.signedIn = signedIn;
       changeRef
         ..markForCheck()
         ..detectChanges();
@@ -80,8 +81,12 @@ class AppComponent {
   void logout() {
     authService.logoutUser().then((_) {
       authService.checkSignedIn;
-      if (Routes.dashboard.contains(_router.current.routePath)) {
+      print('home?');
+      if (Routes.dashboardPaths.contains(_router.current.routePath.path)) {
+        print('yes');
         home();
+      } else {
+        print('no');
       }
 
       changeRef

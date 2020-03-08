@@ -116,8 +116,11 @@ div.drag-over {
 }
 
 #drop-form {
-    height: calc(100% - 65px);
     padding: 10px;
+}
+
+#drop-area {
+    height: calc(100% - 65px);
 }
 
 #fileElem {

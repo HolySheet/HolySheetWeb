@@ -64,12 +64,14 @@ class Routes {
 
   // Pages in the dashboard will be left when logged out
   static final dashboard = <RouteDefinition>[files, starred, trash];
+
+  static List<String> get dashboardPaths => dashboard.map((def) => def.path).toList();
 }
 
 class RoutePaths {
-  static final home = RoutePath(path: '', useAsDefault: true);
+  static final home = RoutePath(path: '/', useAsDefault: true);
   static final download = RoutePath(path: 'download');
-  static final files = RoutePath(path: 'files');
-  static final starred = RoutePath(path: 'starred');
-  static final trash = RoutePath(path: 'trash');
+  static final files = RoutePath(path: '/files');
+  static final starred = RoutePath(path: '/starred');
+  static final trash = RoutePath(path: '/trash');
 }
