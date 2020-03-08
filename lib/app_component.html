@@ -1,4 +1,16 @@
-<nav class="d-none d-lg-flex navigation-bar">
+<nav class="d-md-none navigation-bar raised sticky sticky-top">
+    <div class="container">
+        <ul class="navigation-bar-menu">
+            <li class="menu-item" (click)="mobileToggle('#sidebar-mobile')">
+                <material-icon icon="menu"></material-icon>
+            </li>
+        </ul>
+
+        <a class="brand brand-hover brand-primary">HolySheet</a>
+    </div>
+</nav>
+
+<nav class="d-none d-md-flex navigation-bar">
     <div [ngClass]="compactNavbar ? 'container' : 'container-fluid'">
         <div class="brand-container">
             <img [class.mr-2]="!compactNavbar" src="logos/holysheet.svg" alt="HolySheet logo" id="logo" class="ml-2" (click)="home()"/>
@@ -9,12 +21,6 @@
             <li class="menu-item">
                 <a class="item-link" (click)="logout()">Log out</a>
             </li>
-
-<!--            <li class="menu-item" (click)="mobileToggle('#sidebar-mobile')">-->
-<!--                <a class="item-link">-->
-<!--                    <material-icon icon="menu"></material-icon>-->
-<!--                </a>-->
-<!--            </li>-->
         </ul>
 
         <ul class="navigation-bar-menu d-none d-md-flex">

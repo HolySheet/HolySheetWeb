@@ -1,4 +1,4 @@
-<nav class="d-none d-lg-flex navigation-bar raised sticky sticky-top" xmlns="http://www.w3.org/1999/html">
+<nav class="d-none d-lg-flex navigation-bar raised sticky sticky-top">
     <div class="container">
         <ul class="navigation-bar-menu">
             <li *ngFor="let tab of HomeTab.values" [ngClass]="getClasses(tab)" class="menu-item" (click)="switchTab(tab)">
@@ -11,24 +11,6 @@
             <li class="menu-item" (click)="launch()">
                 <material-icon icon="launch" class="mr-1"></material-icon>
                 <a class="item-link">Launch</a>
-            </li>
-        </ul>
-    </div>
-</nav>
-
-<nav class="d-lg-none navigation-bar raised sticky sticky-top">
-    <div class="container">
-        <ul class="navigation-bar-menu">
-            <li class="menu-item">
-                <material-icon icon="menu"></material-icon>
-            </li>
-        </ul>
-
-        <a class="brand brand-hover brand-primary">HolySheet</a>
-
-        <ul class="navigation-bar-menu">
-            <li class="menu-item">
-                <img class="profile-picture profile-picture-small" [attr.src]="authService.basicProfile?.imageUrl">
             </li>
         </ul>
     </div>
@@ -119,7 +101,7 @@
 
                             <p class="card-description mb-3">Not only do we provide an intuitive online dashboard for managing your files, but we also created a command-line interface and desktop application for managing your files from anywhere.</p>
 
-                            <a class="button button-primary rounded mr-1">Download</a>
+                            <a class="button button-primary rounded mr-1" (click)="download()">Download</a>
                         </div>
                     </div>
                 </div>

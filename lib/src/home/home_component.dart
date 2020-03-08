@@ -46,6 +46,8 @@ class HomeComponent implements OnActivate {
     }
   }
 
+  void download() => router.navigate(RoutePaths.download.path);
+
   void switchTab(HomeTab tab) {
     window.location.hash = tab.param;
   }

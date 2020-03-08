@@ -6,6 +6,7 @@ import 'dashboard/file_list/file_list_component.template.dart'
     as file_list_component;
 import 'error/error_component.template.dart' as error_component;
 import 'home/home_component.template.dart' as home_component;
+import 'download/download_component.template.dart' as download_component;
 
 class Routes {
   static final home = RouteDefinition(
@@ -15,12 +16,12 @@ class Routes {
         'compactNavbar': true
       });
 
-//  static final homeTab = RouteDefinition(
-//      routePath: RoutePaths.homeTab,
-//      component: home_component.HomeComponentNgFactory,
-//      additionalData: {
-//        'compactNavbar': true
-//      });
+  static final download = RouteDefinition(
+      routePath: RoutePaths.download,
+      component: download_component.DownloadComponentNgFactory,
+      additionalData: {
+        'compactNavbar': true
+      });
 
   static final files = RouteDefinition(
     routePath: RoutePaths.files,
@@ -54,7 +55,7 @@ class Routes {
 
   static final all = <RouteDefinition>[
     home,
-//    homeTab,
+    download,
     files,
     starred,
     trash,
@@ -67,6 +68,7 @@ class Routes {
 
 class RoutePaths {
   static final home = RoutePath(path: '', useAsDefault: true);
+  static final download = RoutePath(path: 'download');
   static final files = RoutePath(path: 'files');
   static final starred = RoutePath(path: 'starred');
   static final trash = RoutePath(path: 'trash');

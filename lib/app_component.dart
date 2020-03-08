@@ -1,3 +1,4 @@
+import 'dart:html';
 import 'dart:js';
 
 import 'package:HolySheetWeb/src/dashboard/dashboard_component.dart';
@@ -50,7 +51,6 @@ class AppComponent {
   AppComponent(this.fileService, this.authService, this.contextService,
       this._router, this.changeRef) {
     context['signInChange'] = (bool signedIn) {
-      print('Signed in: ${authService.signedIn = signedIn}');
       changeRef
         ..markForCheck()
         ..detectChanges();
@@ -63,12 +63,15 @@ class AppComponent {
       ..markForCheck()
       ..detectChanges();
 
-    'console.log'('Hello ${authService.basicProfile?.fullName ?? 'unknown'}!');
-
     _router.onRouteActivated.listen((state) {
       compactNavbar = state.routePath.additionalData['compactNavbar'] ?? false;
     });
   }
+
+  void mobileToggle(String selector) => window.document
+      .querySelector(selector)
+      ?.classes
+      ?.toggle('is-active');
 
   void home() => _router.navigate(RoutePaths.home.path);
 
@@ -76,7 +79,6 @@ class AppComponent {
 
   void logout() {
     authService.logoutUser().then((_) {
-      print('bruh');
       authService.checkSignedIn;
       if (Routes.dashboard.contains(_router.current.routePath)) {
         home();

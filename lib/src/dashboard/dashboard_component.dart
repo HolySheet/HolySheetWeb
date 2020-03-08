@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:html';
 import 'dart:js';
 
+import 'package:HolySheetWeb/app_component.dart';
 import 'package:HolySheetWeb/src/dashboard/file_list/file_list_component.dart';
 import 'package:HolySheetWeb/src/modal/modal_component.dart';
 import 'package:HolySheetWeb/src/primary_routes.dart';
