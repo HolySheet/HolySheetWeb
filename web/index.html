@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>HolySheet Web</title>
     <base href="/">
@@ -9,10 +9,6 @@
     <script defer src="main.dart.js"></script>
     <link rel="icon" href="favicon.ico">
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-    <script src="https://apis.google.com/js/platform.js?onload=start" async defer></script>
-
-    <!-- SEO -->
     <meta property="og:title" content="HolySheet">
     <meta property="og:site_name" content="HolySheet">
     <meta property="og:description" content="Upload any file of any size via Google Sheets">
@@ -20,27 +16,22 @@
     <meta property="og:image" content="/logos/holysheet-256.png">
 
     <script>
-        // This is not done in Dart because it must be loaded as soon as possible
-        function start() {
-            gapi.load('auth2', () => {
-                window.auth2 = gapi.auth2.init({client_id: '916425013479-6jdls4crv26mhurj43eakbs72f5e1m8t.apps.googleusercontent.com', scope: 'profile email https://www.googleapis.com/auth/drive'});
-
-                auth2.isSignedIn.listen((val) => signInChange(val));
-                auth2.currentUser.listen((user) => userChanged(window.googleUser = user));
-
-                if (auth2.isSignedIn.get()) {
-                    auth2.signIn();
-                    window.googleUser = auth2.currentUser.get();
-                }
+        var signInChange = userChanged = function (_) {
+        };
+        var start = () => gapi.load('auth2', () => {
+            window.auth2 = gapi.auth2.init({
+                client_id: '916425013479-6jdls4crv26mhurj43eakbs72f5e1m8t.apps.googleusercontent.com',
+                scope: 'profile email https://www.googleapis.com/auth/drive'
             });
-        }
-
-        function signInChange(val) {
-        }
-
-        function userChanged(user) {
-        }
+            auth2.isSignedIn.listen((val) => signInChange(val));
+            auth2.currentUser.listen((user) => userChanged(window.googleUser = user));
+            if (auth2.isSignedIn.get()) {
+                auth2.signIn();
+                window.googleUser = auth2.currentUser.get();
+            }
+        });
     </script>
+    <script src="https://apis.google.com/js/platform.js?onload=start" async defer></script>
 </head>
 <body>
 <hs-app></hs-app>

@@ -9,7 +9,7 @@ import 'package:angular_router/angular_router.dart';
 
 @Component(
   selector: 'home',
-  styleUrls: ['home_component.css'],
+  styleUrls: ['home_component.css', 'landing_styles.css'],
   templateUrl: 'home_component.html',
   directives: [
     NgFor,

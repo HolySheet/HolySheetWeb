@@ -3,7 +3,7 @@ import 'package:angular_router/angular_router.dart';
 
 @Component(
   selector: 'error',
-  styleUrls: ['error_component.css'],
+  styleUrls: ['error_component.css', '../home/landing_styles.css'],
   templateUrl: 'error_component.html',
   directives: [
     NgFor,
@@ -12,11 +12,4 @@ import 'package:angular_router/angular_router.dart';
   changeDetection: ChangeDetectionStrategy.OnPush,
 )
 class ErrorComponent {
-  final ChangeDetectorRef changeRef;
-
-  String text = '-';
-
-  ErrorComponent(this.changeRef) {
-      text = '404! Uh oh!';
-  }
 }

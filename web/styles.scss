@@ -13,6 +13,10 @@
     }
 }
 
+html, body {
+    height: 100%;
+}
+
 #files {
     height: calc(100vh - 130px);
     overflow-y: auto;

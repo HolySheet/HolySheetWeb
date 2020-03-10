@@ -9,7 +9,7 @@ import 'package:angular_router/angular_router.dart';
 
 @Component(
   selector: 'download',
-  styleUrls: ['download_component.css'],
+  styleUrls: ['download_component.css', '../home/landing_styles.css'],
   templateUrl: 'download_component.html',
   directives: [],
   exports: [],

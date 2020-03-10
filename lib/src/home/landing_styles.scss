@@ -1,0 +1,82 @@
+.item-index, .item-value {
+    font-size: 14px;
+}
+
+@mixin splash-pattern($first) {
+    content: "";
+    background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.075' fill-rule='evenodd'%3E%3Ccircle cx='9' cy='9' r='3'/%3E%3Ccircle cx='33' cy='33' r='3'/%3E%3C/g%3E%3C/svg%3E");
+    width: calc(25vw);
+    height: calc(25vw);
+    z-index: -1;
+    position: absolute;
+
+    @if $first {
+        top: -5vw;
+        left: 5vw;
+    } @else {
+        top: 40%;
+        left: 55%;
+    }
+}
+
+.__holysheet-splash {
+    overflow: hidden;
+    height: calc(100vh - 73px);
+    position: relative;
+
+    .container {
+        text-align: center;
+        height: calc(100vh - 110px);
+        padding-top: calc((100vh - 110px) / 2 - 156px);
+    }
+
+    .splash-description {
+        font-size: 20px;
+        font-weight: 500;
+        color: rgba(0, 0, 0, 0.65);
+        line-height: 1;
+        margin-bottom: 8px;
+    }
+
+    .splash-title, .splash-title {
+        font-size: 54px;
+        font-weight: 900;
+        line-height: 1;
+        margin-bottom: 32px;
+    }
+
+    &:not(.primary-landing) {
+        height: calc(100vh - 130px);
+    }
+
+    &::before {
+        @include splash-pattern(true);
+    }
+
+    &::after {
+        @include splash-pattern(false);
+    }
+}
+
+.__holysheet-content {
+    margin-top: -84px;
+}
+
+@media (max-width: 992px) {
+    .__holysheet-content {
+        margin-top: -42px;
+    }
+}
+
+.auto-margin .card-description:not(:last-child), .auto-margin-no-button .card-description:not(:last-child) {
+    margin-bottom: 8px !important;
+}
+
+.auto-margin .card-description:last-child {
+    margin-bottom: 24px !important;
+}
+
+.card p.card-description, .card ul.card-description li {
+    font-size: 14px;
+    line-height: 1.5;
+}
