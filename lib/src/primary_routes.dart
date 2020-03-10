@@ -4,9 +4,9 @@ import 'package:angular_router/angular_router.dart';
 import 'dashboard/dashboard_component.template.dart' as dashboard_component;
 import 'dashboard/file_list/file_list_component.template.dart'
     as file_list_component;
+import 'download/download_component.template.dart' as download_component;
 import 'error/error_component.template.dart' as error_component;
 import 'home/home_component.template.dart' as home_component;
-import 'download/download_component.template.dart' as download_component;
 
 class Routes {
   static final home = RouteDefinition(

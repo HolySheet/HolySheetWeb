@@ -10,11 +10,7 @@ environment:
 dependencies:
   angular: ^6.0.0-alpha+1
   angular_router: ^2.0.0-alpha
-  angular_components: ^0.14.0-alpha+1
-  bootstrap_sass: any
   js: ^0.6.1+1
-  grpc: ^2.1.3
-  protoc_plugin: any
   fixnum: ^0.10.11
   filesize: ^1.0.4
 

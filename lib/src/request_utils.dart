@@ -6,7 +6,6 @@ import 'package:HolySheetWeb/src/constants.dart';
 import 'package:HolySheetWeb/src/request_objects.dart';
 import 'package:HolySheetWeb/src/services/auth_service.dart';
 import 'package:angular/angular.dart';
-import 'js.dart';
 
 class FetchedList {
   List<FetchedFile> files;

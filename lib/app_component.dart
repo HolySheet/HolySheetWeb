@@ -3,16 +3,15 @@ import 'dart:js';
 
 import 'package:HolySheetWeb/src/dashboard/dashboard_component.dart';
 import 'package:HolySheetWeb/src/dashboard/file_list/file_list_component.dart';
-import 'package:HolySheetWeb/src/js.dart';
-import 'package:HolySheetWeb/src/request_utils.dart';
+import 'package:HolySheetWeb/src/icon/icon_component.dart';
 import 'package:HolySheetWeb/src/primary_routes.dart';
+import 'package:HolySheetWeb/src/request_utils.dart';
 import 'package:HolySheetWeb/src/services/auth_service.dart';
 import 'package:HolySheetWeb/src/services/context_service.dart';
 import 'package:HolySheetWeb/src/services/file_send_service.dart';
 import 'package:HolySheetWeb/src/services/file_service.dart';
 import 'package:HolySheetWeb/src/services/settings_service.dart';
 import 'package:angular/angular.dart';
-import 'package:angular_components/material_icon/material_icon.dart';
 import 'package:angular_router/angular_router.dart';
 
 @Component(
@@ -22,7 +21,7 @@ import 'package:angular_router/angular_router.dart';
   directives: [
     routerDirectives,
     FileListComponent,
-    MaterialIconComponent,
+    Icon,
     DashboardComponent,
     NgFor,
     NgIf,

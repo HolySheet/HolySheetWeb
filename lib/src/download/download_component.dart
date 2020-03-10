@@ -1,10 +1,5 @@
-import 'dart:async';
-import 'dart:html';
-
-import 'package:HolySheetWeb/src/primary_routes.dart';
 import 'package:HolySheetWeb/src/services/auth_service.dart';
 import 'package:angular/angular.dart';
-import 'package:angular_components/angular_components.dart';
 import 'package:angular_router/angular_router.dart';
 
 @Component(

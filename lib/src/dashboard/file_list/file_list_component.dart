@@ -1,18 +1,17 @@
 import 'dart:async';
 import 'dart:html';
 
-import 'package:HolySheetWeb/src/js.dart';
-import 'package:HolySheetWeb/src/request_objects.dart';
-import 'package:HolySheetWeb/src/utility.dart';
 import 'package:HolySheetWeb/src/dashboard/dashboard_component.dart';
+import 'package:HolySheetWeb/src/icon/icon_component.dart';
+import 'package:HolySheetWeb/src/js.dart';
+import 'package:HolySheetWeb/src/modal/modal_component.dart';
+import 'package:HolySheetWeb/src/request_objects.dart';
 import 'package:HolySheetWeb/src/services/auth_service.dart';
 import 'package:HolySheetWeb/src/services/context_service.dart';
 import 'package:HolySheetWeb/src/services/file_send_service.dart';
 import 'package:HolySheetWeb/src/services/file_service.dart';
-import 'package:HolySheetWeb/src/modal/modal_component.dart';
+import 'package:HolySheetWeb/src/utility.dart';
 import 'package:angular/angular.dart';
-import 'package:angular_components/angular_components.dart';
-import 'package:angular_components/material_icon/material_icon.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:filesize/filesize.dart';
 import 'package:intl/intl.dart';
@@ -23,7 +22,7 @@ import 'package:intl/intl.dart';
   templateUrl: 'file_list_component.html',
   directives: [
     HSModalComponent,
-    MaterialIconComponent,
+    Icon,
     DashboardComponent,
     NgClass,
     NgFor,

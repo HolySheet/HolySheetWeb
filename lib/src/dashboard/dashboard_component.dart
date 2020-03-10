@@ -1,16 +1,13 @@
-import 'dart:async';
 import 'dart:html';
-import 'dart:js';
 
-import 'package:HolySheetWeb/app_component.dart';
 import 'package:HolySheetWeb/src/dashboard/file_list/file_list_component.dart';
+import 'package:HolySheetWeb/src/icon/icon_component.dart';
 import 'package:HolySheetWeb/src/modal/modal_component.dart';
 import 'package:HolySheetWeb/src/primary_routes.dart';
 import 'package:HolySheetWeb/src/services/auth_service.dart';
 import 'package:HolySheetWeb/src/services/context_service.dart';
 import 'package:HolySheetWeb/src/services/file_service.dart';
 import 'package:angular/angular.dart';
-import 'package:angular_components/angular_components.dart';
 import 'package:angular_router/angular_router.dart';
 
 /// The dashboard simply provides sidebar navigation and whatever other stuff is
@@ -24,7 +21,7 @@ import 'package:angular_router/angular_router.dart';
     NgIf,
     FileListComponent,
     HSModalComponent,
-    MaterialIconComponent,
+    Icon,
     NgClass,
   ],
   exports: [Routes, RoutePaths],

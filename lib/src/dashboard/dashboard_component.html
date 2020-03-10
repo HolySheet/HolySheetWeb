@@ -18,7 +18,7 @@
 
         <ul class="sidebar-menu">
             <li *ngFor="let nav of sidebarNav" class="menu-item menu-item-primary" [class.is-active]="nav == active" (click)="navigate(nav)">
-                <material-icon icon="{{ nav.icon }}" class="mr-2" [class.text-primary]="nav == active"></material-icon>
+                <icon icon="{{ nav.icon }}" class="mr-2" [class.text-primary]="nav == active"></icon>
                 <a class="item-link" [class.current]="nav == active">{{ nav.name }}</a>
             </li>
         </ul>
@@ -53,7 +53,7 @@
 
                 <ul class="sidebar-menu">
                     <li *ngFor="let nav of sidebarNav" class="menu-item menu-item-primary" [class.is-active]="nav == active" (click)="navigate(nav)">
-                        <material-icon icon="{{ nav.icon }}" class="mr-2" [class.text-primary]="nav == active"></material-icon>
+                        <icon icon="{{ nav.icon }}" class="mr-2" [class.text-primary]="nav == active"></icon>
                         <a class="item-link" [class.current]="nav == active">{{ nav.name }}</a>
                     </li>
                 </ul>

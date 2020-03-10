@@ -32,21 +32,23 @@ footer {
 
     .icon-link {
         display: inherit;
-    }
 
-    .icon {
-        display: inline-block;
-        width: 25px;
-        height: 25px;
-        background-repeat: no-repeat;
-        background-position: center;
+        &:hover {
+            .blue {
+                color: #009cde;
+            }
 
-        &.red:hover {
-            color: #db493c;
+            .red {
+                color: #db493c;
+            }
         }
 
-        &.blue:hover {
-            color: #009cde;
+        .icon {
+            display: inline-block;
+            width: 25px;
+            height: 25px;
+            background-repeat: no-repeat;
+            background-position: center;
         }
     }
 

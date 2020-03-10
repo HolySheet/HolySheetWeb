@@ -2,14 +2,14 @@
     <div class="container">
         <ul class="navigation-bar-menu">
             <li *ngFor="let tab of HomeTab.values" [ngClass]="getClasses(tab)" class="menu-item" (click)="switchTab(tab)">
-                <material-icon icon="{{ tab.icon }}" class="mr-1"></material-icon>
+                <icon icon="{{ tab.icon }}" class="mr-1"></icon>
                 <a class="item-link">{{ tab.display }}</a>
             </li>
         </ul>
 
         <ul class="navigation-bar-menu">
             <li class="menu-item" (click)="launch()">
-                <material-icon icon="launch" class="mr-1"></material-icon>
+                <icon icon="launch" class="mr-1"></icon>
                 <a class="item-link">Launch</a>
             </li>
         </ul>
@@ -27,11 +27,11 @@
                 <h2 class="splash-title">holy. sh*t.</h2>
 
                 <a class="button button-primary rounded mr-1" href="https://youtube.com/">
-                    <material-icon icon="play_arrow" class="mr-1"></material-icon>
+                    <icon icon="play_arrow" class="mr-1"></icon>
                     Watch tutorial
                 </a>
                 <a class="button button-primary rounded" (click)="launch()">
-                    <material-icon icon="launch" class="mr-1"></material-icon>
+                    <icon icon="launch" class="mr-1"></icon>
                     Launch
                 </a>
             </div>
@@ -67,7 +67,7 @@
                                     <p class="item-index">Dropbox</p>
 
                                     <p class="item-value">
-                                        <material-icon icon="close" class="mr-1 text-danger"></material-icon>
+                                        <icon icon="close" class="mr-1 text-danger"></icon>
                                         2GB
                                     </p>
                                 </li>
@@ -76,7 +76,7 @@
                                     <p class="item-index">Google Drive</p>
 
                                     <p class="item-value">
-                                        <material-icon icon="close" class="mr-1 text-danger"></material-icon>
+                                        <icon icon="close" class="mr-1 text-danger"></icon>
                                         15GB
                                     </p>
                                 </li>
@@ -85,7 +85,7 @@
                                     <p class="item-index">HolySheet</p>
 
                                     <p class="item-value">
-                                        <material-icon icon="check" class="mr-1 text-success"></material-icon>
+                                        <icon icon="check" class="mr-1 text-success"></icon>
                                         Unlimited
                                     </p>
                                 </li>

@@ -3,8 +3,6 @@ import 'dart:html';
 
 import 'package:angular/angular.dart';
 
-import '../js.dart';
-
 @Injectable()
 class ContextService {
   final contextMenus = <Context>[];
