@@ -16,7 +16,7 @@ import 'package:angular_components/material_icon/material_icon.dart';
 import 'package:angular_router/angular_router.dart';
 
 @Component(
-  selector: 'my-app',
+  selector: 'hs-app',
   styleUrls: ['app_component.css'],
   templateUrl: 'app_component.html',
   directives: [
@@ -64,6 +64,8 @@ class AppComponent {
       ..markForCheck()
       ..detectChanges();
 
+    authService.basicProfile;
+
     _router.onRouteActivated.listen((state) {
       compactNavbar = state.routePath.additionalData['compactNavbar'] ?? false;
     });
@@ -76,17 +78,13 @@ class AppComponent {
 
   void home() => _router.navigate(RoutePaths.home.path);
 
-  void login() => authService.loginUser();
+  void login() => authService.loginUser().then((d) => print('fuck $d'));
 
   void logout() {
     authService.logoutUser().then((_) {
       authService.checkSignedIn;
-      print('home?');
       if (Routes.dashboardPaths.contains(_router.current.routePath.path)) {
-        print('yes');
         home();
-      } else {
-        print('no');
       }
 
       changeRef

@@ -447,10 +447,7 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
         });
   }
 
-  void showInfo() {
-    print('info for ${fileService.selectedOrContext[0].name}');
-    infoModal.openPrompt(content: {'file': fileService.selectedOrContext[0]});
-  }
+  void showInfo() => infoModal.openPrompt(content: {'file': fileService.selectedOrContext[0]});
 
   void openInDrive(String link, HSModalComponent modal) {
     modal.cancel();

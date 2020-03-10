@@ -36,6 +36,7 @@ class DashboardComponent implements OnInit, OnDestroy {
   final Router _router;
   final ChangeDetectorRef changeRef;
 
+  @Input()
   NavListData active;
 
   Map<String, bool> activeClasses = {};
@@ -56,6 +57,7 @@ class DashboardComponent implements OnInit, OnDestroy {
           orElse: () => null);
       if (activeNav != null) {
         active = activeNav;
+        changeRef.markForCheck();
       }
     });
   }
@@ -73,7 +75,6 @@ class DashboardComponent implements OnInit, OnDestroy {
   void mobileToggle(String selector) => document
       .querySelector(selector)
       ?.classes
-//      .toggleAll(['d-none', 'sidebar-mobile']);
       ?.toggle('is-active');
 
   void toggleSidebar() => document.getElementById('sidebar')?.classes?.toggle('is-collapsed');
@@ -88,7 +89,7 @@ class DashboardComponent implements OnInit, OnDestroy {
 
   void home() => _router.navigate(RoutePaths.home.path);
 
-  void login() => authService.loginUser();
+  void login() => authService.loginUser().then((d) => print('fuck $d'));
 
   void logout() {
     authService.logoutUser();

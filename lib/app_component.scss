@@ -22,3 +22,40 @@ a.downloader {
         filter: opacity(70%);
     }
 }
+
+footer {
+    background-color: white;
+    bottom: 0;
+
+    .yarris {
+        text-decoration: #bdb9b9 underline dotted;
+    }
+
+    .icon-link {
+        display: inherit;
+    }
+
+    .icon {
+        display: inline-block;
+        width: 25px;
+        height: 25px;
+        background-repeat: no-repeat;
+        background-position: center;
+
+        &.red:hover {
+            color: #db493c;
+        }
+
+        &.blue:hover {
+            color: #009cde;
+        }
+    }
+
+    .footer-copyright {
+        color: rgba(204, 204, 204, 0.6);
+    }
+}
+
+.raised {
+    box-shadow: 0 -4px 8px 0 rgba(0, 0, 0, 0.05);
+}

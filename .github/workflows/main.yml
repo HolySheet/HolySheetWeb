@@ -20,7 +20,7 @@ jobs:
       - name: Building
         run: pub global run webdev build --output web:build
       - name: Cleaning up
-        run: rm -rf build/packages && rm -f build/.build.manifest build/.packages
+        run: rm -rf build/packages && rm -f build/.build.manifest build/.packages build/.htaccess
       - name: FTP-Deploy-Action
         uses: SamKirkland/FTP-Deploy-Action@2.0.0
         env:

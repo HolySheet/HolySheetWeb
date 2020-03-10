@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <base href="/">
-
     <title>HolySheet Web</title>
+    <base href="/">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <link rel="stylesheet" href="styles.css">
@@ -22,45 +20,29 @@
     <meta property="og:image" content="/logos/holysheet-256.png">
 
     <script>
-
         // This is not done in Dart because it must be loaded as soon as possible
         function start() {
             gapi.load('auth2', () => {
-                window.auth2 = gapi.auth2.init({
-                    client_id: '916425013479-6jdls4crv26mhurj43eakbs72f5e1m8t.apps.googleusercontent.com',
-                    scope: 'profile email https://www.googleapis.com/auth/drive'
-                });
+                window.auth2 = gapi.auth2.init({client_id: '916425013479-6jdls4crv26mhurj43eakbs72f5e1m8t.apps.googleusercontent.com', scope: 'profile email https://www.googleapis.com/auth/drive'});
 
                 auth2.isSignedIn.listen((val) => signInChange(val));
                 auth2.currentUser.listen((user) => userChanged(window.googleUser = user));
 
                 if (auth2.isSignedIn.get()) {
                     auth2.signIn();
-                    // if (auth2) {
                     window.googleUser = auth2.currentUser.get();
                 }
             });
         }
 
-        /**
-         * Listener method for sign-out live value.
-         *
-         * @param {boolean} val the updated signed out state.
-         */
         function signInChange(val) {
         }
 
-
-        /**
-         * Listener method for when the user changes.
-         *
-         * @param {GoogleUser} user the updated user.
-         */
         function userChanged(user) {
         }
     </script>
 </head>
 <body>
-<my-app>Loading...</my-app>
+<hs-app></hs-app>
 </body>
 </html>
