@@ -359,7 +359,7 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
         }
         break;
       case DropdownActions.Star:
-        fileService.starSelected(starMode);
+        fileService.starSelected(starMode).then((_) => changeRef.markForCheck());
         break;
       case DropdownActions.Info:
         showInfo();
@@ -400,7 +400,7 @@ class FileListComponent implements OnInit, OnDestroy, OnActivate {
         fileService.selected.clear();
         break;
       case NavAction.Star:
-        fileService.starSelected(starMode);
+        fileService.starSelected(starMode).then((_) => changeRef.markForCheck());
         break;
       case NavAction.Info:
         showInfo();

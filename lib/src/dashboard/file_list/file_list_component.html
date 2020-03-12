@@ -20,39 +20,39 @@
     <div class="dropdown raised" id="actions-dropdown">
         <ul class="dropdown-menu">
             <li class="menu-item" (click)="navItemClick(NavAction.Clear)">
-                <i class="icons mr-3">clear</i>
+                <icon icon="clear" class="mr-3"></icon>
                 <a class="item-link">Clear</a>
             </li>
 
             <li class="menu-item" (click)="navItemClick(NavAction.Star)">
-                <i class="icons mr-3">star</i>
+                <icon icon="star" class="mr-3"></icon>
                 <a class="item-link">{{ starMode ? 'Star' : 'Unstar' }}</a>
             </li>
 
             <li class="menu-item" (click)="navItemClick(NavAction.Download)">
-                <i class="icons mr-3">save_alt</i>
+                <icon icon="save_alt" class="mr-3"></icon>
                 <a class="item-link">Download</a>
             </li>
 
             <li class="menu-item text-danger" (click)="navItemClick(NavAction.Delete)">
-                <i class="icons mr-3">delete</i>
+                <icon icon="delete" class="mr-3"></icon>
                 <a class="item-link">Delete</a>
             </li>
 
             <li class="menu-item text-primary" *ngIf="showRestore" (click)="navItemClick(NavAction.Restore)">
-                <i class="icons mr-3">restore_from_trash</i>
+                <icon icon="restore_from_trash" class="mr-3"></icon>
                 <a class="item-link">Restore</a>
             </li>
 
             <li class="menu-divide"></li>
 
             <li class="menu-item" (click)="navItemClick(NavAction.NewFolder)">
-                <i class="icons mr-3">create_new_folder</i>
+                <icon icon="create_new_folder" class="mr-3"></icon>
                 <a class="item-link">Create new folder</a>
             </li>
 
             <li class="menu-item text-primary" (click)="navItemClick(NavAction.Upload)">
-                <i class="icons mr-3">add</i>
+                <icon icon="add" class="mr-3"></icon>
                 <a class="item-link">Upload</a>
             </li>
         </ul>
@@ -61,37 +61,37 @@
     <div class="dropdown raised" id="file-contextmenu">
         <ul class="dropdown-menu">
             <li class="menu-item" (click)="dropdownClick(DropdownActions.Select)">
-                <i class="icons mr-3">check</i>
+                <icon icon="check" class="mr-3"></icon>
                 <a class="item-link">Select</a>
             </li>
 
             <li class="menu-item" (click)="dropdownClick(DropdownActions.Star)">
-                <i class="icons mr-3">star</i>
+                <icon icon="star" class="mr-3"></icon>
                 <a class="item-link">{{ starMode ? 'Star' : 'Unstar' }}</a>
             </li>
 
             <li class="menu-item" (click)="dropdownClick(DropdownActions.Info)">
-                <i class="icons mr-3">info</i>
+                <icon icon="info" class="mr-3"></icon>
                 <a class="item-link">Info</a>
             </li>
 
             <li *ngIf="fileService.selected.length <= 1" class="menu-item" (click)="dropdownClick(DropdownActions.Rename)">
-                <i class="icons mr-3">edit</i>
+                <icon icon="edit" class="mr-3"></icon>
                 <a class="item-link">Rename</a>
             </li>
 
             <li class="menu-item" (click)="dropdownClick(DropdownActions.Download)">
-                <i class="icons mr-3">save_alt</i>
+                <icon icon="save_alt" class="mr-3"></icon>
                 <a class="item-link">Download</a>
             </li>
 
             <li class="menu-item text-danger" (click)="dropdownClick(DropdownActions.Delete)">
-                <i class="icons mr-3">delete</i>
+                <icon icon="delete" class="mr-3"></icon>
                 <a class="item-link">Delete</a>
             </li>
 
             <li class="menu-item text-primary" *ngIf="showRestore" (click)="dropdownClick(DropdownActions.Restore)">
-                <i class="icons mr-3">restore_from_trash</i>
+                <icon icon="restore_from_trash" class="mr-3"></icon>
                 <a class="item-link">Restore</a>
             </li>
         </ul>
@@ -100,12 +100,12 @@
     <div class="dropdown raised" id="files-contextmenu">
         <ul class="dropdown-menu">
             <li class="menu-item" (click)="generalClick(GeneralActions.NewFolder)">
-                <i class="icons mr-3">create_new_folder</i>
+                <icon icon="create_new_folder" class="mr-3"></icon>
                 <a class="item-link">Create new folder</a>
             </li>
 
             <li class="menu-item text-primary" (click)="generalClick(GeneralActions.Upload)">
-                <i class="icons mr-3">add</i>
+                <icon icon="add" class="mr-3"></icon>
                 <a class="item-link">Upload</a>
             </li>
         </ul>
@@ -193,12 +193,12 @@
 
             <ul class="navigation-bar-menu">
                 <li class="menu-item dropdown-toggle" id="sort-button">
-                    <i class="icons">filter_list</i>
+                    <icon icon="filter_list"></icon>
                 </li>
 
                 <template [ngIf]="!searching">
                     <li class="menu-item dropdown-toggle" (click)="enableSearch()">
-                        <i class="icons">search</i>
+                        <icon icon="search"></icon>
                     </li>
 
                     <li *ngFor="let elem of pathElements" class="menu-item path-item" [attr.data-id]="elem.absolutePath" (dragover)="dragEnter($event)" (dragleave)="dragLeave($event)" (drop)="dropEnd($event, true)">
@@ -207,7 +207,7 @@
                 </template>
 
                 <li *ngIf="searching" class="menu-item dropdown-toggle" (click)="disableSearch()">
-                    <i class="icons">clear</i>
+                    <icon icon="clear"></icon>
                 </li>
             </ul>
 
@@ -263,9 +263,9 @@
         </div>
     </nav>
 
-    <div id="drop-area" [class.dropping]="showingDrop" class="contextmenu-toggle pt-2" data-contextName="files">
+    <div id="drop-area" [class.dropping]="showingDrop" class="contextmenu-toggle" data-contextName="files">
         <div id="upload-progress" [class.show]="uploading" [style.width.%]="uploadPercentage"></div>
-        <form id="drop-form" #form enctype="multipart/form-data">
+        <form #form enctype="multipart/form-data" class="p-1 pt-2">
             <div id="upload-text" *ngIf="showingDrop">
                 <p>Upload</p>
                 <icon icon="cloud_upload"></icon>
