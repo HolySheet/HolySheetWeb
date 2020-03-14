@@ -44,7 +44,7 @@
                 <a class="item-link">Restore</a>
             </li>
 
-            <li class="menu-divide"></li>
+            <li class="menu-separator"></li>
 
             <li class="menu-item" (click)="navItemClick(NavAction.NewFolder)">
                 <icon icon="create_new_folder" class="mr-3"></icon>
@@ -244,7 +244,7 @@
                         <icon icon="restore_from_trash"></icon>
                     </li>
 
-                    <li class="menu-divide d-none d-md-flex"></li>
+                    <li class="menu-separator d-none d-md-flex"></li>
                 </template>
 
 
@@ -265,7 +265,7 @@
 
     <div id="drop-area" [class.dropping]="showingDrop" class="contextmenu-toggle" data-contextName="files">
         <div id="upload-progress" [class.show]="uploading" [style.width.%]="uploadPercentage"></div>
-        <form #form enctype="multipart/form-data" class="p-1 pt-2">
+        <form #form enctype="multipart/form-data" class="pt-1">
             <div id="upload-text" *ngIf="showingDrop">
                 <p>Upload</p>
                 <icon icon="cloud_upload"></icon>
